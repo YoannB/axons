@@ -23,7 +23,7 @@ test.describe("Configuration du site", () => {
             await hydrated(page);
             await expect(page.getByRole("banner")).toBeVisible();
             await expect(page.getByRole("heading", { level: 1, name: "404" })).toBeVisible();
-            await expect(page.getByRole("button", { name: button })).toBeVisible();
+            await expect(page.getByRole("link", { name: button })).toBeVisible();
         }
     });
 

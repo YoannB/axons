@@ -1,6 +1,5 @@
 "use client";
 import { Button, Icon, ScrollCue } from "@/components/ui";
-import { Link } from "@/i18n/routing";
 import { useTranslations } from "next-intl";
 import { ComponentShowcase } from "./ComponentShowcase";
 import { HeroRoulette } from "./HeroRoulette";
@@ -50,11 +49,9 @@ export function Hero() {
                         >
                             {t("ctaDemo")}
                         </Button>
-                        <Link href="/sitemap">
-                            <Button variant="secondary" size="lg">
-                                {t("ctaPlan")}
-                            </Button>
-                        </Link>
+                        <Button variant="secondary" size="lg" href="/sitemap">
+                            {t("ctaPlan")}
+                        </Button>
                     </div>
                     <ScrollCue />
                 </div>

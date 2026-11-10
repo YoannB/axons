@@ -1,6 +1,5 @@
 "use client";
 import { Button, Container, EmptyUniverse } from "@/components/ui";
-import { Link } from "@/i18n/routing";
 import { useTranslations } from "next-intl";
 
 export default function NotFound() {
@@ -11,9 +10,9 @@ export default function NotFound() {
                 <EmptyUniverse />
                 <h1 className="not-found__code">404</h1>
                 <p className="muted">{t("text")}</p>
-                <Link href="/">
-                    <Button variant="primary">{t("home")}</Button>
-                </Link>
+                <Button variant="primary" href="/">
+                    {t("home")}
+                </Button>
             </div>
         </Container>
     );
