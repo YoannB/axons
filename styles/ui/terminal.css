@@ -1,0 +1,73 @@
+/* ===== Terminal (components/ui/Terminal) ===== */
+.terminal {
+    min-width: 0;
+    border: 1px solid var(--border-1);
+    border-radius: var(--radius-md);
+    background: var(--bg-1);
+    overflow: hidden;
+}
+.terminal__bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    min-height: 36px;
+    padding: 4px 10px;
+    border-bottom: 1px solid var(--border-1);
+    font-size: 0.78rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--text-2);
+}
+.terminal__actions {
+    display: inline-flex;
+    gap: 6px;
+}
+.terminal__body {
+    padding: 12px 14px;
+    overflow: auto;
+    font-family: var(--font-mono);
+    font-size: 0.86rem;
+    line-height: 1.6em;
+    color: var(--text-1);
+}
+.terminal__body:focus-visible {
+    outline: 2px solid var(--accent-2);
+    outline-offset: -2px;
+}
+.terminal__line {
+    display: flex;
+    gap: 8px;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+.terminal__mark {
+    flex-shrink: 0;
+    width: 1ch;
+}
+.terminal__line--command .terminal__mark {
+    color: var(--muted);
+}
+.terminal__line--success .terminal__mark {
+    color: var(--ok);
+}
+.terminal__line--error {
+    color: var(--danger);
+}
+.terminal__line--link .terminal__mark,
+.terminal__line--link a {
+    color: var(--accent-2);
+}
+.terminal__cursor {
+    display: inline-block;
+    width: 0.6em;
+    height: 1.1em;
+    margin-top: 2px;
+    background: var(--accent-2);
+    animation: termBlink 1s steps(1) infinite;
+}
+@keyframes termBlink {
+    50% {
+        opacity: 0;
+    }
+}

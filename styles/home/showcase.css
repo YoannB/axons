@@ -1,0 +1,112 @@
+/* ===== Showcase ===== */
+.showcase {
+    scroll-margin-top: 88px;
+}
+.showcase__title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 0 14px;
+    font-size: 1.05rem;
+}
+.showcase__grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    align-items: start;
+}
+.showcase__grid > * {
+    min-width: 0;
+}
+.fld {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+}
+.fld > label {
+    font-size: 0.78rem;
+    color: var(--muted);
+}
+.showcase__gauge,
+.showcase__icons {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.showcase__icons {
+    gap: 10px;
+    flex-wrap: wrap;
+}
+.showcase__icons .ic {
+    width: 40px;
+    height: 40px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: var(--surface-2);
+    border: 1px solid var(--border-1);
+    color: var(--accent-1);
+    transition: border-color 0.25s ease;
+}
+.sg {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+}
+.sg-chips {
+    justify-content: flex-start;
+}
+.sg-actions,
+.sg-controls,
+.sg-ai {
+    border-top: 1px dashed var(--border-1);
+    padding-top: 12px;
+    justify-content: flex-start;
+}
+.sg-nav {
+    justify-content: flex-start;
+}
+.sg-term {
+    display: block;
+}
+.term-demo {
+    display: grid;
+    gap: 10px;
+    min-width: 0;
+}
+.term-demo__empty {
+    margin: 0;
+    padding: 16px;
+    border: 1px dashed var(--border-1);
+    border-radius: var(--radius-md);
+    color: var(--muted);
+    font-size: 0.86rem;
+}
+.sg-ai {
+    justify-content: space-between;
+}
+.sg-chips > *:nth-child(1) .ui-icon__draw {
+    animation-delay: 0s;
+}
+.sg-chips > *:nth-child(2) .ui-icon__draw {
+    animation-delay: 0.35s;
+}
+.sg-chips > *:nth-child(3) .ui-icon__draw {
+    animation-delay: 0.7s;
+}
+@media (max-width: 760px) {
+    .showcase__grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
+@media (max-width: 560px) {
+    .showcase__grid {
+        grid-template-columns: 1fr;
+    }
+    .sg-ai {
+        justify-content: flex-start;
+    }
+}

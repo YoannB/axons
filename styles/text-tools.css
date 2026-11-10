@@ -1,0 +1,124 @@
+/* ===== Text tools: DiffView, DiffLegend, EditorPair, AiNotice, ChoiceChips ===== */
+/* Same box as the MUI multiline field (1rem, line-height 1.4375em, 16.5px 14px padding)
+   so a DiffView and a Textarea with the same `rows` have the same height. */
+.diff-view {
+    font-size: 1rem;
+    line-height: 1.4375em;
+    padding: 16.5px 14px;
+    border: 1px solid var(--border-2);
+    border-radius: var(--radius-md);
+    background: var(--surface-2);
+    color: var(--text-1);
+    overflow: auto;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+.diff-view:focus-visible {
+    outline: 2px solid var(--accent-2);
+    outline-offset: 2px;
+}
+.diff-view__placeholder {
+    color: var(--muted);
+}
+.diff {
+    border-radius: 4px;
+    padding: 0 2px;
+    color: inherit;
+    text-decoration: none;
+}
+.diff--insert {
+    background: color-mix(in oklab, var(--ok) 22%, transparent);
+    box-shadow: inset 0 -2px 0 var(--ok);
+}
+.diff--replace {
+    background: color-mix(in oklab, var(--accent-2) 22%, transparent);
+    box-shadow: inset 0 -2px 0 var(--accent-2);
+}
+.diff--delete {
+    background: color-mix(in oklab, var(--danger) 16%, transparent);
+    color: var(--danger);
+    text-decoration: line-through;
+}
+.diff-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 14px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-size: 0.8rem;
+    color: var(--text-2);
+}
+.diff-legend li {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+.diff-legend__swatch {
+    display: inline-block;
+    width: 14px;
+    height: 10px;
+    padding: 0;
+}
+.editor-pair {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-areas: "start end" "action action";
+    gap: 14px;
+    align-items: start;
+}
+.editor-pair__col {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 0;
+    scroll-margin-top: 88px;
+}
+.editor-pair__col--start {
+    grid-area: start;
+}
+.editor-pair__col--end {
+    grid-area: end;
+}
+.editor-pair__action {
+    grid-area: action;
+    min-width: 0;
+}
+.editor-pair__toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    min-height: 32px;
+}
+@media (max-width: 900px) {
+    .editor-pair {
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-areas: "start" "action" "end";
+    }
+}
+.ai-notice {
+    display: grid;
+    gap: 4px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-size: 0.78rem;
+    color: var(--text-2);
+}
+.ai-notice__item {
+    display: flex;
+    gap: 6px;
+    align-items: baseline;
+}
+.ai-notice__item .ui-icon {
+    flex-shrink: 0;
+    color: var(--muted);
+    transform: translateY(2px);
+}
+.choice-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}

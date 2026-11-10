@@ -1,0 +1,108 @@
+/* ===== Articles (listing, "latest" block, article page) ===== */
+.article-feed {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+.article-teaser__title {
+    margin: 0 0 6px;
+    font-size: 1.05rem;
+}
+.article-teaser__title a {
+    color: var(--text-1);
+}
+.article-teaser__title a:hover,
+.article-teaser__title a:focus-visible {
+    color: var(--accent-2);
+}
+.article-teaser__lang {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 1px 8px;
+    border: 1px solid var(--border-2);
+    border-radius: 999px;
+    font-size: 0.75rem;
+    color: var(--text-2);
+}
+.latest-articles__all {
+    display: inline-block;
+    margin-top: 14px;
+    color: var(--accent-2);
+    font-weight: 600;
+}
+.article__meta {
+    margin: 0 0 14px;
+    font-size: 0.85rem;
+}
+.article__cover {
+    width: 100%;
+    max-width: 720px;
+    aspect-ratio: 1200 / 630;
+    object-fit: cover;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-1);
+    margin-bottom: 18px;
+}
+.article-body {
+    line-height: 1.7;
+}
+.article-body h2,
+.article-body h3 {
+    color: var(--text-1);
+    margin: 1.6em 0 0.5em;
+}
+.article-body h2 {
+    font-size: 1.25rem;
+}
+.article-body h3 {
+    font-size: 1.05rem;
+}
+.article-body a {
+    color: var(--accent-2);
+    text-decoration: underline;
+}
+.article-body ul,
+.article-body ol {
+    padding-inline-start: 1.4em;
+}
+.article-body code {
+    font-family: var(--font-mono);
+    font-size: 0.88em;
+    padding: 1px 5px;
+    border-radius: 6px;
+    background: var(--surface-2);
+    border: 1px solid var(--border-1);
+}
+.article-body pre {
+    overflow-x: auto;
+    padding: 14px 16px;
+    border-radius: var(--radius-md);
+    background: var(--bg-0);
+    border: 1px solid var(--border-1);
+}
+.article-body pre code {
+    padding: 0;
+    border: 0;
+    background: none;
+}
+/* Wide tables scroll inside their own box: no page-level horizontal overflow on mobile. */
+.article-body table {
+    display: block;
+    max-width: 100%;
+    overflow-x: auto;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+}
+.article-body th,
+.article-body td {
+    padding: 6px 10px;
+    border: 1px solid var(--border-1);
+    text-align: start;
+}
+.article-body blockquote {
+    margin: 1em 0;
+    padding-inline-start: 14px;
+    border-inline-start: 3px solid var(--accent-1);
+    color: var(--muted);
+}

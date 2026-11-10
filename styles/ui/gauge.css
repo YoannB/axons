@@ -1,0 +1,77 @@
+/* ===== Gauge (+ "button" HOVER without box geometry) ===== */
+.gauge {
+    position: relative;
+    display: grid;
+    place-items: center;
+}
+.gauge svg {
+    transition: filter 0.3s ease;
+}
+.gauge__track {
+    fill: none;
+    stroke: var(--border-1);
+    stroke-width: 8;
+    transition: stroke 0.3s ease;
+}
+.gauge__fill {
+    fill: none;
+    stroke-width: 8;
+    stroke-linecap: round;
+    transition: stroke-dashoffset 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.gauge__value {
+    position: absolute;
+    font-weight: 700;
+    font-size: 0.95rem;
+    transition: color 0.3s ease;
+}
+/* Status tones (bands of a score): the CSS stroke overrides the gradient attribute. */
+.gauge--success .gauge__fill {
+    stroke: var(--ok);
+}
+.gauge--info .gauge__fill {
+    stroke: var(--accent-2);
+}
+.gauge--warning .gauge__fill {
+    stroke: var(--warn);
+}
+.gauge--error .gauge__fill {
+    stroke: var(--danger);
+}
+.gauge:hover svg {
+    filter: drop-shadow(0 0 12px color-mix(in oklab, var(--accent-2) 60%, transparent));
+}
+.gauge:hover .gauge__value {
+    color: var(--accent-2);
+}
+.gauge:hover .gauge__track {
+    stroke: var(--border-2);
+}
+/* Spark confined to the colored arc, moving back and forth (like the icon draw
+   cycle, not a 360 loop). dasharray = spark (c - spark): the single gap
+   swallows the rest of the circle => it never reappears in the grey area. The
+   offset animates only over [0, arc - spark] => the spark never leaves
+   the colored part. Variables set by Gauge.tsx (plain numbers, converted
+   to px via * 1px). mix-blend-mode: screen => the spark lights up the arc instead
+   of covering it. Frozen by the global prefers-reduced-motion rule. */
+.gauge__sheen {
+    fill: none;
+    stroke: #ffffff;
+    stroke-width: 8;
+    stroke-linecap: round;
+    opacity: 0.55;
+    filter: blur(1px);
+    pointer-events: none;
+    mix-blend-mode: screen;
+    stroke-dasharray: calc(var(--gauge-spark) * 1px) calc((var(--gauge-c) - var(--gauge-spark)) * 1px);
+    animation: gaugeSheen 2.4s ease-in-out infinite;
+}
+@keyframes gaugeSheen {
+    0%,
+    100% {
+        stroke-dashoffset: 0;
+    }
+    50% {
+        stroke-dashoffset: calc(var(--gauge-travel) * -1px);
+    }
+}

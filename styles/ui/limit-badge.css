@@ -1,0 +1,26 @@
+/* ===== Limit badge ===== */
+.limit-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 14px;
+    font-size: 0.82rem;
+    color: var(--muted);
+    justify-content: center;
+    width: 100%;
+}
+.limit-badge__num {
+    min-width: 1ch;
+    font-variant-numeric: tabular-nums;
+    color: var(--text-1);
+    font-weight: 700;
+}
+.limit-badge--header {
+    margin: 0;
+    width: auto;
+    padding: 5px 10px;
+    border: 1px solid var(--border-1);
+    border-radius: 999px;
+    background: var(--surface-2);
+    white-space: nowrap;
+}

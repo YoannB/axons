@@ -1,0 +1,61 @@
+/* ===== Language switcher ===== */
+.lang {
+    position: relative;
+}
+.lang__btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--surface-2);
+    border: 1px solid var(--border-1);
+    color: var(--text-1);
+    padding: 6px 10px;
+    border-radius: 999px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: border-color 0.2s ease;
+}
+.lang__btn:hover {
+    border-color: var(--border-2);
+}
+.lang__flag {
+    font-size: 1rem;
+}
+.lang__caret {
+    font-size: 0.7rem;
+    color: var(--muted);
+    line-height: 1;
+}
+.lang__menu {
+    position: absolute;
+    right: 0;
+    top: calc(100% + 6px);
+    list-style: none;
+    margin: 0;
+    padding: 6px;
+    background: var(--surface-1);
+    border: 1px solid var(--border-1);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-1);
+    min-width: 180px;
+    z-index: 60;
+}
+.lang__opt {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: none;
+    border: 0;
+    color: var(--text-1);
+    padding: 8px;
+    border-radius: 8px;
+    cursor: pointer;
+    text-align: left;
+}
+.lang__opt:hover {
+    background: var(--surface-2);
+}
+.lang__opt.is-active {
+    color: var(--accent-2);
+}
