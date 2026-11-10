@@ -14,8 +14,11 @@ export default defineConfig({
         screenshot: "only-on-failure",
         video: "retain-on-failure",
     },
+    // CI serves the PRODUCTION build made by the previous step (`next start`): no on-demand
+    // compilation, so pages answer in milliseconds instead of timing out under load, and the
+    // tested bundle is the deployed one. Locally `next dev` keeps the edit loop fast.
     webServer: {
-        command: "npm run dev",
+        command: process.env.CI ? "npm run start" : "npm run dev",
         url: "http://localhost:3000",
         reuseExistingServer: !process.env.CI,
         timeout: 120_000,

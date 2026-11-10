@@ -1,6 +1,8 @@
 # CI — full verification (AGENTS.md Definition of done) before any merge into main.
 # Trigger: pull requests to main only, drafts excluded. A commit on a branch without a PR,
 # or on a Draft PR, runs nothing; "Ready for review" starts the pipeline.
+# E2E scope: pull requests run the desktop `chromium` project only (fast gate); the nightly
+# schedule and a manual run (workflow_dispatch) run every project, mobile included.
 # To make it mandatory in GitHub: Settings → Rules → Rulesets on main → Require status
 # checks → "verify" (the job only appears in the list after a first run).
 name: CI
@@ -10,6 +12,8 @@ on:
         branches: [main]
         types: [opened, synchronize, reopened, ready_for_review]
     workflow_dispatch:
+    schedule:
+        - cron: "0 3 * * *"
 
 # A new push to the same PR cancels the run in progress (no useless queue).
 concurrency:
@@ -25,9 +29,14 @@ jobs:
         runs-on: ubuntu-latest
         timeout-minutes: 30
         env:
-            # Build and E2E never call OpenRouter (/api/* mocked in Playwright,
-            # in-memory quota with `next dev`): no secret required.
+            # Build and E2E never call OpenRouter (/api/* mocked in Playwright): no secret.
             NEXT_TELEMETRY_DISABLED: "1"
+            # Inlined at build time: with 0 the AI buttons are disabled and the server quota
+            # denies every call (429), which breaks the AI E2E specs. Same value as .env.example.
+            NEXT_PUBLIC_AI_DAILY_LIMIT: "3"
+            # E2E runs `next start` (NODE_ENV=production) with no Netlify Blobs store: fail-open
+            # lets the server-contract specs reach validation. CI ONLY, never in a deployment.
+            AI_QUOTA_FAIL_MODE: "open"
         steps:
             - uses: actions/checkout@v7
 
@@ -54,10 +63,33 @@ jobs:
             - name: Build
               run: npm run build
 
+            # Browser binaries cached per Playwright version; the system libraries are
+            # reinstalled every run (they live outside the cache).
+            - name: Playwright version
+              id: pw
+              run: echo "version=$(node -p "require('@playwright/test/package.json').version")" >> "$GITHUB_OUTPUT"
+
+            - name: Cache Playwright browsers
+              id: pw-cache
+              uses: actions/cache@v4
+              with:
+                  path: ~/.cache/ms-playwright
+                  key: playwright-${{ runner.os }}-${{ steps.pw.outputs.version }}
+
             - name: Install Playwright browser
+              if: steps.pw-cache.outputs.cache-hit != 'true'
               run: npx playwright install --with-deps chromium
 
-            - name: E2E tests
+            - name: Install Playwright system dependencies
+              if: steps.pw-cache.outputs.cache-hit == 'true'
+              run: npx playwright install-deps chromium
+
+            - name: E2E tests (chromium, pull request)
+              if: ${{ github.event_name == 'pull_request' }}
+              run: npm run test:e2e -- --project=chromium
+
+            - name: E2E tests (all projects, nightly / manual)
+              if: ${{ github.event_name != 'pull_request' }}
               run: npm run test:e2e
 
             - name: Storybook build
