@@ -2,6 +2,7 @@ import { Faq } from "@/components/home/Faq";
 import { FeatureStrip } from "@/components/home/FeatureStrip";
 import { Hero } from "@/components/home/Hero";
 import { SeoResources } from "@/components/home/SeoResources";
+import { TextToolsShowcase } from "@/components/home/TextToolsShowcase";
 import { ValueProps } from "@/components/home/ValueProps";
 import { PageShell } from "@/components/layout/PageShell";
 
@@ -13,6 +14,7 @@ export default function HomePage() {
     return (
         <PageShell>
             <Hero />
+            <TextToolsShowcase />
             <SeoResources />
             <ValueProps />
             <FeatureStrip />

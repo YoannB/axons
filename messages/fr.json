@@ -69,7 +69,53 @@
         "copyCopied": "Copié !",
         "testAi": "Tester l'IA",
         "resetDone": "Limiteur réinitialisé.",
-        "runSkill": "Exécuter la skill (démo)"
+        "runSkill": "Exécuter la skill (démo)",
+        "elapsed": "{seconds} s"
+    },
+    "aiNotice": {
+        "thirdParty": "Votre texte est envoyé à un fournisseur d'IA tiers ({provider}). Ce site ne le conserve pas.",
+        "quality": "Les modèles gratuits peuvent être lents ou imprécis : si le résultat vous semble faux, relancez simplement.",
+        "wait": "Une réponse peut prendre jusqu'à 30 secondes quand le modèle gratuit est saturé."
+    },
+    "textTools": {
+        "title": "Outils texte",
+        "intro": "Diff mot à mot, score de similarité et éditeurs jumelés : des briques génériques pour tout outil de réécriture. Cette démo n'appelle aucune IA : modifiez votre texte, le diff se met à jour en direct.",
+        "presetsLabel": "Exemples",
+        "presets": {
+            "typo": "Fautes de frappe",
+            "punctuation": "Ponctuation"
+        },
+        "sourceLabel": "Votre texte",
+        "sourcePlaceholder": "Choisissez un exemple ou saisissez un texte…",
+        "resultLabel": "Différences avec le texte de référence",
+        "resultPlaceholder": "Choisissez un exemple pour le comparer à son texte de référence.",
+        "reset": "Réinitialiser",
+        "legend": {
+            "insert": "Ajout",
+            "replace": "Correction",
+            "delete": "Suppression"
+        },
+        "similarity": "Similarité",
+        "bands": {
+            "perfect": "Identique",
+            "great": "Quelques retouches",
+            "good": "Retouches modérées",
+            "low": "Nombreuses modifications"
+        },
+        "confirmTitle": "Abandonner votre texte ?",
+        "confirmMessage": "Vos modifications seront perdues.",
+        "confirmOk": "Abandonner",
+        "confirmCancel": "Continuer l'édition",
+        "examples": {
+            "typo": {
+                "before": "Merci pour vos retour, je vous envoi le document corigé demain matin.",
+                "after": "Merci pour vos retours, je vous envoie le document corrigé demain matin."
+            },
+            "punctuation": {
+                "before": "Bonjour Marie je reviens vers vous concernant le devis est-il toujours valable",
+                "after": "Bonjour Marie, je reviens vers vous concernant le devis : est-il toujours valable ?"
+            }
+        }
     },
     "seo": {
         "title": "Guides & tutoriels",
@@ -153,7 +199,11 @@
         "settings": "Préférences",
         "link": "En savoir plus"
     },
-    "theme": { "light": "Clair", "dark": "Sombre", "system": "Système" },
+    "theme": {
+        "light": "Clair",
+        "dark": "Sombre",
+        "system": "Système"
+    },
     "errors": {
         "rate": "Limite quotidienne atteinte. Réessayez demain.",
         "busy": "Trop de demandes en peu de temps. Réessayez dans une minute.",
@@ -164,7 +214,11 @@
         "empty": "L'IA n'a renvoyé aucun texte. Merci de réessayer.",
         "successPrefix": "Réponse de l'IA : "
     },
-    "common": { "loading": "Chargement…", "close": "Fermer", "soon": "Bientôt" },
+    "common": {
+        "loading": "Chargement…",
+        "close": "Fermer",
+        "soon": "Bientôt"
+    },
     "pages": {
         "sitemap": {
             "title": "Plan du site",

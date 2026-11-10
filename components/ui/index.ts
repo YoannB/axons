@@ -1,14 +1,18 @@
 // STABLE PUBLIC entry point of the neutral library.
 // Switching libraries (PrimeReact, plain Tailwind) = adapt this folder + material/, not the app.
 export { AdSlot } from "./AdSlot";
+export { AiNotice } from "./AiNotice";
 export { Breadcrumb } from "./Breadcrumb";
 export { Button } from "./Button";
 export { Card } from "./Card";
 export { Chip } from "./Chip";
+export { ChoiceChips } from "./ChoiceChips";
 export { ConfirmDialog } from "./ConfirmDialog";
 export { Container } from "./Container";
 export { CopyButton } from "./CopyButton";
 export { Dialog } from "./Dialog";
+export { DiffLegend, DiffView } from "./DiffView";
+export { EditorPair } from "./EditorPair";
 export { Gauge } from "./Gauge";
 export { Icon } from "./Icon";
 export { Input } from "./Input";

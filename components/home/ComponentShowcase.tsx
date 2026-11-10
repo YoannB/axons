@@ -15,7 +15,8 @@ import {
     ThemeToggle,
 } from "@/components/ui";
 import { useAiCall, type AiCallCtx } from "@/hooks/use-ai-call";
-import { useStore } from "@/hooks/use-store";
+import { useElapsedSeconds } from "@/hooks/use-elapsed";
+import { useAiPendingSince, useStore } from "@/hooks/use-store";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 
@@ -39,6 +40,9 @@ export function ComponentShowcase() {
     // are global: both buttons share the lock (one AI call at a time, on purpose).
     const { call, pending, canCall } = useAiCall();
     const { call: runCall } = useAiCall("/api/run", RUN_BODY);
+    // Wait time shown on the pending buttons (free models can queue for many seconds).
+    const elapsed = useElapsedSeconds(useAiPendingSince());
+    const waited = pending && elapsed > 0 ? ` · ${t("elapsed", { seconds: elapsed })}` : "";
     const [text, setText] = useState("");
     const [msg, setMsg] = useState("");
     const [dialog, setDialog] = useState(false);
@@ -123,6 +127,7 @@ export function ComponentShowcase() {
                         iconLeft={<Icon name="sparkles" size={16} animated />}
                     >
                         {t("testAi")}
+                        {waited}
                     </Button>
                     {/* Demo of the unified prompt+agent+skill model via /api/run. Shares the global
               pending/canCall (single app-wide lock, on purpose). The msg textarea = optional prompt. */}
@@ -134,6 +139,7 @@ export function ComponentShowcase() {
                         iconLeft={<Icon name="globe" size={16} animated />}
                     >
                         {t("runSkill")}
+                        {waited}
                     </Button>
                     <ResetLimiterButton />
                 </div>

@@ -671,7 +671,13 @@ It centralizes:
 - error toast,
 - credit consumption only on useful replies.
 
+Pass `onSuccess(reply)` as the third argument when the app consumes the reply itself (for example to fill a result pane) instead of showing it in a toast.
+
 Do not create a second AI client hook.
+
+### Text tools kit
+
+For "text in, text out" apps (proofreading, rephrasing, summaries with a visible delta), Axons ships AI-agnostic building blocks: a word diff and a similarity score with configurable bands (`lib/text/`), `DiffView`, `EditorPair`, `ChoiceChips`, `AiNotice`, a character counter on `Textarea`, and the `useDirtyGuard` / `useElapsedSeconds` hooks. The home page demonstrates them without any AI call. See `docs/text-tools.md`.
 
 ## Design references and mockups
 
@@ -789,9 +795,10 @@ Do not claim “zero vulnerabilities” from direct dependency versions alone. I
 
 GitHub Actions runs the full definition of done on every pull request to `main`: the workflow lives in [`.github/workflows/ci.yml`](.github/workflows/ci.yml).
 
-- **Trigger:** pull requests targeting `main` only, and not while the pull request is a draft. Commits on a branch without a pull request, or on a draft pull request, run nothing; marking the pull request "Ready for review" starts the pipeline. A new push to the same pull request cancels the run in progress. The workflow can also be started manually (`workflow_dispatch`).
-- **Steps:** `npm ci`, typecheck, lint, format check, unit tests, build, Playwright (Chromium) E2E, Storybook build, and an informative `npm audit`. The Playwright report is uploaded as an artifact when a step fails.
-- **No secrets needed:** E2E tests run against `next dev` with mocked `/api/*` routes and the in-memory quota store, so no OpenRouter key or Netlify Blobs access is required.
+- **Trigger:** pull requests targeting `main` only, and not while the pull request is a draft. Commits on a branch without a pull request, or on a draft pull request, run nothing; marking the pull request "Ready for review" starts the pipeline. A new push to the same pull request cancels the run in progress. The workflow also runs nightly (`schedule`) and can be started manually (`workflow_dispatch`).
+- **Steps:** `npm ci`, typecheck, lint, format check, unit tests, build, Playwright E2E, Storybook build, and an informative `npm audit`. The Playwright report is uploaded as an artifact when a step fails.
+- **E2E scope and speed:** E2E tests run against the production build (`next start`), not `next dev`, so pages are not compiled on demand. Pull requests run the desktop `chromium` project only; the nightly and manual runs add the `mobile` project. Playwright browsers are cached per version.
+- **No secrets needed:** `/api/*` calls are mocked in the browser specs and the server-contract specs stop at validation, so no OpenRouter key is required. Without a Netlify Blobs store, the job sets `AI_QUOTA_FAIL_MODE=open` (CI only, never on a deployment) and `NEXT_PUBLIC_AI_DAILY_LIMIT=3` (with 0 the AI feature is disabled and its specs cannot run).
 
 To make the pipeline mandatory, add a ruleset on `main` in the GitHub repository settings (Settings → Rules → Rulesets): require a pull request before merging, require the `verify` status check to pass (it appears in the list after its first run), block force pushes, and keep the bypass list empty so that administrators cannot push to `main` directly.
 

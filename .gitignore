@@ -56,3 +56,6 @@ npm-debug.log*
 # Local Netlify folder
 .netlify
 deno.lock
+
+# Claude Code local state (session worktrees, launch configs)
+.claude/

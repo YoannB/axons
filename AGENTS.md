@@ -1,7 +1,9 @@
 <!-- BEGIN:nextjs-agent-rules -->
 
-This is NOT the Next.js you know
+## This is NOT the Next.js you know
+
 This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+
 This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
 
 <!-- END:nextjs-agent-rules -->
@@ -27,6 +29,7 @@ editing, open the ONE doc matching your task from the index below; cross-refs ar
 | anything under `components/ui/material/`, MUI theme build, light mode, disabled-button contrast, chips, toasts, global-vs-MUI CSS, MUI-control animations | `docs/ui-material.md`     |
 | AI: agents, skills, `/api/run`, `lib/ai`, prompt language, deploy/tracing, rate limit                                                                     | `docs/ai-capabilities.md` |
 | `messages/*.json`, localized URLs, `timeZone`, locale navigation                                                                                          | `docs/i18n.md`            |
+| text diff/similarity (`lib/text/`), DiffView, EditorPair, ChoiceChips, AiNotice, dirty-input guard, elapsed wait                                          | `docs/text-tools.md`      |
 | visual/layout/animation: hero roulette, icon draw, video detach/dismiss, containers/rails, mobile overflow, header squeeze, ads/dev-reset                 | `docs/seo-layout.md`      |
 | tests (Vitest/Playwright), 100%-branch discipline, the closing-`---` gotcha, npm audit                                                                    | `docs/testing.md`         |
 | Storybook stories, component visual states, `.storybook/` config                                                                                          | `docs/storybook.md`       |
