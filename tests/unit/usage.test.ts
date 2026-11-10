@@ -5,17 +5,17 @@ import { describe, expect, it } from "vitest";
 const NOT_TODAY = "1970-01-01";
 
 describe("todayISO", () => {
-    it("formate une date fournie en AAAA-MM-JJ UTC", () => {
+    it("formats a given date as YYYY-MM-DD UTC", () => {
         expect(todayISO(new Date("2026-10-20T23:59:59.999Z"))).toBe("2026-10-20");
     });
 
-    it("utilise la date courante par défaut", () => {
+    it("uses the current date by default", () => {
         expect(todayISO()).toMatch(/^\d{4}-\d{2}-\d{2}$/);
     });
 });
 
-describe("normalizeUsage — branche de reset (!raw || raw.date !== t)", () => {
-    it("réinitialise pour null", () => {
+describe("normalizeUsage — reset branch (!raw || raw.date !== t)", () => {
+    it("resets for null", () => {
         const today = todayISO();
 
         expect(normalizeUsage(null)).toEqual({
@@ -24,7 +24,7 @@ describe("normalizeUsage — branche de reset (!raw || raw.date !== t)", () => {
         });
     });
 
-    it("réinitialise pour undefined", () => {
+    it("resets for undefined", () => {
         const today = todayISO();
 
         expect(normalizeUsage(undefined)).toEqual({
@@ -33,7 +33,7 @@ describe("normalizeUsage — branche de reset (!raw || raw.date !== t)", () => {
         });
     });
 
-    it("réinitialise quand la date stockée n'est pas celle du jour", () => {
+    it("resets when the stored date is not today", () => {
         const today = todayISO();
 
         expect(normalizeUsage({ date: NOT_TODAY, count: 99 })).toEqual({
@@ -43,8 +43,8 @@ describe("normalizeUsage — branche de reset (!raw || raw.date !== t)", () => {
     });
 });
 
-describe("normalizeUsage — branche de conservation et coercition du compteur", () => {
-    it("conserve un compteur numérique valide", () => {
+describe("normalizeUsage — keep branch and counter coercion", () => {
+    it("keeps a valid numeric counter", () => {
         const today = todayISO();
 
         expect(normalizeUsage({ date: today, count: 3 })).toEqual({
@@ -53,7 +53,7 @@ describe("normalizeUsage — branche de conservation et coercition du compteur",
         });
     });
 
-    it("coerce une chaîne numérique", () => {
+    it("coerces a numeric string", () => {
         const today = todayISO();
 
         expect(
@@ -64,7 +64,7 @@ describe("normalizeUsage — branche de conservation et coercition du compteur",
         ).toBe(7);
     });
 
-    it("remplace NaN par 0", () => {
+    it("replaces NaN with 0", () => {
         const today = todayISO();
 
         expect(
@@ -75,19 +75,19 @@ describe("normalizeUsage — branche de conservation et coercition du compteur",
         ).toBe(0);
     });
 
-    it("remplace undefined par 0", () => {
+    it("replaces undefined with 0", () => {
         const today = todayISO();
 
         expect(normalizeUsage({ date: today }).count).toBe(0);
     });
 
-    it("plafonne un compteur négatif à 0", () => {
+    it("clamps a negative counter to 0", () => {
         const today = todayISO();
 
         expect(normalizeUsage({ date: today, count: -5 }).count).toBe(0);
     });
 
-    it("garde 0 comme 0", () => {
+    it("keeps 0 as 0", () => {
         const today = todayISO();
 
         expect(normalizeUsage({ date: today, count: 0 }).count).toBe(0);
@@ -95,37 +95,37 @@ describe("normalizeUsage — branche de conservation et coercition du compteur",
 });
 
 describe("remaining", () => {
-    it("retourne la différence positive", () => {
+    it("returns the positive difference", () => {
         expect(remaining({ date: "2026-10-20", count: 2 }, 5)).toBe(3);
     });
 
-    it("retourne 0 à l'égalité", () => {
+    it("returns 0 when equal", () => {
         expect(remaining({ date: "2026-10-20", count: 5 }, 5)).toBe(0);
     });
 
-    it("retourne 0 en dépassement", () => {
+    it("returns 0 when exceeded", () => {
         expect(remaining({ date: "2026-10-20", count: 6 }, 5)).toBe(0);
     });
 });
 
-describe("canCall — branches de court-circuit &&", () => {
-    it("retourne false si la limite est nulle", () => {
+describe("canCall — && short-circuit branches", () => {
+    it("returns false when the limit is zero", () => {
         expect(canCall({ date: "2026-10-20", count: 0 }, 0)).toBe(false);
     });
 
-    it("retourne false si la limite est négative", () => {
+    it("returns false when the limit is negative", () => {
         expect(canCall({ date: "2026-10-20", count: 0 }, -1)).toBe(false);
     });
 
-    it("retourne true si la limite est positive et le restant positif", () => {
+    it("returns true when the limit is positive and the remainder positive", () => {
         expect(canCall({ date: "2026-10-20", count: 4 }, 5)).toBe(true);
     });
 
-    it("retourne false si le quota est épuisé", () => {
+    it("returns false when the quota is exhausted", () => {
         expect(canCall({ date: "2026-10-20", count: 5 }, 5)).toBe(false);
     });
 
-    it("retourne false en dépassement", () => {
+    it("returns false when exceeded", () => {
         expect(canCall({ date: "2026-10-20", count: 6 }, 5)).toBe(false);
     });
 });

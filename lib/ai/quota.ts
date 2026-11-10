@@ -57,15 +57,15 @@ const blobsFetch: typeof fetch = async (input, init) => {
     const host = new URL(input instanceof Request ? input.url : String(input)).host;
     const t0 = Date.now();
     if (DEBUG)
-        console.info(`[ai:quota] blobs → ${method} ${host} (fetch d'origine : ${originalFetch !== globalThis.fetch})`);
+        console.info(`[ai:quota] blobs → ${method} ${host} (original fetch: ${originalFetch !== globalThis.fetch})`);
     try {
         const res = await bufferResponse(await originalFetch(input, { ...init, cache: "no-store" }));
-        if (DEBUG) console.info(`[ai:quota] blobs ← ${res.status} ${method} en ${Date.now() - t0} ms`);
+        if (DEBUG) console.info(`[ai:quota] blobs ← ${res.status} ${method} in ${Date.now() - t0} ms`);
         if (!res.ok && res.status !== 404 && res.status !== 412)
             console.error(`[ai:quota] blobs HTTP ${res.status} (${method})`);
         return res;
     } catch (error) {
-        logError(`[ai:quota] blobs erreur réseau (${method} ${host}, ${Date.now() - t0} ms)`, error);
+        logError(`[ai:quota] blobs network error (${method} ${host}, ${Date.now() - t0} ms)`, error);
         throw error;
     }
 };
@@ -77,7 +77,7 @@ function blobsStore(): CasStore {
         async read(key) {
             const entry = await store.getWithMetadata(key, { type: "json" });
             if (!entry) return null;
-            if (!entry.etag) throw new Error("quota: ETag absent");
+            if (!entry.etag) throw new Error("quota: missing ETag");
             return { data: entry.data, etag: entry.etag };
         },
         async write(key, value, etag) {
@@ -90,7 +90,7 @@ function blobsStore(): CasStore {
 function resolveDeps(): { deps: CasDeps; secret: string } {
     const secret = process.env.AI_QUOTA_SECRET ?? "";
     if (IS_PROD && secret.length < 32)
-        throw new Error("quota: AI_QUOTA_SECRET absent ou trop court (>= 32 caractères)");
+        throw new Error("quota: AI_QUOTA_SECRET missing or too short (>= 32 characters)");
     const store = IS_PROD ? blobsStore() : (devGlobal.__axonsQuotaMemory ??= createMemoryStore());
     return {
         secret: secret || DEV_SECRET,
@@ -117,7 +117,7 @@ export async function reserveQuota(ip: string): Promise<QuotaGate> {
         const { deps, secret } = resolveDeps();
         const outcome = await withDeadline(reserve(deps, CONFIG, hashIp(ip, secret), Date.now()), STORE_DEADLINE_MS);
         if (outcome.ok) return { ok: true, ticket: outcome.ticket };
-        if (outcome.reason === "global") console.warn(`[ai:quota] plafond global atteint (${CONFIG.globalCap}/jour)`);
+        if (outcome.reason === "global") console.warn(`[ai:quota] global cap reached (${CONFIG.globalCap}/day)`);
         // Burst = transient ("busy", retry within the minute); daily/global = "rate".
         const code = outcome.reason === "burst" ? "busy" : "rate";
         return {
@@ -129,8 +129,8 @@ export async function reserveQuota(ip: string): Promise<QuotaGate> {
         const open = CONFIG.failMode === "open";
         logError(
             open
-                ? "[ai:quota] store indisponible, fail-open : quota NON appliqué"
-                : "[ai:quota] store indisponible, fail-closed : 503",
+                ? "[ai:quota] store unavailable, fail-open: quota NOT enforced"
+                : "[ai:quota] store unavailable, fail-closed: 503",
             error,
         );
         if (open) return { ok: true, ticket: null };
@@ -147,7 +147,7 @@ export async function refundQuota(ticket: QuotaTicket | null): Promise<void> {
     try {
         await withDeadline(refund(resolveDeps().deps, ticket), STORE_DEADLINE_MS);
     } catch (error) {
-        logError("[ai:quota] remboursement perdu", error);
+        logError("[ai:quota] refund lost", error);
     }
 }
 

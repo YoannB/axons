@@ -20,7 +20,7 @@ const CAPABILITY_ID = /^[a-z0-9][a-z0-9-]{0,63}$/;
 
 export function assertCapabilityId(id: string): string {
     if (!CAPABILITY_ID.test(id)) {
-        throw new Error(`Identifiant de capacité invalide : ${JSON.stringify(id)}.`);
+        throw new Error(`Invalid capability id: ${JSON.stringify(id)}.`);
     }
 
     return id;
@@ -50,7 +50,7 @@ export function validateSkillInputs(skill: SkillDef, raw: Record<string, unknown
 
     for (const key of skill.inputs) {
         if (!clean[key]) {
-            throw new Error(`Skill invalide : entrée requise "${key}" manquante ou vide.`);
+            throw new Error(`Invalid skill: required input "${key}" missing or empty.`);
         }
     }
 

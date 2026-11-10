@@ -47,7 +47,7 @@ const config = [
                     patterns: [
                         {
                             group: ["@mui/*", "@mui/**"],
-                            message: "Les imports @mui restent confinés dans components/ui/material (voir AGENTS.md).",
+                            message: "@mui imports stay confined to components/ui/material (see AGENTS.md).",
                         },
                     ],
                 },

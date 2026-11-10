@@ -24,17 +24,17 @@ async function loadProvider() {
     return await import("@/lib/ai/provider");
 }
 
-describe("openrouterClient — branche clé manquante", () => {
-    it("lève une erreur explicite si OPENROUTER_API_KEY est absente", async () => {
+describe("openrouterClient — missing key branch", () => {
+    it("throws an explicit error when OPENROUTER_API_KEY is missing", async () => {
         const provider = await loadProvider();
 
-        expect(() => provider.openrouterClient()).toThrow("OPENROUTER_API_KEY manquante.");
+        expect(() => provider.openrouterClient()).toThrow("OPENROUTER_API_KEY is missing.");
         expect(createOpenRouter).not.toHaveBeenCalled();
     });
 });
 
-describe("openrouterClient — branche de cache cached ??=", () => {
-    it("crée le client une seule fois puis réutilise l'instance câchée", async () => {
+describe("openrouterClient — cache branch cached ??=", () => {
+    it("creates the client only once then reuses the cached instance", async () => {
         const provider = await loadProvider();
         SERVER_ENV.openrouterApiKey = "sk-or-test";
 
@@ -53,8 +53,8 @@ describe("openrouterClient — branche de cache cached ??=", () => {
     });
 });
 
-describe("resolveModel — délégation au client OpenRouter", () => {
-    it("appelle le client OpenRouter avec l'identifiant du modèle", async () => {
+describe("resolveModel — delegation to the OpenRouter client", () => {
+    it("calls the OpenRouter client with the model id", async () => {
         const provider = await loadProvider();
         SERVER_ENV.openrouterApiKey = "sk-or-test";
 

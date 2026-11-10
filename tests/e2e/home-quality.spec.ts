@@ -23,8 +23,8 @@ function isBenignConsoleError(text: string, url: string): boolean {
     return false;
 }
 
-test.describe("Home — qualité transverse", () => {
-    test("aucune erreur console applicative sur la page principale", async ({ page }) => {
+test.describe("Home — cross-cutting quality", () => {
+    test("no application console error on the main page", async ({ page }) => {
         const errors: string[] = [];
 
         page.on("console", (message) => {
@@ -51,7 +51,7 @@ test.describe("Home — qualité transverse", () => {
         expect(errors).toEqual([]);
     });
 
-    test("aucun overflow horizontal", async ({ page }) => {
+    test("no horizontal overflow", async ({ page }) => {
         await page.goto("/");
 
         const overflow = await page.evaluate(() => {

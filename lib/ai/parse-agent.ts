@@ -24,7 +24,7 @@ function finiteOrThrow(raw: string | undefined, field: string, fallback: number)
     if (raw === undefined) return fallback;
     const n = Number(raw);
     if (!Number.isFinite(n)) {
-        throw new Error(`Agent invalide : champ "${field}" non numérique (${JSON.stringify(raw)}).`);
+        throw new Error(`Invalid agent: field "${field}" is not numeric (${JSON.stringify(raw)}).`);
     }
     return n;
 }
@@ -32,7 +32,7 @@ function finiteOrThrow(raw: string | undefined, field: string, fallback: number)
 export function parseAgent(raw: string): AgentDef {
     const cleaned = raw.replace(/^﻿/, "").trim();
     const m = cleaned.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n?([\s\S]*)$/);
-    if (!m) throw new Error("Agent invalide : frontmatter manquant (--- de tête et de queue requis).");
+    if (!m) throw new Error("Invalid agent: missing frontmatter (opening and closing --- required).");
 
     const meta: Record<string, string> = {};
     for (const line of m[1].split(/\r?\n/)) {
@@ -41,7 +41,7 @@ export function parseAgent(raw: string): AgentDef {
         meta[line.slice(0, idx).trim()] = line.slice(idx + 1).trim();
     }
     const id = meta.id;
-    if (!id) throw new Error("Agent invalide : champ id requis.");
+    if (!id) throw new Error("Invalid agent: id field required.");
 
     return {
         id,

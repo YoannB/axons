@@ -40,15 +40,15 @@ const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
 const DELIMITER = "---";
 
 function fail(file: string, message: string): never {
-    throw new Error(`Article ${file} : ${message}`);
+    throw new Error(`Article ${file}: ${message}`);
 }
 
 // Splits `---\n<yaml>\n---\n<body>`. Both delimiters are mandatory (CRLF tolerated).
 export function splitFrontMatter(raw: string, file: string): { data: unknown; body: string } {
     const lines = raw.replace(/^﻿/, "").split(/\r?\n/);
-    if (lines[0].trim() !== DELIMITER) fail(file, "entête YAML absente (première ligne attendue : ---).");
+    if (lines[0].trim() !== DELIMITER) fail(file, "YAML front matter missing (expected first line: ---).");
     const end = lines.indexOf(DELIMITER, 1);
-    if (end === -1) fail(file, "entête YAML non fermée (--- final manquant).");
+    if (end === -1) fail(file, "YAML front matter not closed (closing --- missing).");
     return {
         data: parseYaml(lines.slice(1, end).join("\n")),
         body: lines
@@ -60,7 +60,7 @@ export function splitFrontMatter(raw: string, file: string): { data: unknown; bo
 
 function requiredString(data: Record<string, unknown>, key: string, file: string): string {
     const value = data[key];
-    if (typeof value !== "string" || !value.trim()) fail(file, `champ « ${key} » requis (texte non vide).`);
+    if (typeof value !== "string" || !value.trim()) fail(file, `field "${key}" required (non-empty text).`);
     return value.trim();
 }
 
@@ -72,22 +72,23 @@ function isValidIsoDate(value: string): boolean {
 
 export function parseArticleFile({ id, locale, raw }: ArticleFile): Article {
     const file = `${id}/${locale}.md`;
-    if (!SLUG.test(id)) fail(file, `identifiant de dossier invalide (attendu : ${SLUG.source}).`);
+    if (!SLUG.test(id)) fail(file, `invalid folder id (expected: ${SLUG.source}).`);
     const { data, body } = splitFrontMatter(raw, file);
-    if (!data || typeof data !== "object" || Array.isArray(data)) fail(file, "l'entête YAML doit être un objet.");
+    if (!data || typeof data !== "object" || Array.isArray(data))
+        fail(file, "the YAML front matter must be an object.");
     const fields = data as Record<string, unknown>;
 
     const slug = requiredString(fields, "slug", file);
-    if (!SLUG.test(slug)) fail(file, `slug « ${slug} » invalide (attendu : ${SLUG.source}).`);
+    if (!SLUG.test(slug)) fail(file, `invalid slug "${slug}" (expected: ${SLUG.source}).`);
     const date = requiredString(fields, "date", file);
-    if (!isValidIsoDate(date)) fail(file, `date « ${date} » invalide (attendu : AAAA-MM-JJ, entre guillemets ou non).`);
+    if (!isValidIsoDate(date)) fail(file, `invalid date "${date}" (expected: YYYY-MM-DD, quoted or not).`);
 
     let image: string | undefined;
     if (fields.image !== undefined) {
         image = requiredString(fields, "image", file);
-        if (!image.startsWith("/")) fail(file, `image « ${image} » doit être un chemin absolu du site (/...).`);
+        if (!image.startsWith("/")) fail(file, `image "${image}" must be an absolute site path (/...).`);
     }
-    if (!body) fail(file, "corps Markdown vide.");
+    if (!body) fail(file, "empty Markdown body.");
 
     return {
         id,
@@ -115,7 +116,7 @@ export function buildCatalog(files: ArticleFile[], served: readonly string[]): A
         const key = `${article.locale}:${article.slug}`;
         const owner = slugOwners.get(key);
         if (owner) {
-            fail(`${article.id}/${article.locale}.md`, `slug « ${article.slug} » déjà utilisé par « ${owner} ».`);
+            fail(`${article.id}/${article.locale}.md`, `slug "${article.slug}" already used by "${owner}".`);
         }
         slugOwners.set(key, article.id);
         const entry = byId.get(article.id) ?? { id: article.id, translations: {} };

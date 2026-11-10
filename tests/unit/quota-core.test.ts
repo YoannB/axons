@@ -60,7 +60,7 @@ function flakyStore(conflicts: number): CasStore & { writes: number } {
 // Inline fixture: any operation on a key containing `match` throws (store failure).
 function brokenOn(match: string, inner: CasStore = createMemoryStore()): CasStore {
     const fail = (key: string) => {
-        if (key.includes(match)) throw new Error(`panne ${key}`);
+        if (key.includes(match)) throw new Error(`outage ${key}`);
     };
     return {
         async read(key) {
@@ -76,28 +76,28 @@ function brokenOn(match: string, inner: CasStore = createMemoryStore()): CasStor
 
 const read = async (store: CasStore, key: string) => (await store.read(key))?.data;
 
-describe("createMemoryStore — sémantique CAS", () => {
-    it("clé absente → null", async () => {
+describe("createMemoryStore — CAS semantics", () => {
+    it("missing key → null", async () => {
         expect(await createMemoryStore().read("k")).toBeNull();
     });
-    it("création conditionnelle (etag null), refusée si la clé existe", async () => {
+    it("conditional create (null etag), refused if the key exists", async () => {
         const s = createMemoryStore();
         expect(await s.write("k", { n: 1 }, null)).toBe(true);
         expect(await s.write("k", { n: 2 }, null)).toBe(false);
         expect(await read(s, "k")).toEqual({ n: 1 });
     });
-    it("mise à jour seulement si l'ETag correspond", async () => {
+    it("update only if the ETag matches", async () => {
         const s = createMemoryStore();
         await s.write("k", { n: 1 }, null);
         const entry = await s.read("k");
-        expect(await s.write("k", { n: 2 }, "périmé")).toBe(false);
+        expect(await s.write("k", { n: 2 }, "stale")).toBe(false);
         expect(await s.write("k", { n: 2 }, entry!.etag)).toBe(true);
         expect(await s.write("k", { n: 3 }, entry!.etag)).toBe(false);
     });
-    it("ETag fourni sur clé absente → refus", async () => {
+    it("ETag given on a missing key → refused", async () => {
         expect(await createMemoryStore().write("k", { n: 1 }, "1")).toBe(false);
     });
-    it("renvoie une copie (aucune mutation partagée)", async () => {
+    it("returns a copy (no shared mutation)", async () => {
         const s = createMemoryStore();
         await s.write("k", { n: 1 }, null);
         const entry = await s.read("k");
@@ -107,19 +107,19 @@ describe("createMemoryStore — sémantique CAS", () => {
 });
 
 describe("casUpdate", () => {
-    it("écrit du premier coup", async () => {
+    it("writes on the first try", async () => {
         const { deps, sleeps } = makeDeps();
         expect(await casUpdate(deps, "k", () => ({ ok: true, next: { n: 1 } }))).toEqual({ ok: true, next: { n: 1 } });
         expect(sleeps).toEqual([]);
     });
-    it("rejoue après un conflit, avec backoff", async () => {
+    it("retries after a conflict, with backoff", async () => {
         const store = flakyStore(2);
         const { deps, sleeps } = makeDeps(store);
         await casUpdate(deps, "k", () => ({ ok: true, next: { n: 1 } }));
         expect(store.writes).toBe(3);
         expect(sleeps).toEqual([5, 10]);
     });
-    it("refus : aucune écriture", async () => {
+    it("denied: no write", async () => {
         const store = flakyStore(0);
         const { deps } = makeDeps(store);
         expect(await casUpdate(deps, "k", () => ({ ok: false, reason: "daily" }))).toEqual({
@@ -128,13 +128,13 @@ describe("casUpdate", () => {
         });
         expect(store.writes).toBe(0);
     });
-    it("étape null : rien à faire", async () => {
+    it("null step: nothing to do", async () => {
         const store = flakyStore(0);
         const { deps } = makeDeps(store);
         expect(await casUpdate(deps, "k", () => null)).toBeNull();
         expect(store.writes).toBe(0);
     });
-    it("contention persistante → QuotaContentionError", async () => {
+    it("persistent contention → QuotaContentionError", async () => {
         const { deps } = makeDeps(flakyStore(99));
         const err = await casUpdate(deps, "k", () => ({
             ok: true,
@@ -146,7 +146,7 @@ describe("casUpdate", () => {
 });
 
 describe("reserve", () => {
-    it("limite 0 (fonctionnalité masquée) : refus sans toucher au store", async () => {
+    it("limit 0 (feature hidden): denied without touching the store", async () => {
         const { deps } = makeDeps(brokenOn("")); // would throw on the slightest access
         expect(await reserve(deps, { ...CFG, dailyLimit: 0 }, "h1", NOON)).toEqual({
             ok: false,
@@ -154,7 +154,7 @@ describe("reserve", () => {
             retryAfter: 43_200,
         });
     });
-    it("accepte, incrémente IP et global, renvoie le ticket", async () => {
+    it("accepts, increments IP and global, returns the ticket", async () => {
         const { deps } = makeDeps();
         expect(await reserve(deps, CFG, "h1", NOON)).toEqual({
             ok: true,
@@ -167,7 +167,7 @@ describe("reserve", () => {
         });
         expect(await read(deps.store, G_KEY)).toEqual({ n: 1 });
     });
-    it("rafale : refus avec Retry-After 60, global intact", async () => {
+    it("burst: denied with Retry-After 60, global untouched", async () => {
         const { deps } = makeDeps();
         await reserve(deps, CFG, "h1", NOON);
         await reserve(deps, CFG, "h1", NOON);
@@ -178,7 +178,7 @@ describe("reserve", () => {
         });
         expect(await read(deps.store, G_KEY)).toEqual({ n: 2 });
     });
-    it("quota quotidien : refus jusqu'à minuit", async () => {
+    it("daily quota: denied until midnight", async () => {
         const { deps } = makeDeps();
         for (let i = 0; i < 3; i += 1) await reserve(deps, CFG, "h1", NOON + i * 60_000);
         expect(await reserve(deps, CFG, "h1", NOON + 5 * 60_000)).toEqual({
@@ -187,7 +187,7 @@ describe("reserve", () => {
             retryAfter: 43_200 - 300,
         });
     });
-    it("plafond global : refus ET crédit IP rendu", async () => {
+    it("global cap: denied AND IP credit returned", async () => {
         const { deps } = makeDeps();
         const cfg = { ...CFG, globalCap: 1 };
         await reserve(deps, cfg, "h0", NOON);
@@ -197,17 +197,17 @@ describe("reserve", () => {
         });
         expect(await read(deps.store, IP_KEY)).toMatchObject({ day: 0, burst: 0 });
     });
-    it("panne sur le global : crédit IP rendu puis erreur propagée", async () => {
+    it("failure on the global: IP credit returned then error propagated", async () => {
         const inner = createMemoryStore();
         const { deps } = makeDeps(brokenOn("/global", inner));
-        await expect(reserve(deps, CFG, "h1", NOON)).rejects.toThrow("panne");
+        await expect(reserve(deps, CFG, "h1", NOON)).rejects.toThrow("outage");
         expect(await read(inner, IP_KEY)).toMatchObject({ day: 0 });
     });
-    it("panne sur le global ET remboursement impossible : journalisé, erreur propagée", async () => {
+    it("failure on the global AND refund impossible: logged, error propagated", async () => {
         const inner = createMemoryStore();
         let writes = 0;
         const store: CasStore = {
-            read: (key) => (key.endsWith("/global") ? Promise.reject(new Error("panne")) : inner.read(key)),
+            read: (key) => (key.endsWith("/global") ? Promise.reject(new Error("outage")) : inner.read(key)),
             write: (key, value, etag) => {
                 writes += 1;
                 // 1st write = IP reservation; the following ones (refund) lose the CAS.
@@ -215,10 +215,10 @@ describe("reserve", () => {
             },
         };
         const { deps, logs } = makeDeps(store);
-        await expect(reserve(deps, CFG, "h1", NOON)).rejects.toThrow("panne");
+        await expect(reserve(deps, CFG, "h1", NOON)).rejects.toThrow("outage");
         expect(logs).toEqual([`[ai:quota] remboursement IP perdu (${IP_KEY})`]);
     });
-    it("concurrence : 20 réservations parallèles d'une IP n'en acceptent que 3", async () => {
+    it("concurrency: 20 parallel reservations from one IP accept only 3", async () => {
         const { deps } = makeDeps();
         deps.maxAttempts = 50;
         const cfg = { ...CFG, perMinute: 100 };
@@ -229,24 +229,24 @@ describe("reserve", () => {
 });
 
 describe("refund", () => {
-    it("échecs remboursés : ni la rafale ni le jour ne bloquent les tentatives suivantes", async () => {
+    it("refunded failures: neither the burst nor the day blocks the next attempts", async () => {
         const { deps } = makeDeps();
         for (let i = 0; i < 5; i += 1) {
             const r = await reserve(deps, CFG, "h1", NOON);
-            if (!r.ok) throw new Error(`tentative ${i} refusée`);
+            if (!r.ok) throw new Error(`attempt ${i} denied`);
             await refund(deps, r.ticket);
         }
         expect(await read(deps.store, IP_KEY)).toMatchObject({ day: 0, burst: 0 });
     });
-    it("rend le crédit IP (jour + rafale) et global", async () => {
+    it("returns the IP credit (day + burst) and global", async () => {
         const { deps } = makeDeps();
         const r = await reserve(deps, CFG, "h1", NOON);
-        if (!r.ok) throw new Error("réservation attendue");
+        if (!r.ok) throw new Error("expected a reservation");
         await refund(deps, r.ticket);
         expect(await read(deps.store, IP_KEY)).toMatchObject({ day: 0, burst: 0 });
         expect(await read(deps.store, G_KEY)).toEqual({ n: 0 });
     });
-    it("clés absentes (purgées) : aucune écriture", async () => {
+    it("missing (purged) keys: no write", async () => {
         const store = flakyStore(0);
         const { deps } = makeDeps(store);
         await refund(deps, { ipKey: IP_KEY, globalKey: G_KEY });
@@ -254,20 +254,20 @@ describe("refund", () => {
     });
 });
 
-describe("withDeadline — borne le temps passé dans le store", () => {
+describe("withDeadline — bounds the time spent in the store", () => {
     afterEach(() => {
         vi.useRealTimers();
     });
 
-    it("rend le résultat du travail s'il finit avant le délai", async () => {
+    it("returns the work's result if it finishes before the deadline", async () => {
         await expect(withDeadline(Promise.resolve("ok"), 1_000)).resolves.toBe("ok");
     });
 
-    it("propage l'erreur du travail s'il échoue avant le délai", async () => {
+    it("propagates the work's error if it fails before the deadline", async () => {
         await expect(withDeadline(Promise.reject(new Error("blobs down")), 1_000)).rejects.toThrow("blobs down");
     });
 
-    it("rejette QuotaTimeoutError si le travail ne répond pas à temps (réessais Blobs silencieux)", async () => {
+    it("rejects with QuotaTimeoutError if the work does not answer in time (silent Blobs retries)", async () => {
         vi.useFakeTimers();
         const pending = withDeadline(new Promise<never>(() => {}), 4_000);
         const assertion = expect(pending).rejects.toBeInstanceOf(QuotaTimeoutError);
@@ -275,10 +275,10 @@ describe("withDeadline — borne le temps passé dans le store", () => {
         await vi.advanceTimersByTimeAsync(4_000);
 
         await assertion;
-        await expect(pending).rejects.toThrow("quota: store sans réponse après 4000 ms");
+        await expect(pending).rejects.toThrow("quota: store did not respond after 4000 ms");
     });
 
-    it("annule le minuteur une fois le travail terminé (aucun rejet tardif)", async () => {
+    it("clears the timer once the work is done (no late rejection)", async () => {
         vi.useFakeTimers();
         await withDeadline(Promise.resolve(1), 4_000);
 
@@ -286,18 +286,18 @@ describe("withDeadline — borne le temps passé dans le store", () => {
     });
 });
 
-describe("bufferResponse — annulation sûre (bug fetch patché par Next + Blobs)", () => {
-    it("reproduit le bug : annuler une branche de tee() ne se résout pas tant que l'autre reste ouverte", async () => {
+describe("bufferResponse — safe cancellation (fetch bug patched by Next + Blobs)", () => {
+    it("reproduces the bug: cancelling one tee() branch does not resolve while the other stays open", async () => {
         const [branch] = new Response("{}").body!.tee();
         const settled = await Promise.race([
-            branch.cancel().then(() => "résolu"),
-            new Promise((resolve) => setTimeout(() => resolve("pendu"), 50)),
+            branch.cancel().then(() => "resolved"),
+            new Promise((resolve) => setTimeout(() => resolve("hung"), 50)),
         ]);
 
-        expect(settled).toBe("pendu");
+        expect(settled).toBe("hung");
     });
 
-    it("une branche de tee() bufferisée s'annule immédiatement", async () => {
+    it("a buffered tee() branch cancels immediately", async () => {
         const [branch] = new Response('{"n":1}').body!.tee();
 
         const res = await bufferResponse(new Response(branch, { status: 404 }));
@@ -305,7 +305,7 @@ describe("bufferResponse — annulation sûre (bug fetch patché par Next + Blob
         await expect(res.body!.cancel()).resolves.toBeUndefined();
     });
 
-    it("conserve statut, en-têtes et contenu", async () => {
+    it("keeps status, headers and body", async () => {
         const [branch] = new Response('{"n":1}').body!.tee();
         const source = new Response(branch, { status: 404, statusText: "Not Found", headers: { etag: '"abc"' } });
 
@@ -317,7 +317,7 @@ describe("bufferResponse — annulation sûre (bug fetch patché par Next + Blob
         expect(await res.json()).toEqual({ n: 1 });
     });
 
-    it.each([204, 304])("statut %i : Response sans corps", async (status) => {
+    it.each([204, 304])("status %i: Response without body", async (status) => {
         const res = await bufferResponse(new Response(null, { status }));
 
         expect(res.status).toBe(status);

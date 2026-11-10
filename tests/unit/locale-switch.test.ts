@@ -3,37 +3,37 @@ import { switchTarget } from "@/lib/locale-switch";
 import { describe, expect, it } from "vitest";
 
 describe("switchTarget", () => {
-    it("garde la clé logique d'une route statique (le routage la traduit)", () => {
+    it("keeps the logical key of a static route (routing translates it)", () => {
         expect(switchTarget("/privacy", null)).toEqual({ pathname: "/privacy" });
     });
 
-    it("prend le paramètre traduit dans l'alternate hreflang de la locale cible", () => {
+    it("takes the translated param from the target locale's hreflang alternate", () => {
         expect(switchTarget("/articles/[slug]", "https://example.com/fr/articles/ecrire-un-article")).toEqual({
             pathname: "/articles/[slug]",
             params: { slug: "ecrire-un-article" },
         });
     });
 
-    it("décode un segment encodé", () => {
+    it("decodes an encoded segment", () => {
         expect(switchTarget("/articles/[slug]", "https://example.com/de/artikel/%C3%BCber")).toEqual({
             pathname: "/articles/[slug]",
             params: { slug: "über" },
         });
     });
 
-    it("sans alternate (pas de traduction), remonte à la route parente", () => {
+    it("without alternate (no translation), goes up to the parent route", () => {
         expect(switchTarget("/articles/[slug]", null)).toEqual({ pathname: "/articles" });
     });
 
-    it("alternate sans segment exploitable : route parente", () => {
+    it("alternate without a usable segment: parent route", () => {
         expect(switchTarget("/articles/[slug]", "https://example.com/")).toEqual({ pathname: "/articles" });
     });
 
-    it("paramètre à la racine : la parente est l'accueil", () => {
+    it("param at the root: the parent is home", () => {
         expect(switchTarget("/[slug]", null)).toEqual({ pathname: "/" });
     });
 
-    it("route dynamique non terminale (non gérée) : accueil", () => {
+    it("non-terminal dynamic route (unsupported): home", () => {
         expect(switchTarget("/[category]/list", "https://example.com/fr/x/list")).toEqual({ pathname: "/" });
     });
 });

@@ -34,31 +34,31 @@ const CFG: QuotaConfig = {
 const NOON = Date.parse("2026-11-05T12:00:00.000Z");
 
 describe("parseNonNegativeInt", () => {
-    it("undefined → repli", () => {
+    it("undefined → fallback", () => {
         expect(parseNonNegativeInt(undefined, 7)).toBe(7);
     });
-    it("chaîne vide/blanche → repli", () => {
+    it("empty/blank string → fallback", () => {
         expect(parseNonNegativeInt("  ", 7)).toBe(7);
     });
-    it("entier valide", () => {
+    it("valid integer", () => {
         expect(parseNonNegativeInt("42", 7)).toBe(42);
     });
-    it("zéro accepté", () => {
+    it("zero accepted", () => {
         expect(parseNonNegativeInt("0", 7)).toBe(0);
     });
-    it("négatif → repli", () => {
+    it("negative → fallback", () => {
         expect(parseNonNegativeInt("-1", 7)).toBe(7);
     });
-    it("décimal → repli", () => {
+    it("decimal → fallback", () => {
         expect(parseNonNegativeInt("2.5", 7)).toBe(7);
     });
-    it("non numérique → repli", () => {
+    it("non-numeric → fallback", () => {
         expect(parseNonNegativeInt("abc", 7)).toBe(7);
     });
 });
 
 describe("readQuotaConfig", () => {
-    it("valeurs par défaut, fail-closed", () => {
+    it("default values, fail-closed", () => {
         expect(readQuotaConfig({}, 3)).toEqual({
             dailyLimit: 3,
             globalCap: DEFAULT_GLOBAL_CAP,
@@ -67,7 +67,7 @@ describe("readQuotaConfig", () => {
             timeZone: "UTC",
         });
     });
-    it("lit les variables et le fail-open explicite", () => {
+    it("reads the variables and the explicit fail-open", () => {
         expect(
             readQuotaConfig(
                 {
@@ -86,38 +86,38 @@ describe("readQuotaConfig", () => {
             timeZone: "Europe/Paris",
         });
     });
-    it("toute autre valeur de fail mode reste closed", () => {
+    it("any other fail mode value stays closed", () => {
         expect(readQuotaConfig({ AI_QUOTA_FAIL_MODE: "OPEN" }, 3).failMode).toBe("closed");
     });
 });
 
-describe("temps et clés", () => {
-    it("quotaDay = jour UTC par défaut", () => {
+describe("time and keys", () => {
+    it("quotaDay = UTC day by default", () => {
         expect(quotaDay(Date.parse("2026-11-05T23:59:59Z"))).toBe("2026-11-05");
     });
-    it("quotaDay suit le fuseau configuré", () => {
+    it("quotaDay follows the configured time zone", () => {
         expect(quotaDay(Date.parse("2026-11-05T23:30:00Z"), "Europe/Paris")).toBe("2026-11-06");
     });
     it("minuteIndex", () => {
         expect(minuteIndex(120_001)).toBe(2);
     });
-    it("secondes jusqu'à minuit UTC", () => {
+    it("seconds until UTC midnight", () => {
         expect(secondsUntilQuotaMidnight(NOON)).toBe(43_200);
     });
-    it("à minuit pile : un jour entier", () => {
+    it("at exactly midnight: a full day", () => {
         expect(secondsUntilQuotaMidnight(Date.parse("2026-11-05T00:00:00Z"))).toBe(86_400);
     });
-    it("dernière milliseconde : au moins 1 s", () => {
+    it("last millisecond: at least 1 s", () => {
         expect(secondsUntilQuotaMidnight(Date.parse("2026-11-05T23:59:59.999Z"))).toBe(1);
     });
-    it("clés préfixées par le jour", () => {
+    it("keys prefixed by the day", () => {
         expect(ipKey("2026-11-05", "abc")).toBe("2026-11-05/ip/abc");
         expect(globalKey("2026-11-05")).toBe("2026-11-05/global");
     });
 });
 
 describe("staleDays", () => {
-    it("garde les jours passés, ignore aujourd'hui, le futur et les noms étrangers", () => {
+    it("keeps past days, ignores today, the future and foreign names", () => {
         expect(
             staleDays(["2026-11-03", "2026-11-04/", "2026-11-05", "2026-11-06", "misc", "2026-1-1"], "2026-11-05"),
         ).toEqual(["2026-11-03", "2026-11-04"]);
@@ -125,112 +125,112 @@ describe("staleDays", () => {
 });
 
 describe("normalizeIp", () => {
-    it("IPv4 inchangée (trim)", () => {
+    it("IPv4 unchanged (trim)", () => {
         expect(normalizeIp(" 203.0.113.7 ")).toBe("203.0.113.7");
     });
-    it("IPv4 mappée en IPv6 → IPv4", () => {
+    it("IPv4-mapped IPv6 → IPv4", () => {
         expect(normalizeIp("::FFFF:203.0.113.7")).toBe("203.0.113.7");
     });
-    it("IPv6 complète → préfixe /64", () => {
+    it("full IPv6 → /64 prefix", () => {
         expect(normalizeIp("2001:0db8:0000:0042:aaaa:bbbb:cccc:dddd")).toBe("2001:db8:0:42::/64");
     });
-    it("IPv6 compressée, zone retirée", () => {
+    it("compressed IPv6, zone removed", () => {
         expect(normalizeIp("2001:DB8::1%eth0")).toBe("2001:db8:0:0::/64");
     });
-    it("IPv6 commençant par ::", () => {
+    it("IPv6 starting with ::", () => {
         expect(normalizeIp("::1")).toBe("0:0:0:0::/64");
     });
-    it("IPv6 avec IPv4 embarquée", () => {
+    it("IPv6 with embedded IPv4", () => {
         expect(normalizeIp("64:ff9b:1:2::192.0.2.1")).toBe("64:ff9b:1:2::/64");
     });
-    it("deux '::' → invalide, renvoyée telle quelle", () => {
+    it("two '::' → invalid, returned as is", () => {
         expect(normalizeIp("1::2::3")).toBe("1::2::3");
     });
-    it("'::' sans groupe manquant → invalide", () => {
+    it("'::' with no missing group → invalid", () => {
         expect(normalizeIp("1:2:3:4:5:6:7:8::")).toBe("1:2:3:4:5:6:7:8::");
     });
-    it("trop peu de groupes sans '::' → invalide", () => {
+    it("too few groups without '::' → invalid", () => {
         expect(normalizeIp("1:2:3")).toBe("1:2:3");
     });
-    it("groupe non hexadécimal → invalide", () => {
+    it("non-hexadecimal group → invalid", () => {
         expect(normalizeIp("gggg::1")).toBe("gggg::1");
     });
-    it("valeur non IP (dev) inchangée", () => {
+    it("non-IP value (dev) unchanged", () => {
         expect(normalizeIp("local")).toBe("local");
     });
 });
 
 describe("hashIp", () => {
     const SECRET = "s".repeat(32);
-    it("déterministe, 22 caractères base64url, sans l'IP en clair", () => {
+    it("deterministic, 22 base64url characters, without the IP in clear", () => {
         const h = hashIp("203.0.113.7", SECRET);
         expect(h).toBe(hashIp("203.0.113.7", SECRET));
         expect(h).toMatch(/^[A-Za-z0-9_-]{22}$/);
         expect(h).not.toContain("203");
     });
-    it("dépend du secret", () => {
+    it("depends on the secret", () => {
         expect(hashIp("203.0.113.7", "a".repeat(32))).not.toBe(hashIp("203.0.113.7", "b".repeat(32)));
     });
-    it("deux adresses du même /64 partagent l'identité", () => {
+    it("two addresses in the same /64 share the identity", () => {
         expect(hashIp("2001:db8::1", SECRET)).toBe(hashIp("2001:db8::ffff:2", SECRET));
     });
 });
 
 describe("parseIpState / parseCount", () => {
-    it("absent → zéro", () => {
+    it("missing → zero", () => {
         expect(parseIpState(undefined)).toEqual({ day: 0, win: 0, burst: 0 });
     });
-    it("non objet → zéro", () => {
+    it("non-object → zero", () => {
         expect(parseIpState("x")).toEqual({ day: 0, win: 0, burst: 0 });
     });
-    it("valide", () => {
+    it("valid", () => {
         expect(parseIpState({ day: 2, win: 9, burst: 1 })).toEqual({
             day: 2,
             win: 9,
             burst: 1,
         });
     });
-    it("champs corrompus → zéro", () => {
+    it("corrupted fields → zero", () => {
         expect(parseIpState({ day: -3, win: "9", burst: 1.5 })).toEqual({
             day: 0,
             win: 0,
             burst: 0,
         });
     });
-    it("compteur absent → 0", () => {
+    it("missing counter → 0", () => {
         expect(parseCount(null)).toBe(0);
     });
-    it("compteur non objet → 0", () => {
+    it("non-object counter → 0", () => {
         expect(parseCount(5)).toBe(0);
     });
-    it("compteur valide", () => {
+    it("valid counter", () => {
         expect(parseCount({ n: 4 })).toBe(4);
     });
-    it("compteur corrompu → 0", () => {
+    it("corrupted counter → 0", () => {
         expect(parseCount({ n: "4" })).toBe(0);
     });
 });
 
 describe("decideIp", () => {
-    it("accepte et incrémente jour + rafale", () => {
+    it("accepts and increments day + burst", () => {
         expect(decideIp({ day: 1, win: 5, burst: 1 }, 5, CFG)).toEqual({
             ok: true,
             next: { day: 2, win: 5, burst: 2 },
         });
     });
-    it("refuse la rafale dans la même minute", () => {
+    it("denies the burst within the same minute", () => {
         expect(decideIp({ day: 1, win: 5, burst: 2 }, 5, CFG)).toEqual({
             ok: false,
             reason: "burst",
         });
     });
-    it("nouvelle minute : rafale remise à zéro", () => {
+    it("new minute: burst reset to zero", () => {
         expect(decideIp({ day: 1, win: 5, burst: 2 }, 6, CFG)).toEqual({
             ok: true,
             next: { day: 2, win: 6, burst: 1 },
         });
     });
-    it("refuse au quota quotidien", () => {
+    it("denies at the daily quota", () => {
         expect(decideIp({ day: 3, win: 1, burst: 0 }, 6, CFG)).toEqual({
             ok: false,
             reason: "daily",
@@ -239,49 +239,49 @@ describe("decideIp", () => {
 });
 
 describe("decideGlobal", () => {
-    it("accepte sous le plafond", () => {
+    it("accepts under the cap", () => {
         expect(decideGlobal(9, CFG)).toEqual({ ok: true, next: 10 });
     });
-    it("refuse au plafond", () => {
+    it("denies at the cap", () => {
         expect(decideGlobal(10, CFG)).toEqual({ ok: false, reason: "global" });
     });
 });
 
-describe("remboursements", () => {
-    it("rend le crédit du jour et la place de rafale", () => {
+describe("refunds", () => {
+    it("returns the day credit and the burst slot", () => {
         expect(refundIpState({ day: 2, win: 5, burst: 2 })).toEqual({
             day: 1,
             win: 5,
             burst: 1,
         });
     });
-    it("jamais négatif (IP)", () => {
+    it("never negative (IP)", () => {
         expect(refundIpState({ day: 0, win: 0, burst: 0 })).toEqual({
             day: 0,
             win: 0,
             burst: 0,
         });
     });
-    it("compteur global", () => {
+    it("global counter", () => {
         expect(refundCount(3)).toBe(2);
     });
-    it("jamais négatif (global)", () => {
+    it("never negative (global)", () => {
         expect(refundCount(0)).toBe(0);
     });
 });
 
 describe("casBackoffMs / retryAfterFor", () => {
-    it("exponentiel avec gigue", () => {
+    it("exponential with jitter", () => {
         expect(casBackoffMs(0, 0)).toBe(5);
         expect(casBackoffMs(2, 0.5)).toBe(40);
     });
-    it("borné à 250 ms", () => {
+    it("capped at 250 ms", () => {
         expect(casBackoffMs(10, 0.99)).toBe(250);
     });
-    it("rafale : 60 s", () => {
+    it("burst: 60 s", () => {
         expect(retryAfterFor("burst", NOON)).toBe(60);
     });
-    it("quota du jour : jusqu'à minuit UTC", () => {
+    it("daily quota: until UTC midnight", () => {
         expect(retryAfterFor("daily", NOON)).toBe(43_200);
         expect(retryAfterFor("global", NOON)).toBe(43_200);
         // 12:00 UTC = 13:00 in Paris (CET, November): 11 h until the Paris midnight.

@@ -4,7 +4,7 @@ import "server-only";
 
 let cached: ReturnType<typeof createOpenRouter> | null = null;
 export function openrouterClient() {
-    if (!SERVER_ENV.openrouterApiKey) throw new Error("OPENROUTER_API_KEY manquante.");
+    if (!SERVER_ENV.openrouterApiKey) throw new Error("OPENROUTER_API_KEY is missing.");
     cached ??= createOpenRouter({ apiKey: SERVER_ENV.openrouterApiKey });
     return cached;
 }

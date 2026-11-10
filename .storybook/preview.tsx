@@ -35,7 +35,7 @@ const preview: Preview = {
         theme: {
             name: "Theme",
             description:
-                "Thème applicatif (pilote data-theme sur <html> du canvas => les tokens CSS ET les portails MUI suivent ; ne change pas les hex fixes de theme.ts) ",
+                "App theme (drives data-theme on the canvas <html> => CSS tokens AND MUI portals follow; does not change the fixed hex values of theme.ts) ",
             defaultValue: "dark",
             toolbar: {
                 icon: "contrast",

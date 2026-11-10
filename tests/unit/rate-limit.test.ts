@@ -12,7 +12,7 @@ async function loadRateLimit() {
     return await import("@/lib/ai/rate-limit");
 }
 
-describe("hitRateLimit — fenêtre glissante par IP", () => {
+describe("hitRateLimit — sliding window per IP", () => {
     beforeEach(() => {
         vi.useFakeTimers();
         vi.setSystemTime(new Date("2026-10-20T00:00:00.000Z"));
@@ -22,13 +22,13 @@ describe("hitRateLimit — fenêtre glissante par IP", () => {
         vi.useRealTimers();
     });
 
-    it("retourne true pour une IP jamais vue (!b)", async () => {
+    it("returns true for a never-seen IP (!b)", async () => {
         const { hitRateLimit } = await loadRateLimit();
 
         expect(hitRateLimit("203.0.113.10")).toBe(true);
     });
 
-    it("retourne true tant que le compteur est inférieur au maximum (b.count < MAX_PER_WINDOW)", async () => {
+    it("returns true while the counter is below the maximum (b.count < MAX_PER_WINDOW)", async () => {
         const { hitRateLimit } = await loadRateLimit();
         const ip = "203.0.113.11";
 
@@ -37,7 +37,7 @@ describe("hitRateLimit — fenêtre glissante par IP", () => {
         }
     });
 
-    it("retourne false lorsque le maximum est atteint (b.count >= MAX_PER_WINDOW)", async () => {
+    it("returns false when the maximum is reached (b.count >= MAX_PER_WINDOW)", async () => {
         const { hitRateLimit } = await loadRateLimit();
         const ip = "203.0.113.12";
 
@@ -48,7 +48,7 @@ describe("hitRateLimit — fenêtre glissante par IP", () => {
         expect(hitRateLimit(ip)).toBe(false);
     });
 
-    it("ne réinitialise pas exactement à la borne now > resetAt (false)", async () => {
+    it("does not reset exactly at the bound now > resetAt (false)", async () => {
         const { hitRateLimit } = await loadRateLimit();
         const ip = "203.0.113.13";
 
@@ -61,7 +61,7 @@ describe("hitRateLimit — fenêtre glissante par IP", () => {
         expect(hitRateLimit(ip)).toBe(false);
     });
 
-    it("réinitialise le bucket dès que la fenêtre est dépassée (now > resetAt true)", async () => {
+    it("resets the bucket as soon as the window has passed (now > resetAt true)", async () => {
         const { hitRateLimit } = await loadRateLimit();
         const ip = "203.0.113.14";
 
@@ -74,7 +74,7 @@ describe("hitRateLimit — fenêtre glissante par IP", () => {
         expect(hitRateLimit(ip)).toBe(true);
     });
 
-    it("maintient un bucket indépendant par IP", async () => {
+    it("keeps an independent bucket per IP", async () => {
         const { hitRateLimit } = await loadRateLimit();
         const firstIp = "203.0.113.15";
         const secondIp = "203.0.113.16";
@@ -88,7 +88,7 @@ describe("hitRateLimit — fenêtre glissante par IP", () => {
     });
 });
 
-describe("hitRateLimit — mémoire bornée (MAX_BUCKETS)", () => {
+describe("hitRateLimit — bounded memory (MAX_BUCKETS)", () => {
     beforeEach(() => {
         vi.useFakeTimers();
         vi.setSystemTime(new Date("2026-10-20T00:00:00.000Z"));
@@ -103,7 +103,7 @@ describe("hitRateLimit — mémoire bornée (MAX_BUCKETS)", () => {
         expect(hit(ip)).toBe(false);
     }
 
-    it("Map pleine, buckets expirés : la purge libère la place sans évincer de bucket actif", async () => {
+    it("full Map, expired buckets: the purge frees room without evicting an active bucket", async () => {
         const { hitRateLimit } = await loadRateLimit();
 
         exhaust(hitRateLimit, "blocked");
@@ -117,7 +117,7 @@ describe("hitRateLimit — mémoire bornée (MAX_BUCKETS)", () => {
         expect(hitRateLimit("ip-0")).toBe(false);
     });
 
-    it("Map pleine sans bucket expiré : évince le plus ancien (ip-0)", async () => {
+    it("full Map without expired bucket: evicts the oldest (ip-0)", async () => {
         const { hitRateLimit } = await loadRateLimit();
 
         exhaust(hitRateLimit, "ip-oldest");
@@ -128,7 +128,7 @@ describe("hitRateLimit — mémoire bornée (MAX_BUCKETS)", () => {
         expect(hitRateLimit("ip-oldest")).toBe(true);
     });
 
-    it("Map pleine : une IP déjà connue ne déclenche pas d'éviction", async () => {
+    it("full Map: an already known IP does not trigger eviction", async () => {
         const { hitRateLimit } = await loadRateLimit();
 
         exhaust(hitRateLimit, "known");
@@ -138,13 +138,13 @@ describe("hitRateLimit — mémoire bornée (MAX_BUCKETS)", () => {
     });
 });
 
-describe("clientIpFrom — résolution de l'IP client", () => {
+describe("clientIpFrom — client IP resolution", () => {
     async function ipOf(init: Record<string, string>) {
         const { clientIpFrom } = await loadRateLimit();
         return clientIpFrom(new Headers(init));
     }
 
-    it("privilégie x-nf-client-connection-ip (posé par Netlify)", async () => {
+    it("prefers x-nf-client-connection-ip (set by Netlify)", async () => {
         expect(
             await ipOf({
                 "x-nf-client-connection-ip": " 198.51.100.7 ",
@@ -153,7 +153,7 @@ describe("clientIpFrom — résolution de l'IP client", () => {
         ).toBe("198.51.100.7");
     });
 
-    it("ignore un x-nf-client-connection-ip vide et se replie sur x-forwarded-for", async () => {
+    it("ignores an empty x-nf-client-connection-ip and falls back to x-forwarded-for", async () => {
         expect(
             await ipOf({
                 "x-nf-client-connection-ip": "  ",
@@ -162,7 +162,7 @@ describe("clientIpFrom — résolution de l'IP client", () => {
         ).toBe("203.0.113.1");
     });
 
-    it("retourne 'local' sans en-tête exploitable", async () => {
+    it("returns 'local' without a usable header", async () => {
         expect(await ipOf({})).toBe("local");
         expect(await ipOf({ "x-forwarded-for": " , 10.0.0.1" })).toBe("local");
     });

@@ -11,7 +11,7 @@ export function resolveTimeZone(raw: string | undefined): string {
     try {
         new Intl.DateTimeFormat("en-US", { timeZone: tz });
     } catch {
-        throw new Error(`NEXT_PUBLIC_AI_QUOTA_TZ invalide : ${JSON.stringify(tz)} n'est pas un fuseau IANA.`);
+        throw new Error(`Invalid NEXT_PUBLIC_AI_QUOTA_TZ: ${JSON.stringify(tz)} is not an IANA time zone.`);
     }
     return tz;
 }

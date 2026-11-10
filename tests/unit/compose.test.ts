@@ -39,14 +39,14 @@ const skillWith = (resources: { relPath: string; content: string }[]): LoadedSki
     resources,
 });
 
-describe("composeRun — prompt obligatoire", () => {
-    it("lève sur prompt vide (branche !user)", () => {
+describe("composeRun — required prompt", () => {
+    it("throws on an empty prompt (!user branch)", () => {
         expect(() => composeRun({ prompt: "" })).toThrow(/prompt/);
     });
-    it("lève sur prompt whitespace seulement", () => {
+    it("throws on a whitespace-only prompt", () => {
         expect(() => composeRun({ prompt: "   \n " })).toThrow(/prompt/);
     });
-    it("prompt seul => message user seul + DEFAULTS (branche !system, src undefined)", () => {
+    it("prompt only => user message only + DEFAULTS (!system branch, src undefined)", () => {
         const c = composeRun({ prompt: " hi " });
         expect(c.messages).toEqual([{ role: "user", content: "hi" }]);
         expect(c).toMatchObject({
@@ -58,8 +58,8 @@ describe("composeRun — prompt obligatoire", () => {
     });
 });
 
-describe("composeRun — sections du system", () => {
-    it("agent seul => section Agent profile rendue, params de l'agent", () => {
+describe("composeRun — system sections", () => {
+    it("agent only => Agent profile section rendered, agent params", () => {
         const c = composeRun({
             prompt: "t",
             agent: AGENT,
@@ -77,7 +77,7 @@ describe("composeRun — sections du system", () => {
             timeoutMs: 9000,
         });
     });
-    it("skill seul => section Skill procedure (+ resources absentes => pas de section resources)", () => {
+    it("skill only => Skill procedure section (+ no resources => no resources section)", () => {
         const c = composeRun({
             prompt: "t",
             skill: skillWith([]),
@@ -92,7 +92,7 @@ describe("composeRun — sections du system", () => {
             timeoutMs: 12000,
         });
     });
-    it("agent+skill => les deux sections, ordre agent puis skill", () => {
+    it("agent+skill => both sections, agent then skill", () => {
         const c = composeRun({
             prompt: "t",
             agent: AGENT,
@@ -102,7 +102,7 @@ describe("composeRun — sections du system", () => {
         const sys = c.messages[0]!.content;
         expect(sys.indexOf("## Agent profile")).toBeLessThan(sys.indexOf("## Skill procedure"));
     });
-    it("resources presentes => section Skill resources serialisee", () => {
+    it("resources present => Skill resources section serialized", () => {
         const c = composeRun({
             prompt: "t",
             skill: skillWith([{ relPath: "tool.json", content: "{}" }]),
@@ -112,12 +112,12 @@ describe("composeRun — sections du system", () => {
     });
 });
 
-describe("composeRun — filtre de ressources (tolérant)", () => {
+describe("composeRun — resource filter (tolerant)", () => {
     const skill = skillWith([
         { relPath: "a.md", content: "A" },
         { relPath: "b.json", content: "B" },
     ]);
-    it("includeResources restreint aux relPaths demandes", () => {
+    it("includeResources restricted to the requested relPaths", () => {
         const c = composeRun({
             prompt: "t",
             skill,
@@ -128,7 +128,7 @@ describe("composeRun — filtre de ressources (tolérant)", () => {
         expect(sys).toContain("### Resource: b.json");
         expect(sys).not.toContain("### Resource: a.md");
     });
-    it("chemin demande mais absent => ignore sans crash (branche filter)", () => {
+    it("requested but missing path => ignored without crash (filter branch)", () => {
         const c = composeRun({
             prompt: "t",
             skill,
@@ -137,7 +137,7 @@ describe("composeRun — filtre de ressources (tolérant)", () => {
         });
         expect(c.messages[0]!.content).not.toContain("## Skill resources");
     });
-    it("includeResources absent => toutes les ressources (branche !include)", () => {
+    it("includeResources absent => all resources (!include branch)", () => {
         const c = composeRun({
             prompt: "t",
             skill,
@@ -149,8 +149,8 @@ describe("composeRun — filtre de ressources (tolérant)", () => {
     });
 });
 
-describe("composeRun — precedence des params (par source entiere)", () => {
-    it("agent present => ses params gagnent sur le skill (branche src=agent)", () => {
+describe("composeRun — param precedence (per whole source)", () => {
+    it("agent present => its params win over the skill (src=agent branch)", () => {
         const c = composeRun({
             prompt: "t",
             agent: AGENT,
@@ -160,7 +160,7 @@ describe("composeRun — precedence des params (par source entiere)", () => {
         expect(c.model).toBe("acme/pro");
         expect(c.temperature).toBe(0.5);
     });
-    it("sans agent, skill present => params du skill (branche src=skill)", () => {
+    it("no agent, skill present => skill params (src=skill branch)", () => {
         const c = composeRun({
             prompt: "t",
             skill: skillWith([]),
@@ -171,7 +171,7 @@ describe("composeRun — precedence des params (par source entiere)", () => {
 });
 
 describe("composeRun — substitution inputs", () => {
-    it("les placeholders inconnus deviennent vides dans agent ET skill (?? '')", () => {
+    it("unknown placeholders become empty in agent AND skill (?? '')", () => {
         const c = composeRun({
             prompt: "t",
             agent: AGENT,
