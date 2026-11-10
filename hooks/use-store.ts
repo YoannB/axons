@@ -22,6 +22,9 @@ export function useThemeMode() {
 export function useConsent() {
     return useAppState().consent;
 }
+export function useConsentPromptOpen() {
+    return useAppState().consentPromptOpen;
+}
 export function useUsage() {
     return useAppState().usage;
 }

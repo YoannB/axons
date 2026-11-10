@@ -4,6 +4,7 @@ import { VideoEmbed } from "@/components/content/VideoEmbed";
 import { AdSlot, Icon, Section } from "@/components/ui";
 import { AD_SIZES, HERO_VIDEO_ID, SEO_RESOURCES } from "@/constants/site";
 import { useDetachOnScroll } from "@/hooks/use-detach-on-scroll";
+import { useFooterClearance } from "@/hooks/use-footer-clearance";
 import { useAppState, useStore } from "@/hooks/use-store";
 import { cn } from "@/lib/cn";
 import { useTranslations } from "next-intl";
@@ -28,6 +29,8 @@ export function SeoResources() {
     const store = useStore();
     const { videoDismissed } = useAppState();
     const pinned = mode === "fixed" && !videoDismissed;
+    // The pinned player rises above the footer instead of covering its links (bottom-right).
+    useFooterClearance(pinned);
     const articles = SEO_RESOURCES;
     return (
         <Section

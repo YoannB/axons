@@ -23,6 +23,8 @@ export { Logo } from "./Logo";
 export { ResetLimiterButton } from "./ResetLimiterButton";
 export { ScrollCue } from "./ScrollCue";
 export { Section } from "./Section";
+export { Tabs } from "./Tabs";
+export { Terminal } from "./Terminal";
 export { Textarea } from "./Textarea";
 export { ThemeToggle } from "./ThemeToggle";
 export { Toast } from "./Toast";

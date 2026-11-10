@@ -166,3 +166,46 @@ export interface AppIconProps {
     animated?: boolean;
     className?: string;
 }
+
+export interface AppTabItem {
+    id: string;
+    label: string;
+    /** Already-localized URL: the tab is a real link (direct URL, back/forward work). Omit for a panel switch. */
+    href?: string;
+    icon?: ReactNode;
+    /** Shows a close button (calls `onClose`). Keep the home tab pinned by leaving it false. */
+    closable?: boolean;
+}
+export interface AppTabsProps {
+    items: readonly AppTabItem[];
+    activeId: string;
+    /** Accessible name of the tab strip (a <nav> for links, a group for panel switches). */
+    ariaLabel: string;
+    /** Called for tabs WITHOUT href. */
+    onSelect?: (id: string) => void;
+    onClose?: (id: string) => void;
+    /** Accessible label of the close buttons, e.g. (label) => `Close ${label}`. */
+    closeLabel?: (label: string) => string;
+    className?: string;
+}
+export type AppTerminalLineKind = "command" | "output" | "success" | "error" | "link";
+export interface AppTerminalLine {
+    id: string;
+    text: string;
+    kind?: AppTerminalLineKind;
+    /** For kind "link": opened in a new tab (rel noopener). */
+    href?: string;
+}
+export interface AppTerminalProps {
+    lines: readonly AppTerminalLine[];
+    /** Accessible name of the log region. */
+    ariaLabel: string;
+    title?: ReactNode;
+    /** Shows a blinking cursor after the last line (a sequence is still running). */
+    running?: boolean;
+    /** Toolbar on the right of the title bar (run / reset buttons...). */
+    actions?: ReactNode;
+    /** Max visible lines before the body scrolls (default 12). */
+    rows?: number;
+    className?: string;
+}

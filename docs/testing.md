@@ -31,7 +31,9 @@ the AI button, or Playwright strict mode fails BEFORE the click. Headless Chromi
 language-independent structural asserts stay on `/` and use `toBeVisible()` (never a hardcoded FR
 substring); asserts that need an exact FR label navigate to `/fr` (forced locale).
 CI serves the PRODUCTION build (`next start`, `playwright.config.ts` switches on `CI`) with
-`AI_QUOTA_FAIL_MODE=open` and `NEXT_PUBLIC_AI_DAILY_LIMIT=3` set in `ci.yml`: under `next dev`
+`AI_QUOTA_FAIL_MODE=open`, `NEXT_PUBLIC_AI_DAILY_LIMIT=3`, a placeholder `OPENROUTER_API_KEY`
+(AI layer on, never called) and `NEXT_PUBLIC_ADS_ENABLED=true` (cookie banner present) set in
+`ci.yml`: under `next dev`
 the on-demand compilation made specs time out, and a missing daily limit (0) disables the AI
 button and makes the server quota answer 429 to every call. Pull requests run the `chromium`
 project only; nightly/manual runs add `mobile`.

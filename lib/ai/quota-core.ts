@@ -14,7 +14,7 @@ import {
     refundCount,
     refundIpState,
     retryAfterFor,
-    utcDay,
+    quotaDay,
     type Decision,
     type QuotaConfig,
     type QuotaDenyReason,
@@ -122,12 +122,12 @@ export async function reserve(deps: CasDeps, cfg: QuotaConfig, ipHash: string, n
     const deny = (reason: QuotaDenyReason): ReserveOutcome => ({
         ok: false,
         reason,
-        retryAfter: retryAfterFor(reason, now),
+        retryAfter: retryAfterFor(reason, now, cfg.timeZone),
     });
     // Feature disabled (limit 0 = buttons hidden client-side): nothing to read.
     if (cfg.dailyLimit <= 0) return deny("daily");
 
-    const day = utcDay(now);
+    const day = quotaDay(now, cfg.timeZone);
     const minute = minuteIndex(now);
     const ticket: QuotaTicket = {
         ipKey: ipKey(day, ipHash),

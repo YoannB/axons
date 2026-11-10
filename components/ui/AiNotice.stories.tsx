@@ -17,7 +17,7 @@ const meta = {
     argTypes: { items: { control: "object", description: "Lignes déjà traduites." } },
     args: {
         items: [
-            "Votre texte est envoyé à un fournisseur d'IA tiers (OpenRouter). Ce site ne le conserve pas.",
+            "Votre texte est envoyé au fournisseur d'IA tiers (OpenRouter) et au modèle qu'il sollicite, qui peuvent le conserver selon leurs propres conditions. Ce site, lui, ne le conserve pas.",
             "Les modèles gratuits peuvent être lents ou imprécis : si le résultat vous semble faux, relancez simplement.",
             "Une réponse peut prendre jusqu'à 30 secondes quand le modèle gratuit est saturé.",
         ],

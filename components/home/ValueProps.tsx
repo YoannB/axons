@@ -1,6 +1,6 @@
 "use client";
 import { Button, Card, Icon } from "@/components/ui";
-import { SITE_NAME } from "@/constants/site";
+import { AI_ENABLED, SITE_NAME } from "@/constants/site";
 import { useAiCall } from "@/hooks/use-ai-call";
 import { useTranslations } from "next-intl";
 
@@ -22,21 +22,24 @@ export function ValueProps() {
                     </li>
                 ))}
             </ul>
-            <div className="valueprops__cta">
-                <h4>{t("ctaTitle")}</h4>
-                <p className="muted">{t("ctaText")}</p>
-                <div className="valueprops__cta-actions">
-                    <Button
-                        variant="primary"
-                        loading={pending}
-                        disabled={!canCall}
-                        onClick={() => call()}
-                        iconLeft={<Icon name="sparkles" size={16} animated />}
-                    >
-                        {t("ctaButton")}
-                    </Button>
+            {/* AI call-to-action: absent when the AI layer is off (no key / limit 0). */}
+            {AI_ENABLED ? (
+                <div className="valueprops__cta">
+                    <h4>{t("ctaTitle")}</h4>
+                    <p className="muted">{t("ctaText")}</p>
+                    <div className="valueprops__cta-actions">
+                        <Button
+                            variant="primary"
+                            loading={pending}
+                            disabled={!canCall}
+                            onClick={() => call()}
+                            iconLeft={<Icon name="sparkles" size={16} animated />}
+                        >
+                            {t("ctaButton")}
+                        </Button>
+                    </div>
                 </div>
-            </div>
+            ) : null}
         </Card>
     );
 }

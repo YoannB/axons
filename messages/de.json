@@ -70,52 +70,28 @@
         "testAi": "KI testen",
         "resetDone": "Begrenzer zurückgesetzt.",
         "runSkill": "Skill ausführen (Demo)",
-        "elapsed": "{seconds} s"
+        "elapsed": "{seconds} s",
+        "tabsLabel": "Bereiche",
+        "tabTerminal": "Terminal",
+        "tabOutput": "Ausgabe",
+        "tabProblems": "Probleme",
+        "terminalTitle": "Skriptbasierte Demo",
+        "terminalRun": "Demo starten",
+        "terminalReset": "Zurücksetzen",
+        "outputEmpty": "Noch keine Ausgabe.",
+        "problemsEmpty": "Keine Probleme gefunden.",
+        "terminalLines": [
+            "npm run demo",
+            "Konfiguration wird gelesen…",
+            "Die 6 Sprachen werden vorbereitet…",
+            "Statische Seiten werden erzeugt…",
+            "Fertig: simulierte Sequenz, kein KI-Aufruf."
+        ]
     },
     "aiNotice": {
-        "thirdParty": "Ihr Text wird an einen externen KI-Anbieter ({provider}) gesendet. Diese Website speichert ihn nicht.",
+        "thirdParty": "Ihr Text wird an den externen KI-Anbieter ({provider}) und das von ihm genutzte Modell gesendet, die ihn nach ihren eigenen Bedingungen speichern können. Diese Website selbst speichert ihn nicht.",
         "quality": "Kostenlose Modelle können langsam oder ungenau sein: Wirkt das Ergebnis falsch, starten Sie einfach erneut.",
         "wait": "Eine Antwort kann bis zu 30 Sekunden dauern, wenn das kostenlose Modell ausgelastet ist."
-    },
-    "textTools": {
-        "title": "Textwerkzeuge",
-        "intro": "Wort-Diff, Ähnlichkeitswert und gekoppelte Editoren: generische Bausteine für jedes Umschreibwerkzeug. Diese Demo ruft keine KI auf: Bearbeiten Sie Ihren Text, der Diff aktualisiert sich live.",
-        "presetsLabel": "Beispiele",
-        "presets": {
-            "typo": "Tippfehler",
-            "punctuation": "Zeichensetzung"
-        },
-        "sourceLabel": "Ihr Text",
-        "sourcePlaceholder": "Wählen Sie ein Beispiel oder geben Sie einen Text ein…",
-        "resultLabel": "Unterschiede zum Referenztext",
-        "resultPlaceholder": "Wählen Sie ein Beispiel, um es mit seinem Referenztext zu vergleichen.",
-        "reset": "Zurücksetzen",
-        "legend": {
-            "insert": "Hinzugefügt",
-            "replace": "Korrigiert",
-            "delete": "Entfernt"
-        },
-        "similarity": "Ähnlichkeit",
-        "bands": {
-            "perfect": "Identisch",
-            "great": "Wenige Änderungen",
-            "good": "Mäßige Änderungen",
-            "low": "Viele Änderungen"
-        },
-        "confirmTitle": "Text verwerfen?",
-        "confirmMessage": "Ihre Änderungen gehen verloren.",
-        "confirmOk": "Verwerfen",
-        "confirmCancel": "Weiter bearbeiten",
-        "examples": {
-            "typo": {
-                "before": "Danke für ihr Feedback, ich schicke ihnen das korigierte Dokument morgen früh.",
-                "after": "Danke für Ihr Feedback, ich schicke Ihnen das korrigierte Dokument morgen früh."
-            },
-            "punctuation": {
-                "before": "Hallo Maria ich melde mich wegen des Angebots ist es noch gültig",
-                "after": "Hallo Maria, ich melde mich wegen des Angebots: Ist es noch gültig?"
-            }
-        }
     },
     "seo": {
         "title": "Anleitungen und Tutorials",
@@ -197,7 +173,8 @@
         "accept": "Akzeptieren",
         "refuse": "Ablehnen",
         "settings": "Einstellungen",
-        "link": "Mehr erfahren"
+        "link": "Mehr erfahren",
+        "manage": "Cookies verwalten"
     },
     "theme": {
         "light": "Hell",

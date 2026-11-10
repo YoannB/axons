@@ -19,6 +19,8 @@ export interface ToastItem {
 export interface AppState {
     themeMode: ThemeMode;
     consent: Consent | null;
+    // In-memory: the visitor re-opened the consent banner ("Manage cookies"). Never persisted.
+    consentPromptOpen: boolean;
     usage: UsageState;
     aiPending: boolean;
     // Date.now() when the current AI call started (null when idle). Set by setAiPending in the
@@ -36,6 +38,7 @@ export interface AppState {
 const SERVER_DEFAULT: AppState = {
     themeMode: "system",
     consent: null,
+    consentPromptOpen: false,
     usage: { date: todayISO(), count: 0 },
     aiPending: false,
     aiPendingSince: null,
@@ -74,6 +77,7 @@ export interface Store {
     subscribe(cb: () => void): () => void;
     setThemeMode(m: ThemeMode): void;
     setConsent(c: Consent | null): void;
+    reopenConsent(): void;
     incrementUsage(): void;
     resetUsage(): void;
     setAiPending(v: boolean): void;
@@ -101,7 +105,8 @@ export function createStore(init: Partial<AppState>): Store {
             };
         },
         setThemeMode: (m) => set({ themeMode: m }),
-        setConsent: (c) => set({ consent: c }),
+        setConsent: (c) => set({ consent: c, consentPromptOpen: false }),
+        reopenConsent: () => set({ consentPromptOpen: true }),
         incrementUsage: () => {
             const u = normalizeUsage(state.usage);
             const next = { date: u.date, count: u.count + 1 };

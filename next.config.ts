@@ -1,47 +1,25 @@
 import type { NextConfig } from "next";
 import createNextIntlPlugin from "next-intl/plugin";
+import { buildSecurityHeaders, parseFrameAncestors } from "./lib/security-headers";
 
 const withNextIntl = createNextIntlPlugin("./i18n/request.ts");
 
-// Development needs 'unsafe-eval' (React rebuilds call stacks via eval())
-// and 'wasm-unsafe-eval' (some Turbopack tooling). In production React never uses eval(),
-// so these sources are dropped and the policy is hardened. 'unsafe-inline' is still required for
-// scripts (anti-flash bootScript) and styles (Emotion / Material UI), production included.
-const isDev = process.env.NODE_ENV !== "production";
-
-const securityHeaders = [
-    { key: "X-Content-Type-Options", value: "nosniff" },
-    { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
-    { key: "X-Frame-Options", value: "SAMEORIGIN" },
-    {
-        key: "Permissions-Policy",
-        value: "camera=(), microphone=(), geolocation=()",
-    },
-    {
-        key: "Content-Security-Policy",
-        value: [
-            "default-src 'self'",
-            [
-                "script-src 'self' 'unsafe-inline'",
-                ...(isDev ? ["'unsafe-eval'", "'wasm-unsafe-eval'"] : []),
-                "https://www.googletagmanager.com",
-                "https://www.youtube.com",
-                "https://www.youtube-nocookie.com",
-            ].join(" "),
-            "style-src 'self' 'unsafe-inline'",
-            "img-src 'self' data: blob: https://i.ytimg.com https://img.youtube.com",
-            "frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com https://www.googletagmanager.com",
-            "connect-src 'self' https://www.google-analytics.com https://region1.google-analytics.com",
-            "font-src 'self' data:",
-            "base-uri 'self'",
-            "form-action 'self'",
-            "frame-ancestors 'self'",
-        ].join("; "),
-    },
-];
+// Security headers are built by the pure, unit-tested lib/security-headers.ts. 'unsafe-inline' is
+// still required for scripts (anti-flash bootScript) and styles (Emotion / Material UI).
+// FRAME_ANCESTORS (build-time, server-only): extra origins allowed to embed the site in an iframe
+// (e.g. a portfolio showing this app); empty => same-origin only.
+const securityHeaders = buildSecurityHeaders({
+    isDev: process.env.NODE_ENV !== "production",
+    frameAncestors: parseFrameAncestors(process.env.FRAME_ANCESTORS),
+});
 
 const nextConfig: NextConfig = {
     poweredByHeader: false,
+    // Inlined into the client bundle: ONLY a boolean derived from the key's presence, never the
+    // key. No key at build time => the AI layer is hidden (constants/site.ts AI_ENABLED).
+    env: {
+        NEXT_PUBLIC_AI_ENABLED: process.env.OPENROUTER_API_KEY?.trim() ? "true" : "false",
+    },
     async headers() {
         return [{ source: "/:path*", headers: securityHeaders }];
     },

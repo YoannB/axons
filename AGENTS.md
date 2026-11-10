@@ -22,17 +22,17 @@ editing, open the ONE doc matching your task from the index below; cross-refs ar
 
 ## Index — load on demand
 
-| Your task touches                                                                                                                                         | Load                      |
-| --------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------- |
-| repo structure, root vs segment layout, where a file goes, boot-script placement, the i18n/middleware/proxy divergence                                    | `docs/architecture.md`    |
-| React state/effects, external store, hydration, theme persistence & single source, keeping public pages static                                            | `docs/react-effects.md`   |
-| anything under `components/ui/material/`, MUI theme build, light mode, disabled-button contrast, chips, toasts, global-vs-MUI CSS, MUI-control animations | `docs/ui-material.md`     |
-| AI: agents, skills, `/api/run`, `lib/ai`, prompt language, deploy/tracing, rate limit                                                                     | `docs/ai-capabilities.md` |
-| `messages/*.json`, localized URLs, `timeZone`, locale navigation                                                                                          | `docs/i18n.md`            |
-| text diff/similarity (`lib/text/`), DiffView, EditorPair, ChoiceChips, AiNotice, dirty-input guard, elapsed wait                                          | `docs/text-tools.md`      |
-| visual/layout/animation: hero roulette, icon draw, video detach/dismiss, containers/rails, mobile overflow, header squeeze, ads/dev-reset                 | `docs/seo-layout.md`      |
-| tests (Vitest/Playwright), 100%-branch discipline, the closing-`---` gotcha, npm audit                                                                    | `docs/testing.md`         |
-| Storybook stories, component visual states, `.storybook/` config                                                                                          | `docs/storybook.md`       |
+| Your task touches                                                                                                                                                | Load                      |
+| ---------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------- |
+| repo structure, root vs segment layout, where a file goes, boot-script placement, security headers/framing, the i18n/middleware/proxy divergence                 | `docs/architecture.md`    |
+| React state/effects, external store, hydration, theme persistence & single source, keeping public pages static                                                   | `docs/react-effects.md`   |
+| anything under `components/ui/material/`, MUI theme build, light mode, disabled-button contrast, chips, toasts, global-vs-MUI CSS, MUI-control animations        | `docs/ui-material.md`     |
+| AI: on/off switch, agents, skills, `/api/run`, `lib/ai`, prompt language, deploy/tracing, rate limit, quota day/time zone                                        | `docs/ai-capabilities.md` |
+| `messages/*.json`, served locales (`NEXT_PUBLIC_LOCALES`), localized URLs, `timeZone`, locale navigation                                                         | `docs/i18n.md`            |
+| text diff/similarity (`lib/text/`), DiffView, EditorPair, ChoiceChips, AiNotice, dirty-input guard, elapsed wait                                                 | `docs/text-tools.md`      |
+| visual/layout/animation: hero roulette, icon draw, video detach/dismiss, containers/rails, mobile overflow, header squeeze, ads/consent/dev-reset, Tabs/Terminal | `docs/seo-layout.md`      |
+| tests (Vitest/Playwright), 100%-branch discipline, the closing-`---` gotcha, npm audit                                                                           | `docs/testing.md`         |
+| Storybook stories, component visual states, `.storybook/` config                                                                                                 | `docs/storybook.md`       |
 
 ## Never do (un-enforced, catastrophic — the rest lives in the docs)
 

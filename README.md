@@ -197,14 +197,15 @@ http://localhost:3000
 
 ### Server-only
 
-| Variable              | Required          | Purpose                                                                                                                            |
-| --------------------- | ----------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
-| `OPENROUTER_API_KEY`  | Yes for AI calls  | Secret key used by the server-side OpenRouter integration.                                                                         |
-| `OPENROUTER_MODEL`    | No                | Optional override for the default OpenRouter model id.                                                                             |
-| `AI_QUOTA_SECRET`     | Yes in production | HMAC secret (>= 32 chars) used to hash client IPs in the server quota. Missing in production = quota store treated as unavailable. |
-| `AI_GLOBAL_DAILY_CAP` | No                | Total AI calls per UTC day across all users (default `1000`).                                                                      |
-| `AI_RATE_PER_MIN`     | No                | Burst limit: AI calls per minute per IP (default `2`).                                                                             |
-| `AI_QUOTA_FAIL_MODE`  | No                | `closed` (default): answer `503` when the quota store is unavailable in production. `open`: let calls through. Always logged.      |
+| Variable              | Required          | Purpose                                                                                                                              |
+| --------------------- | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| `OPENROUTER_API_KEY`  | Yes for AI calls  | Secret key used by the server-side OpenRouter integration. Empty = the AI layer is off (see below). Needed at build time too.        |
+| `OPENROUTER_MODEL`    | No                | Optional override for the default OpenRouter model id.                                                                               |
+| `AI_QUOTA_SECRET`     | Yes in production | HMAC secret (>= 32 chars) used to hash client IPs in the server quota. Missing in production = quota store treated as unavailable.   |
+| `AI_GLOBAL_DAILY_CAP` | No                | Total AI calls per quota day across all users (default `1000`).                                                                      |
+| `AI_RATE_PER_MIN`     | No                | Burst limit: AI calls per minute per IP (default `2`).                                                                               |
+| `AI_QUOTA_FAIL_MODE`  | No                | `closed` (default): answer `503` when the quota store is unavailable in production. `open`: let calls through. Always logged.        |
+| `FRAME_ANCESTORS`     | No                | Extra origins allowed to embed the site in an iframe (CSP `frame-ancestors`). Empty = same origin only. Invalid value = build error. |
 
 ### Legal / publisher information
 
@@ -228,10 +229,16 @@ However, because they can become part of localized copy, they should only contai
 | Variable                     | Required    | Purpose                                                                                                                              |
 | ---------------------------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------ |
 | `NEXT_PUBLIC_SITE_URL`       | Recommended | Canonical site URL used for metadata and sitemap generation.                                                                         |
-| `NEXT_PUBLIC_DEFAULT_LOCALE` | No          | Default locale (`en` if empty). Must be one of `LOCALES` in `i18n/locales.ts`, otherwise the build fails.                            |
+| `NEXT_PUBLIC_LOCALES`        | No          | Served locales, comma-separated subset of `fr,en,es,de,it,pt` (e.g. `fr,en`). Empty = all six. Unknown code = build error.           |
+| `NEXT_PUBLIC_DEFAULT_LOCALE` | No          | Default locale (`en` if empty and served, otherwise the first served). Must be a served locale, otherwise the build fails.           |
 | `NEXT_PUBLIC_AI_DAILY_LIMIT` | No          | Daily AI quota per user, enforced client-side (localStorage) AND server-side per IP (Netlify Blobs). `0` or empty hides the feature. |
+| `NEXT_PUBLIC_AI_QUOTA_TZ`    | No          | IANA time zone cutting the AI day for the client counter AND the server quota (e.g. `Europe/Paris`). Empty = UTC.                    |
 | `NEXT_PUBLIC_ADS_ENABLED`    | No          | Enables ad placeholders outside production-safe defaults.                                                                            |
 | `NEXT_PUBLIC_GTM_ID`         | No          | Google Tag Manager id, if analytics is desired. Empty means GTM is not loaded.                                                       |
+
+The cookie banner and the footer "Manage cookies" link exist only when `NEXT_PUBLIC_GTM_ID` is set or ads are enabled: a site without any tracker needing consent shows no banner.
+
+**AI on/off:** the AI layer is on only when `OPENROUTER_API_KEY` is present at build time AND `NEXT_PUBLIC_AI_DAILY_LIMIT` is above 0. Otherwise every AI surface (buttons, counter, notices, dev reset) is hidden and `/api/run` answers `503`. Only a boolean (`NEXT_PUBLIC_AI_ENABLED`, computed in `next.config.ts`) reaches the browser, never the key. On Netlify, scope the key to **Builds and Functions**, or the build will not see it and the AI will stay hidden.
 
 ### Important notes
 
@@ -677,7 +684,7 @@ Do not create a second AI client hook.
 
 ### Text tools kit
 
-For "text in, text out" apps (proofreading, rephrasing, summaries with a visible delta), Axons ships AI-agnostic building blocks: a word diff and a similarity score with configurable bands (`lib/text/`), `DiffView`, `EditorPair`, `ChoiceChips`, `AiNotice`, a character counter on `Textarea`, and the `useDirtyGuard` / `useElapsedSeconds` hooks. The home page demonstrates them without any AI call. See `docs/text-tools.md`.
+For "text in, text out" apps (proofreading, rephrasing, summaries with a visible delta), Axons ships AI-agnostic building blocks: a word diff and a similarity score with configurable bands (`lib/text/`), `DiffView`, `EditorPair`, `ChoiceChips`, `AiNotice`, a character counter on `Textarea`, and the `useDirtyGuard` / `useElapsedSeconds` hooks. They are documented in Storybook (no home-page demo: a before/after editor belongs to the derived product). See `docs/text-tools.md`.
 
 ## Design references and mockups
 

@@ -19,6 +19,7 @@ const CFG: QuotaConfig = {
     globalCap: 10,
     perMinute: 2,
     failMode: "closed",
+    timeZone: "UTC",
 };
 const NOON = Date.parse("2026-11-05T12:00:00.000Z");
 const IP_KEY = "2026-11-05/ip/h1";

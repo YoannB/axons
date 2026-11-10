@@ -70,52 +70,28 @@
         "testAi": "Testar a IA",
         "resetDone": "Limitador reiniciado.",
         "runSkill": "Executar a skill (demo)",
-        "elapsed": "{seconds} s"
+        "elapsed": "{seconds} s",
+        "tabsLabel": "Painéis",
+        "tabTerminal": "Terminal",
+        "tabOutput": "Saída",
+        "tabProblems": "Problemas",
+        "terminalTitle": "Demo encenada",
+        "terminalRun": "Iniciar a demo",
+        "terminalReset": "Repor",
+        "outputEmpty": "Ainda sem saída.",
+        "problemsEmpty": "Nenhum problema detetado.",
+        "terminalLines": [
+            "npm run demo",
+            "A ler a configuração…",
+            "A preparar os 6 idiomas…",
+            "A gerar as páginas estáticas…",
+            "Concluído: sequência simulada, sem chamada à IA."
+        ]
     },
     "aiNotice": {
-        "thirdParty": "O seu texto é enviado a um fornecedor de IA externo ({provider}). Este site não o guarda.",
+        "thirdParty": "O seu texto é enviado ao fornecedor de IA externo ({provider}) e ao modelo que este utiliza, que o podem guardar segundo as suas próprias condições. Este site, por si, não o guarda.",
         "quality": "Os modelos gratuitos podem ser lentos ou imprecisos: se o resultado parecer errado, basta executar de novo.",
         "wait": "Uma resposta pode demorar até 30 segundos quando o modelo gratuito está sobrecarregado."
-    },
-    "textTools": {
-        "title": "Ferramentas de texto",
-        "intro": "Diff palavra a palavra, pontuação de semelhança e editores lado a lado: peças genéricas para qualquer ferramenta de reescrita. Esta demo não chama nenhuma IA: edite o seu texto e o diff atualiza-se em direto.",
-        "presetsLabel": "Exemplos",
-        "presets": {
-            "typo": "Gralhas",
-            "punctuation": "Pontuação"
-        },
-        "sourceLabel": "O seu texto",
-        "sourcePlaceholder": "Escolha um exemplo ou escreva um texto…",
-        "resultLabel": "Diferenças com o texto de referência",
-        "resultPlaceholder": "Escolha um exemplo para o comparar com o seu texto de referência.",
-        "reset": "Repor",
-        "legend": {
-            "insert": "Adicionado",
-            "replace": "Corrigido",
-            "delete": "Removido"
-        },
-        "similarity": "Semelhança",
-        "bands": {
-            "perfect": "Idêntico",
-            "great": "Poucos retoques",
-            "good": "Alterações moderadas",
-            "low": "Muitas alterações"
-        },
-        "confirmTitle": "Descartar o seu texto?",
-        "confirmMessage": "As suas alterações serão perdidas.",
-        "confirmOk": "Descartar",
-        "confirmCancel": "Continuar a editar",
-        "examples": {
-            "typo": {
-                "before": "Obrigado pelo seu retorno, vou enviar o documento corijido amanha de manhã.",
-                "after": "Obrigado pelo seu retorno, vou enviar o documento corrigido amanhã de manhã."
-            },
-            "punctuation": {
-                "before": "Olá Maria escrevo sobre o orçamento ainda é válido",
-                "after": "Olá Maria, escrevo sobre o orçamento: ainda é válido?"
-            }
-        }
     },
     "seo": {
         "title": "Guias e tutoriais",
@@ -197,7 +173,8 @@
         "accept": "Aceitar",
         "refuse": "Recusar",
         "settings": "Preferências",
-        "link": "Saber mais"
+        "link": "Saber mais",
+        "manage": "Gerir cookies"
     },
     "theme": {
         "light": "Claro",

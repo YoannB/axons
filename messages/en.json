@@ -70,52 +70,28 @@
         "testAi": "Test the AI",
         "resetDone": "Limiter reset.",
         "runSkill": "Run the skill (demo)",
-        "elapsed": "{seconds} s"
+        "elapsed": "{seconds} s",
+        "tabsLabel": "Panels",
+        "tabTerminal": "Terminal",
+        "tabOutput": "Output",
+        "tabProblems": "Problems",
+        "terminalTitle": "Scripted demo",
+        "terminalRun": "Run the demo",
+        "terminalReset": "Reset",
+        "outputEmpty": "No output yet.",
+        "problemsEmpty": "No problems detected.",
+        "terminalLines": [
+            "npm run demo",
+            "Reading the configuration…",
+            "Preparing the 6 locales…",
+            "Generating static pages…",
+            "Done: simulated sequence, no AI call."
+        ]
     },
     "aiNotice": {
-        "thirdParty": "Your text is sent to a third-party AI provider ({provider}). This site does not store it.",
+        "thirdParty": "Your text is sent to the third-party AI provider ({provider}) and to the model it routes to, which may keep it under their own terms. This site itself does not store it.",
         "quality": "Free models can be slow or imprecise: if the result looks wrong, simply run it again.",
         "wait": "A reply can take up to 30 seconds when the free model is busy."
-    },
-    "textTools": {
-        "title": "Text tools",
-        "intro": "Word diff, similarity score and paired editors: generic building blocks for any rewrite tool. This demo calls no AI: edit your text and the diff updates live.",
-        "presetsLabel": "Examples",
-        "presets": {
-            "typo": "Typos",
-            "punctuation": "Punctuation"
-        },
-        "sourceLabel": "Your text",
-        "sourcePlaceholder": "Pick an example or type a text…",
-        "resultLabel": "Differences with the reference text",
-        "resultPlaceholder": "Pick an example to compare it with its reference text.",
-        "reset": "Reset",
-        "legend": {
-            "insert": "Added",
-            "replace": "Fixed",
-            "delete": "Removed"
-        },
-        "similarity": "Similarity",
-        "bands": {
-            "perfect": "Identical",
-            "great": "A few touches",
-            "good": "Moderate changes",
-            "low": "Many changes"
-        },
-        "confirmTitle": "Discard your text?",
-        "confirmMessage": "Your edits will be lost.",
-        "confirmOk": "Discard",
-        "confirmCancel": "Keep editing",
-        "examples": {
-            "typo": {
-                "before": "Thank you for you feedback, I will send the updated file tomorow morning.",
-                "after": "Thank you for your feedback, I will send the updated file tomorrow morning."
-            },
-            "punctuation": {
-                "before": "Hi Mary I am following up on the quote is it still valid",
-                "after": "Hi Mary, I am following up on the quote: is it still valid?"
-            }
-        }
     },
     "seo": {
         "title": "Guides & tutorials",
@@ -197,7 +173,8 @@
         "accept": "Accept",
         "refuse": "Refuse",
         "settings": "Preferences",
-        "link": "Learn more"
+        "link": "Learn more",
+        "manage": "Manage cookies"
     },
     "theme": {
         "light": "Light",
