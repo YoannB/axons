@@ -84,6 +84,18 @@ const meta = {
             description: "Identifiant DOM (association/tests).",
         },
         name: { control: "text", description: "Nom de champ (formulaires)." },
+        maxLength: {
+            control: { type: "number", min: 10, max: 5000 },
+            description: "Limite native du nombre de caractères.",
+        },
+        showCount: {
+            control: "boolean",
+            description: "Affiche le compteur « n / maxLength » sous le champ (exige maxLength).",
+        },
+        readOnly: {
+            control: "boolean",
+            description: "Focusable et sélectionnable mais non modifiable (≠ disabled).",
+        },
         onChange: {
             table: { disable: true },
             description: "Désactivé : état local de démonstration.",
@@ -177,4 +189,28 @@ export const RowsComparison: Story = {
         </div>
     ),
     args: { placeholder: "Zone de texte de démonstration." },
+};
+export const WithCounter: Story = {
+    args: {
+        label: "Post",
+        maxLength: 280,
+        showCount: true,
+        placeholder: "280 caractères maximum, compteur sous le champ.",
+    },
+};
+export const CounterFull: Story = {
+    args: {
+        label: "Post",
+        maxLength: 40,
+        showCount: true,
+        value: "Ce texte atteint exactement la limite !!",
+        helperText: "Le compteur passe en couleur d'alerte à la limite.",
+    },
+};
+export const ReadOnly: Story = {
+    args: {
+        label: "Résultat",
+        readOnly: true,
+        value: "Texte renvoyé par l'outil : sélectionnable et copiable, mais non modifiable.",
+    },
 };

@@ -21,6 +21,9 @@ export interface AppState {
     consent: Consent | null;
     usage: UsageState;
     aiPending: boolean;
+    // Date.now() when the current AI call started (null when idle). Set by setAiPending in the
+    // event handler, read by useElapsedSeconds to show the wait time without any effect state.
+    aiPendingSince: number | null;
     toasts: ToastItem[];
     // PURELY IN-MEMORY state (never persisted): survives SPA navigation (the provider
     // stays mounted) but resets to false on a full reload (new
@@ -35,6 +38,7 @@ const SERVER_DEFAULT: AppState = {
     consent: null,
     usage: { date: todayISO(), count: 0 },
     aiPending: false,
+    aiPendingSince: null,
     toasts: [],
     videoDismissed: false,
 };
@@ -121,7 +125,7 @@ export function createStore(init: Partial<AppState>): Store {
             }
             set({ usage: next });
         },
-        setAiPending: (v) => set({ aiPending: v }),
+        setAiPending: (v) => set({ aiPending: v, aiPendingSince: v ? Date.now() : null }),
         pushToast: (t) => {
             const id = Math.random().toString(36).slice(2);
             set({ toasts: [...state.toasts, { ...t, id }] });

@@ -4,7 +4,7 @@ import type { CSSProperties } from "react";
 import { useId } from "react";
 import type { AppGaugeProps } from "./types";
 
-export function Gauge({ value, max = 100, label, size = 96 }: AppGaugeProps) {
+export function Gauge({ value, max = 100, label, size = 96, tone = "default" }: AppGaugeProps) {
     const pct = Math.max(0, Math.min(1, value / max));
     const r = (size - 10) / 2;
     const c = 2 * Math.PI * r;
@@ -16,7 +16,7 @@ export function Gauge({ value, max = 100, label, size = 96 }: AppGaugeProps) {
     const travel = arc - spark;
     const gid = useId();
     return (
-        <div className="gauge" style={{ width: size, height: size }}>
+        <div className={tone === "default" ? "gauge" : `gauge gauge--${tone}`} style={{ width: size, height: size }}>
             <svg
                 width={size}
                 height={size}

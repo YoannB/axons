@@ -265,3 +265,20 @@
         margin-inline: auto !important; /* horizontal centering WITHOUT transform */
     }
 }
+
+/* ===== Textarea character counter (showCount + maxLength) ===== */
+.field-counted {
+    min-width: 0;
+}
+.field-counted .field-count {
+    display: block;
+    margin-top: 4px;
+    text-align: right;
+    font-size: 0.75rem;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+}
+.field-counted .field-count[data-full] {
+    color: var(--warn);
+    font-weight: 600;
+}

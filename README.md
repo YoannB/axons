@@ -671,7 +671,13 @@ It centralizes:
 - error toast,
 - credit consumption only on useful replies.
 
+Pass `onSuccess(reply)` as the third argument when the app consumes the reply itself (for example to fill a result pane) instead of showing it in a toast.
+
 Do not create a second AI client hook.
+
+### Text tools kit
+
+For "text in, text out" apps (proofreading, rephrasing, summaries with a visible delta), Axons ships AI-agnostic building blocks: a word diff and a similarity score with configurable bands (`lib/text/`), `DiffView`, `EditorPair`, `ChoiceChips`, `AiNotice`, a character counter on `Textarea`, and the `useDirtyGuard` / `useElapsedSeconds` hooks. The home page demonstrates them without any AI call. See `docs/text-tools.md`.
 
 ## Design references and mockups
 

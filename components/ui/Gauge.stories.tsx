@@ -31,6 +31,12 @@ const meta = {
             control: { type: "number", min: 48, max: 200, step: 8 },
             description: "Diamètre en pixels (défaut 96).",
         },
+        tone: {
+            control: "select",
+            options: ["default", "success", "info", "warning", "error"],
+            description:
+                "Couleur de l'arc : `default` garde le dégradé d'accent, les autres une couleur d'état (paliers d'un score).",
+        },
     },
     args: { value: 78, max: 100, size: 96 },
 } satisfies Meta<typeof Gauge>;
@@ -76,6 +82,16 @@ export const Sizes: Story = {
         <div style={{ display: "flex", gap: "1.5rem", alignItems: "center" }}>
             {[64, 96, 128, 160].map((s) => (
                 <Gauge key={s} {...args} size={s} label={`${s}px`} />
+            ))}
+        </div>
+    ),
+};
+
+export const Tones: Story = {
+    render: (args) => (
+        <div style={{ display: "flex", flexWrap: "wrap", gap: "1.5rem", alignItems: "center" }}>
+            {(["default", "success", "info", "warning", "error"] as const).map((tone) => (
+                <Gauge key={tone} {...args} tone={tone} label={tone} />
             ))}
         </div>
     ),

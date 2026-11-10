@@ -18,6 +18,12 @@ import { useAiPending, useStore } from "./use-store";
 // CREDIT INVARIANT: postJson THROWS on !res.ok (502/504/429), so the catch branch
 // consumes nothing. increment() is AFTER the `await` AND AFTER the `if (!reply)` guard: a
 // credit is consumed ONLY on a genuinely useful reply (non-empty text).
+//
+// CONSUMING THE REPLY: by default a useful reply is shown as a success toast (demo
+// behavior). Pass `onSuccess` to hand the trimmed reply to the app instead (fill an output
+// field, diff it, scroll to it): the success toast is then skipped, everything else (guard,
+// quota, error toasts) stays here. Like `buildBody`, keep it a stable reference (module
+// level or useCallback), otherwise `call` changes on every render.
 export type AiCallCtx = { locale: string; input?: string };
 export function useAiCall(
     endpoint = "/api/hello",
@@ -25,6 +31,7 @@ export function useAiCall(
         locale,
         input,
     }),
+    onSuccess?: (reply: string) => void,
 ) {
     const store = useStore();
     const pending = useAiPending();
@@ -48,11 +55,13 @@ export function useAiCall(
                     return;
                 }
                 increment(); // exactly once, here, only on a useful reply.
-                store.pushToast({
-                    severity: "success",
-                    message: reply,
-                    duration: 8000,
-                });
+                if (onSuccess) onSuccess(reply);
+                else
+                    store.pushToast({
+                        severity: "success",
+                        message: reply,
+                        duration: 8000,
+                    });
             } catch (e) {
                 // Network / provider / timeout / rate error: postJson threw, increment() is never reached.
                 const code = e instanceof ApiError ? e.code : "generic";
@@ -65,7 +74,7 @@ export function useAiCall(
                 store.setAiPending(false);
             }
         },
-        [pending, canCall, store, increment, locale, te, endpoint, buildBody],
+        [pending, canCall, store, increment, locale, te, endpoint, buildBody, onSuccess],
     );
     return { call, pending, canCall };
 }

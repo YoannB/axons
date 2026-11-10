@@ -28,6 +28,9 @@ export function useUsage() {
 export function useAiPending() {
     return useAppState().aiPending;
 }
+export function useAiPendingSince() {
+    return useAppState().aiPendingSince;
+}
 export function useToasts() {
     return useAppState().toasts;
 }

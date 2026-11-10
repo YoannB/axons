@@ -69,7 +69,53 @@
         "copyCopied": "Copied!",
         "testAi": "Test the AI",
         "resetDone": "Limiter reset.",
-        "runSkill": "Run the skill (demo)"
+        "runSkill": "Run the skill (demo)",
+        "elapsed": "{seconds} s"
+    },
+    "aiNotice": {
+        "thirdParty": "Your text is sent to a third-party AI provider ({provider}). This site does not store it.",
+        "quality": "Free models can be slow or imprecise: if the result looks wrong, simply run it again.",
+        "wait": "A reply can take up to 30 seconds when the free model is busy."
+    },
+    "textTools": {
+        "title": "Text tools",
+        "intro": "Word diff, similarity score and paired editors: generic building blocks for any rewrite tool. This demo calls no AI: edit your text and the diff updates live.",
+        "presetsLabel": "Examples",
+        "presets": {
+            "typo": "Typos",
+            "punctuation": "Punctuation"
+        },
+        "sourceLabel": "Your text",
+        "sourcePlaceholder": "Pick an example or type a text…",
+        "resultLabel": "Differences with the reference text",
+        "resultPlaceholder": "Pick an example to compare it with its reference text.",
+        "reset": "Reset",
+        "legend": {
+            "insert": "Added",
+            "replace": "Fixed",
+            "delete": "Removed"
+        },
+        "similarity": "Similarity",
+        "bands": {
+            "perfect": "Identical",
+            "great": "A few touches",
+            "good": "Moderate changes",
+            "low": "Many changes"
+        },
+        "confirmTitle": "Discard your text?",
+        "confirmMessage": "Your edits will be lost.",
+        "confirmOk": "Discard",
+        "confirmCancel": "Keep editing",
+        "examples": {
+            "typo": {
+                "before": "Thank you for you feedback, I will send the updated file tomorow morning.",
+                "after": "Thank you for your feedback, I will send the updated file tomorrow morning."
+            },
+            "punctuation": {
+                "before": "Hi Mary I am following up on the quote is it still valid",
+                "after": "Hi Mary, I am following up on the quote: is it still valid?"
+            }
+        }
     },
     "seo": {
         "title": "Guides & tutorials",
@@ -153,7 +199,11 @@
         "settings": "Preferences",
         "link": "Learn more"
     },
-    "theme": { "light": "Light", "dark": "Dark", "system": "System" },
+    "theme": {
+        "light": "Light",
+        "dark": "Dark",
+        "system": "System"
+    },
     "errors": {
         "rate": "Daily limit reached. Try again tomorrow.",
         "busy": "Too many requests in a short time. Try again in a minute.",
@@ -164,7 +214,11 @@
         "empty": "The AI returned no text. Please retry.",
         "successPrefix": "AI reply: "
     },
-    "common": { "loading": "Loading…", "close": "Close", "soon": "Soon" },
+    "common": {
+        "loading": "Loading…",
+        "close": "Close",
+        "soon": "Soon"
+    },
     "pages": {
         "sitemap": {
             "title": "Sitemap",
