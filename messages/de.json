@@ -1,6 +1,7 @@
 {
     "nav": {
         "home": "Startseite",
+        "articles": "Artikel",
         "sitemap": "Sitemap",
         "legal": "Impressum",
         "privacy": "Datenschutz",
@@ -344,6 +345,15 @@
                     ]
                 }
             ]
+        },
+        "articles": {
+            "title": "Artikel",
+            "intro": "Anleitungen und Hintergrundnotizen zur Website, in Markdown veröffentlicht.",
+            "latestTitle": "Neueste Artikel",
+            "viewAll": "Alle Artikel",
+            "publishedOn": "Veröffentlicht am {date}",
+            "onlyIn": "Nur auf {language} verfügbar",
+            "empty": "Noch keine Artikel."
         }
     }
 }

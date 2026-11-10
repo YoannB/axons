@@ -29,6 +29,7 @@ editing, open the ONE doc matching your task from the index below; cross-refs ar
 | anything under `components/ui/material/`, MUI theme build, light mode, disabled-button contrast, chips, toasts, global-vs-MUI CSS, MUI-control animations        | `docs/ui-material.md`     |
 | AI: on/off switch, agents, skills, `/api/run`, `lib/ai`, prompt language, deploy/tracing, rate limit, quota day/time zone                                        | `docs/ai-capabilities.md` |
 | `messages/*.json`, served locales (`NEXT_PUBLIC_LOCALES`), localized URLs, `timeZone`, locale navigation                                                         | `docs/i18n.md`            |
+| Markdown articles: `content/articles/`, front matter, listing/latest block, article SEO (hreflang, JSON-LD, sitemap), slug-aware language switch                | `docs/articles.md`        |
 | text diff/similarity (`lib/text/`), DiffView, EditorPair, ChoiceChips, AiNotice, dirty-input guard, elapsed wait                                                 | `docs/text-tools.md`      |
 | visual/layout/animation: hero roulette, icon draw, video detach/dismiss, containers/rails, mobile overflow, header squeeze, ads/consent/dev-reset, Tabs/Terminal | `docs/seo-layout.md`      |
 | tests (Vitest/Playwright), 100%-branch discipline, the closing-`---` gotcha, npm audit                                                                           | `docs/testing.md`         |

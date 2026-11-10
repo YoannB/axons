@@ -32,6 +32,23 @@ export const routing = defineRouting({
             it: "/privacy",
             pt: "/privacidade",
         },
+        "/articles": {
+            fr: "/articles",
+            en: "/articles",
+            es: "/articulos",
+            de: "/artikel",
+            it: "/articoli",
+            pt: "/artigos",
+        },
+        // [slug] = the TRANSLATED slug of the article (front matter), different per locale.
+        "/articles/[slug]": {
+            fr: "/articles/[slug]",
+            en: "/articles/[slug]",
+            es: "/articulos/[slug]",
+            de: "/artikel/[slug]",
+            it: "/articoli/[slug]",
+            pt: "/artigos/[slug]",
+        },
         "/cookies": {
             fr: "/cookies",
             en: "/cookies",

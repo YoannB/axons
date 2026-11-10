@@ -1,0 +1,79 @@
+import { expect, test, type Page } from "@playwright/test";
+import { acceptCookiesButton, cookieBanner, languageButton, languageOption } from "./support/home";
+
+// v0.4.0 articles: listing -> article -> language switch onto the TRANSLATED slug, SEO tags,
+// sitemap and the home "latest articles" block. Relies on the two demo articles shipped in
+// content/articles/ (translated in every supported locale).
+
+async function ready(page: Page) {
+    await expect(page.locator("#app-splash")).toHaveClass(/is-leaving/);
+    // The cookie banner (present when CI enables ads) must not sit over the links we click.
+    if (await cookieBanner(page).isVisible()) {
+        await acceptCookiesButton(page).click();
+        await expect(cookieBanner(page)).toBeHidden();
+    }
+}
+
+test.describe("Articles", () => {
+    test("liste -> article -> changement de langue sur le slug traduit", async ({ page }) => {
+        await page.goto("/fr/articles");
+        await ready(page);
+        await expect(page.getByRole("heading", { level: 1, name: "Articles" })).toBeVisible();
+        // Newest first.
+        const titles = page.locator(".article-feed .article-teaser__title");
+        await expect(titles).toHaveText(["Écrire un article dans Axons", "L'architecture d'Axons en cinq minutes"]);
+
+        await titles.first().getByRole("link").click();
+        await expect(page).toHaveURL(/\/fr\/articles\/ecrire-un-article$/);
+        await expect(page.getByRole("heading", { level: 1, name: "Écrire un article dans Axons" })).toBeVisible();
+        // Markdown rendered as elements: GFM table and fenced code.
+        await expect(page.locator(".article-body table")).toBeVisible();
+        await expect(page.locator(".article-body pre code").first()).toContainText("content/articles/");
+
+        await languageButton(page).click();
+        await languageOption(page, "Deutsch").click();
+        await expect(page).toHaveURL(/\/de\/artikel\/einen-artikel-schreiben$/);
+        await expect(page.getByRole("heading", { level: 1, name: "Einen Artikel in Axons schreiben" })).toBeVisible();
+    });
+
+    test("canonical, hreflang et JSON-LD de la page article", async ({ page }) => {
+        await page.goto("/fr/articles/visite-de-l-architecture");
+        const canonical = page.locator('link[rel="canonical"]');
+        await expect(canonical).toHaveAttribute("href", /\/fr\/articles\/visite-de-l-architecture$/);
+        await expect(page.locator('link[rel="alternate"][hreflang="en"]')).toHaveAttribute(
+            "href",
+            /\/articles\/architecture-tour$/,
+        );
+        await expect(page.locator('link[rel="alternate"][hreflang="pt"]')).toHaveAttribute(
+            "href",
+            /\/pt\/artigos\/tour-pela-arquitetura$/,
+        );
+        const jsonLd = JSON.parse((await page.locator('script[type="application/ld+json"]').textContent()) ?? "{}");
+        expect(jsonLd).toMatchObject({ "@type": "BlogPosting", inLanguage: "fr", datePublished: "2026-11-03" });
+    });
+
+    test("un slug d'une autre langue mène à la page 404, non indexable", async ({ page }) => {
+        // Soft 404: app/[locale]/loading.tsx starts streaming before notFound() runs, so Next keeps
+        // the 200 status and adds robots noindex (same behavior as every page under [locale]).
+        await page.goto("/fr/articles/architecture-tour");
+        await expect(page.getByRole("heading", { level: 1, name: "404" })).toBeVisible();
+        await expect(page.locator('meta[name="robots"]').first()).toHaveAttribute("content", /noindex/);
+    });
+
+    test("l'accueil affiche les derniers articles avec un lien vers la liste", async ({ page }) => {
+        await page.goto("/fr");
+        await ready(page);
+        const block = page.locator("#latest-articles");
+        await expect(block.getByRole("heading", { level: 2, name: "Derniers articles" })).toBeVisible();
+        await expect(block.locator(".article-teaser")).toHaveCount(2);
+        await block.getByRole("link", { name: /Tous les articles/ }).click();
+        await expect(page).toHaveURL(/\/fr\/articles$/);
+    });
+
+    test("le sitemap liste chaque traduction d'article", async ({ request }) => {
+        const xml = await (await request.get("/sitemap.xml")).text();
+        expect(xml).toContain("/fr/articles/ecrire-un-article</loc>");
+        expect(xml).toContain("/articles/writing-an-article</loc>");
+        expect(xml).toContain("/de/artikel</loc>");
+    });
+});

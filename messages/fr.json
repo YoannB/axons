@@ -1,6 +1,7 @@
 {
     "nav": {
         "home": "Accueil",
+        "articles": "Articles",
         "sitemap": "Plan du site",
         "legal": "Mentions légales",
         "privacy": "Confidentialité",
@@ -344,6 +345,15 @@
                     ]
                 }
             ]
+        },
+        "articles": {
+            "title": "Articles",
+            "intro": "Guides et notes de fond sur le site, publiés en Markdown.",
+            "latestTitle": "Derniers articles",
+            "viewAll": "Tous les articles",
+            "publishedOn": "Publié le {date}",
+            "onlyIn": "Disponible uniquement en {language}",
+            "empty": "Aucun article pour le moment."
         }
     }
 }
