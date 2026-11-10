@@ -962,6 +962,10 @@ html.has-consent .cookie-banner {
     visibility: hidden;
     pointer-events: none;
 }
+/* Root 404 (app/not-found.tsx) has no SplashLoader to dismiss the splash: hide it by CSS. */
+body:has(.root-not-found) #app-splash {
+    display: none;
+}
 .splash-logo {
     width: 120px;
     height: 120px;
