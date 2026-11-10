@@ -34,6 +34,13 @@ jobs:
             # Inlined at build time: with 0 the AI buttons are disabled and the server quota
             # denies every call (429), which breaks the AI E2E specs. Same value as .env.example.
             NEXT_PUBLIC_AI_DAILY_LIMIT: "3"
+            # The AI layer is on only when the build sees a key (only a boolean is inlined).
+            # Fake value: no spec reaches the provider (browser specs mock /api/*, the
+            # server-contract specs stop at validation).
+            OPENROUTER_API_KEY: "ci-placeholder-never-sent"
+            # A consent-requiring tracker must be configured for the cookie banner (and its
+            # E2E) to exist; ads mirror the local .env.local used to write the specs.
+            NEXT_PUBLIC_ADS_ENABLED: "true"
             # E2E runs `next start` (NODE_ENV=production) with no Netlify Blobs store: fail-open
             # lets the server-contract specs reach validation. CI ONLY, never in a deployment.
             AI_QUOTA_FAIL_MODE: "open"

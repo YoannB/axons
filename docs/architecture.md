@@ -34,7 +34,17 @@ The anti-FOUC / anti-banner-flash inline script MUST use `next/script` with
 Turbopack dev at the wrong level) the `<script>` stays in the React tree and throws
 "Encountered a script tag while rendering React component". It reads localStorage then the
 theme cookie, resolves `system` via matchMedia, sets `documentElement.dataset.theme`, adds
-`has-consent` when the consent cookie exists, and may set `lang` from the pathname.
+`has-consent` when the consent cookie exists, and sets `lang` from the pathname for every
+SERVED locale (the list is serialized from `i18n/locales.ts` at build).
+
+## Security headers
+
+`next.config.ts` applies `buildSecurityHeaders` (pure `lib/security-headers.ts`, unit-tested) to
+every route. Framing defaults to same origin (`X-Frame-Options: SAMEORIGIN` + CSP
+`frame-ancestors 'self'`); `FRAME_ANCESTORS` (build-time, server-only) adds origins allowed to
+embed the site (e.g. a portfolio showing it in an iframe), in which case `X-Frame-Options` is
+dropped because it cannot express an allowlist. Invalid sources fail the build. Netlify deploy
+previews have their own hosts: list them explicitly, never widen to `https://*.netlify.app`.
 
 ## Divergence note — do NOT "fix" per generic tutorials
 

@@ -15,12 +15,13 @@ type ActiveLocale = (typeof routing.locales)[number];
 export function LanguageSwitcher() {
     const locale = useLocale();
     const t = useTranslations("showcase");
-    const tc = useTranslations("common");
     const router = useRouter();
     const pathname = usePathname();
     const [open, setOpen] = useState(false);
     const ref = useRef<HTMLDivElement>(null);
-    const current = LOCALES.find((l) => l.code === locale) ?? LOCALES[1];
+    // Only the SERVED locales (NEXT_PUBLIC_LOCALES) are offered.
+    const served = LOCALES.filter((l) => l.active);
+    const current = served.find((l) => l.code === locale) ?? served[0];
 
     // Close on outside click: DOM subscription (external system) => legitimate effect.
     useEffect(() => {
@@ -34,8 +35,7 @@ export function LanguageSwitcher() {
 
     const switchTo = (code: LocaleCode) => {
         setOpen(false);
-        // Runtime guard: inactive languages (active: false in constants/site.ts) may be missing from routing.locales.
-        // The button's `disabled` already protects the UX; this guard also protects against a future removal.
+        // Runtime guard: only served locales are listed, this also protects against a future change.
         if (!(routing.locales as readonly string[]).includes(code)) return;
         router.replace({ pathname }, { locale: code as ActiveLocale, scroll: false });
     };
@@ -58,19 +58,17 @@ export function LanguageSwitcher() {
             </button>
             {open && (
                 <ul className="lang__menu" role="listbox">
-                    {LOCALES.map((l) => (
+                    {served.map((l) => (
                         <li key={l.code}>
                             <button
                                 type="button"
                                 role="option"
                                 aria-selected={l.code === locale}
-                                disabled={!l.active}
                                 className={cn("lang__opt", l.code === locale && "is-active")}
                                 onClick={() => switchTo(l.code)}
                             >
                                 <span>{l.flag}</span>
                                 <span>{l.native}</span>
-                                {!l.active && <em className="lang__soon">{tc("soon")}</em>}
                             </button>
                         </li>
                     ))}

@@ -19,6 +19,17 @@ is then skipped and everything else (guard, quota, error toasts) stays in the ho
 records `aiPendingSince` with `aiPending`, so `useElapsedSeconds(useAiPendingSince())` can
 show the wait time on the pending button.
 
+## AI on/off switch
+
+The AI layer is OPTIONAL per site. `next.config.ts` inlines `NEXT_PUBLIC_AI_ENABLED` = whether
+`OPENROUTER_API_KEY` was present AT BUILD (a boolean only, never the key); `constants/site.ts`
+`AI_ENABLED` = that flag AND `NEXT_PUBLIC_AI_DAILY_LIMIT > 0` (pure `lib/flags.ts`). Every AI
+surface gates on it: `useDailyLimiter` (`hidden`, `canCall`), `LimitBadge`,
+`ResetLimiterButton`, the AI buttons/CTA, and `AiNotice` placements (never show an AI
+disclosure on a site that makes no AI call). The server stays authoritative: without a key
+`/api/run` answers `503`. A new AI surface MUST read `AI_ENABLED` (or `useDailyLimiter`), never
+re-derive it. CI sets a placeholder key so the AI specs run; no spec reaches the provider.
+
 ## The model (one execution composing three bricks)
 
 `prompt` — the USER message, ALWAYS required and non-empty (the concrete task).
@@ -198,7 +209,9 @@ counter, like the client quota):
    `ai-quota`, `consistency: "strong"`). Three limits: burst per minute per IP
    (`AI_RATE_PER_MIN`), daily per IP (`NEXT_PUBLIC_AI_DAILY_LIMIT`, the SAME value the client
    reads via `constants/site.ts`), and a global daily cap across all IPs
-   (`AI_GLOBAL_DAILY_CAP`). Days are UTC, matching `lib/usage.ts`.
+   (`AI_GLOBAL_DAILY_CAP`). Days are cut in `NEXT_PUBLIC_AI_QUOTA_TZ` (UTC when empty) by the
+   pure `lib/day.ts`, shared by `lib/usage.ts` (client counter), `lib/ai/quota-pure.ts` (keys,
+   `Retry-After`) and the purge function — never compute a "day" anywhere else.
 
 Every store round (reserve AND refund) is bounded by `withDeadline` (`STORE_DEADLINE_MS`,
 4 s). `@netlify/blobs` silently retries 429/5xx/network errors (5 × 5 s): unbounded, the
@@ -240,7 +253,7 @@ Rules that must hold:
   production. Outside production the in-memory store is used (kept on `globalThis` so every
   route shares it; the dev reset button clears BOTH the client counter and this store via
   `POST /api/dev/reset-quota`, which answers 404 outside `next dev`).
-- Netlify Blobs has NO TTL. Keys are prefixed by UTC day (`<day>/ip/<hash>`,
+- Netlify Blobs has NO TTL. Keys are prefixed by the quota day (`<day>/ip/<hash>`,
   `<day>/global`) and the scheduled function `netlify/functions/ai-quota-purge.ts` deletes
   past days daily. It must import only pure code (no `server-only`).
 - The global counter is a single hot key: conditional writes serialize it (roughly tens of

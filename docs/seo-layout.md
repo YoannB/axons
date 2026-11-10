@@ -65,7 +65,12 @@ the viewport (`max-height: calc(100dvh - 64px)` with a `vh` fallback, `overflow-
 ## Ads, bots, and the dev-only reset
 
 Ad slots render placeholders in development and are hidden in production until real tags and
-consent exist (`components/ui/AdSlot.tsx`, `ADS_ENABLED`). The decision to render is taken SOLELY
+consent exist (`components/ui/AdSlot.tsx`, `ADS_ENABLED`). The cookie banner itself renders
+ONLY when a tracker needing consent is configured (`CONSENT_REQUIRED` = GTM id set OR ads
+enabled, pure `lib/flags.ts`): no banner theatre on a tracker-free site (CNIL). When it exists,
+the footer "Manage cookies" button re-opens it (`reopenConsent`, in-memory; the stored choice
+stays in effect until a new one is made) and withdrawing a previous "yes" reloads the page,
+because an injected GTM cannot be unloaded. The decision to render is taken SOLELY
 on the build-inlined `ADS_ENABLED` constant — NEVER on `typeof window !== 'undefined'` inside an
 SSR'd component, because the server (window undefined) and client (window defined) would render
 different trees and throw a hydration mismatch (the exact class of bug already killed in
@@ -74,3 +79,15 @@ are not wired, the slot renders `null` deterministically on both sides; the rail
 grid width, so there is no CLS. The anti-bot icon from the mockup is NOT rendered. The limiter
 reset button is gated by `process.env.NODE_ENV === 'development'` and inlined away in production
 builds. Resetting must push an info toast from the click handler (user intent), not from an Effect.
+
+## Tabs, Terminal & scripted sequences (generic, no MUI)
+
+`components/ui/Tabs.tsx`: a tab WITH `href` is a real link inside a `<nav>` (`aria-current=page`)
+so the URL stays the source of truth (direct URL, reload, back/forward); a tab WITHOUT `href`
+is a `<button aria-pressed>` switching a panel via `onSelect`. Do not turn page navigation into
+`role="tablist"`. The active tab is scrolled into view by a DOM-only effect (no state).
+`components/ui/Terminal.tsx`: plain-text lines (never innerHTML) in a `role="log"` live region.
+`hooks/use-scripted-sequence.ts` reveals lines on an interval (setState in the interval
+callback only) and shows everything at once under `prefers-reduced-motion`. A scripted demo is
+a SIMULATION: it must not call `/api/*` nor show AI quota/error states (see the
+`TerminalShowcase` demo and `tests/e2e/site-config.spec.ts`).

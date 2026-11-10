@@ -14,6 +14,7 @@ import {
     Textarea,
     type AppTone,
 } from "@/components/ui";
+import { AI_ENABLED } from "@/constants/site";
 import { useDirtyGuard } from "@/hooks/use-dirty-guard";
 import { diffWords } from "@/lib/text/diff";
 import { bandFor, similarityPercent, type DefaultBandKey } from "@/lib/text/similarity";
@@ -125,10 +126,13 @@ export function TextToolsShowcase() {
                             label={t("similarity")}
                         />
                         {preset ? <Chip label={t(`bands.${band.key}`)} color={TONE[band.key]} /> : null}
-                        <AiNotice
-                            className="text-tools__notice"
-                            items={[tn("thirdParty", { provider: "OpenRouter" }), tn("quality"), tn("wait")]}
-                        />
+                        {/* Disclosure only when a real AI call exists on the site (spec: never imply one). */}
+                        {AI_ENABLED ? (
+                            <AiNotice
+                                className="text-tools__notice"
+                                items={[tn("thirdParty", { provider: "OpenRouter" }), tn("quality"), tn("wait")]}
+                            />
+                        ) : null}
                     </div>
                 }
             />

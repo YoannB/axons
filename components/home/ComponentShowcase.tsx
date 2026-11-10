@@ -14,10 +14,12 @@ import {
     Textarea,
     ThemeToggle,
 } from "@/components/ui";
+import { AI_ENABLED } from "@/constants/site";
 import { useAiCall, type AiCallCtx } from "@/hooks/use-ai-call";
 import { useElapsedSeconds } from "@/hooks/use-elapsed";
 import { useAiPendingSince, useStore } from "@/hooks/use-store";
 import { useTranslations } from "next-intl";
+import { TerminalShowcase } from "./TerminalShowcase";
 import { useState } from "react";
 
 // Demo of the UNIFIED MODEL (docs/ai-capabilities.md): a single /api/run call combining
@@ -108,6 +110,9 @@ export function ComponentShowcase() {
                         </span>
                     ))}
                 </div>
+                <div className="sg sg-term">
+                    <TerminalShowcase />
+                </div>
                 <div className="sg sg-nav">
                     <Breadcrumb
                         items={[{ label: t("bcHome"), href: "/" }, { label: t("bcSection") }, { label: t("bcPage") }]}
@@ -118,31 +123,34 @@ export function ComponentShowcase() {
                     <ThemeToggle />
                     <CopyButton text="https://axons.netlify.app" />
                 </div>
-                <div className="sg sg-ai">
-                    <Button
-                        variant="primary"
-                        loading={pending}
-                        disabled={!canCall}
-                        onClick={() => call(msg || undefined)}
-                        iconLeft={<Icon name="sparkles" size={16} animated />}
-                    >
-                        {t("testAi")}
-                        {waited}
-                    </Button>
-                    {/* Demo of the unified prompt+agent+skill model via /api/run. Shares the global
+                {/* AI demo buttons: absent when the AI layer is off (no key / limit 0). */}
+                {AI_ENABLED ? (
+                    <div className="sg sg-ai">
+                        <Button
+                            variant="primary"
+                            loading={pending}
+                            disabled={!canCall}
+                            onClick={() => call(msg || undefined)}
+                            iconLeft={<Icon name="sparkles" size={16} animated />}
+                        >
+                            {t("testAi")}
+                            {waited}
+                        </Button>
+                        {/* Demo of the unified prompt+agent+skill model via /api/run. Shares the global
               pending/canCall (single app-wide lock, on purpose). The msg textarea = optional prompt. */}
-                    <Button
-                        variant="secondary"
-                        loading={pending}
-                        disabled={!canCall}
-                        onClick={() => runCall(msg || undefined)}
-                        iconLeft={<Icon name="globe" size={16} animated />}
-                    >
-                        {t("runSkill")}
-                        {waited}
-                    </Button>
-                    <ResetLimiterButton />
-                </div>
+                        <Button
+                            variant="secondary"
+                            loading={pending}
+                            disabled={!canCall}
+                            onClick={() => runCall(msg || undefined)}
+                            iconLeft={<Icon name="globe" size={16} animated />}
+                        >
+                            {t("runSkill")}
+                            {waited}
+                        </Button>
+                        <ResetLimiterButton />
+                    </div>
+                ) : null}
             </div>
             <Dialog open={dialog} onClose={() => setDialog(false)} title={t("dialogTitle")}>
                 {t("dialogBody")}

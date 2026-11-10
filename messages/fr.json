@@ -70,10 +70,26 @@
         "testAi": "Tester l'IA",
         "resetDone": "Limiteur réinitialisé.",
         "runSkill": "Exécuter la skill (démo)",
-        "elapsed": "{seconds} s"
+        "elapsed": "{seconds} s",
+        "tabsLabel": "Panneaux",
+        "tabTerminal": "Terminal",
+        "tabOutput": "Sortie",
+        "tabProblems": "Problèmes",
+        "terminalTitle": "Démo scénarisée",
+        "terminalRun": "Lancer la démo",
+        "terminalReset": "Réinitialiser",
+        "outputEmpty": "Aucune sortie pour l'instant.",
+        "problemsEmpty": "Aucun problème détecté.",
+        "terminalLines": [
+            "npm run demo",
+            "Lecture de la configuration…",
+            "Préparation des 6 langues…",
+            "Génération des pages statiques…",
+            "Terminé : séquence simulée, aucun appel IA."
+        ]
     },
     "aiNotice": {
-        "thirdParty": "Votre texte est envoyé à un fournisseur d'IA tiers ({provider}). Ce site ne le conserve pas.",
+        "thirdParty": "Votre texte est envoyé au fournisseur d'IA tiers ({provider}) et au modèle qu'il sollicite, qui peuvent le conserver selon leurs propres conditions. Ce site, lui, ne le conserve pas.",
         "quality": "Les modèles gratuits peuvent être lents ou imprécis : si le résultat vous semble faux, relancez simplement.",
         "wait": "Une réponse peut prendre jusqu'à 30 secondes quand le modèle gratuit est saturé."
     },
@@ -197,7 +213,8 @@
         "accept": "Accepter",
         "refuse": "Refuser",
         "settings": "Préférences",
-        "link": "En savoir plus"
+        "link": "En savoir plus",
+        "manage": "Gérer mes cookies"
     },
     "theme": {
         "light": "Clair",

@@ -1,4 +1,5 @@
 "use client";
+import { AI_ENABLED } from "@/constants/site";
 import { useDailyLimiter } from "@/hooks/use-daily-limiter";
 import { useStore } from "@/hooks/use-store";
 import { postJson } from "@/lib/api";
@@ -16,7 +17,7 @@ export function ResetLimiterButton() {
     const { reset } = useDailyLimiter();
     const store = useStore();
     const t = useTranslations("showcase");
-    if (!isDev) return null;
+    if (!isDev || !AI_ENABLED) return null;
     return (
         <Button
             variant="ghost"

@@ -70,10 +70,26 @@
         "testAi": "KI testen",
         "resetDone": "Begrenzer zurückgesetzt.",
         "runSkill": "Skill ausführen (Demo)",
-        "elapsed": "{seconds} s"
+        "elapsed": "{seconds} s",
+        "tabsLabel": "Bereiche",
+        "tabTerminal": "Terminal",
+        "tabOutput": "Ausgabe",
+        "tabProblems": "Probleme",
+        "terminalTitle": "Skriptbasierte Demo",
+        "terminalRun": "Demo starten",
+        "terminalReset": "Zurücksetzen",
+        "outputEmpty": "Noch keine Ausgabe.",
+        "problemsEmpty": "Keine Probleme gefunden.",
+        "terminalLines": [
+            "npm run demo",
+            "Konfiguration wird gelesen…",
+            "Die 6 Sprachen werden vorbereitet…",
+            "Statische Seiten werden erzeugt…",
+            "Fertig: simulierte Sequenz, kein KI-Aufruf."
+        ]
     },
     "aiNotice": {
-        "thirdParty": "Ihr Text wird an einen externen KI-Anbieter ({provider}) gesendet. Diese Website speichert ihn nicht.",
+        "thirdParty": "Ihr Text wird an den externen KI-Anbieter ({provider}) und das von ihm genutzte Modell gesendet, die ihn nach ihren eigenen Bedingungen speichern können. Diese Website selbst speichert ihn nicht.",
         "quality": "Kostenlose Modelle können langsam oder ungenau sein: Wirkt das Ergebnis falsch, starten Sie einfach erneut.",
         "wait": "Eine Antwort kann bis zu 30 Sekunden dauern, wenn das kostenlose Modell ausgelastet ist."
     },
@@ -197,7 +213,8 @@
         "accept": "Akzeptieren",
         "refuse": "Ablehnen",
         "settings": "Einstellungen",
-        "link": "Mehr erfahren"
+        "link": "Mehr erfahren",
+        "manage": "Cookies verwalten"
     },
     "theme": {
         "light": "Hell",

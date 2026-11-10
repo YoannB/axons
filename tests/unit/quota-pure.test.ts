@@ -17,9 +17,9 @@ import {
     refundCount,
     refundIpState,
     retryAfterFor,
-    secondsUntilUtcMidnight,
+    secondsUntilQuotaMidnight,
     staleDays,
-    utcDay,
+    quotaDay,
     type QuotaConfig,
 } from "@/lib/ai/quota-pure";
 import { describe, expect, it } from "vitest";
@@ -29,6 +29,7 @@ const CFG: QuotaConfig = {
     globalCap: 10,
     perMinute: 2,
     failMode: "closed",
+    timeZone: "UTC",
 };
 const NOON = Date.parse("2026-11-05T12:00:00.000Z");
 
@@ -63,6 +64,7 @@ describe("readQuotaConfig", () => {
             globalCap: DEFAULT_GLOBAL_CAP,
             perMinute: DEFAULT_PER_MINUTE,
             failMode: "closed",
+            timeZone: "UTC",
         });
     });
     it("lit les variables et le fail-open explicite", () => {
@@ -72,6 +74,7 @@ describe("readQuotaConfig", () => {
                     AI_GLOBAL_DAILY_CAP: "500",
                     AI_RATE_PER_MIN: "5",
                     AI_QUOTA_FAIL_MODE: "open",
+                    NEXT_PUBLIC_AI_QUOTA_TZ: "Europe/Paris",
                 },
                 1,
             ),
@@ -80,6 +83,7 @@ describe("readQuotaConfig", () => {
             globalCap: 500,
             perMinute: 5,
             failMode: "open",
+            timeZone: "Europe/Paris",
         });
     });
     it("toute autre valeur de fail mode reste closed", () => {
@@ -88,20 +92,23 @@ describe("readQuotaConfig", () => {
 });
 
 describe("temps et clés", () => {
-    it("utcDay = jour UTC", () => {
-        expect(utcDay(Date.parse("2026-11-05T23:59:59Z"))).toBe("2026-11-05");
+    it("quotaDay = jour UTC par défaut", () => {
+        expect(quotaDay(Date.parse("2026-11-05T23:59:59Z"))).toBe("2026-11-05");
+    });
+    it("quotaDay suit le fuseau configuré", () => {
+        expect(quotaDay(Date.parse("2026-11-05T23:30:00Z"), "Europe/Paris")).toBe("2026-11-06");
     });
     it("minuteIndex", () => {
         expect(minuteIndex(120_001)).toBe(2);
     });
     it("secondes jusqu'à minuit UTC", () => {
-        expect(secondsUntilUtcMidnight(NOON)).toBe(43_200);
+        expect(secondsUntilQuotaMidnight(NOON)).toBe(43_200);
     });
     it("à minuit pile : un jour entier", () => {
-        expect(secondsUntilUtcMidnight(Date.parse("2026-11-05T00:00:00Z"))).toBe(86_400);
+        expect(secondsUntilQuotaMidnight(Date.parse("2026-11-05T00:00:00Z"))).toBe(86_400);
     });
     it("dernière milliseconde : au moins 1 s", () => {
-        expect(secondsUntilUtcMidnight(Date.parse("2026-11-05T23:59:59.999Z"))).toBe(1);
+        expect(secondsUntilQuotaMidnight(Date.parse("2026-11-05T23:59:59.999Z"))).toBe(1);
     });
     it("clés préfixées par le jour", () => {
         expect(ipKey("2026-11-05", "abc")).toBe("2026-11-05/ip/abc");
@@ -277,5 +284,7 @@ describe("casBackoffMs / retryAfterFor", () => {
     it("quota du jour : jusqu'à minuit UTC", () => {
         expect(retryAfterFor("daily", NOON)).toBe(43_200);
         expect(retryAfterFor("global", NOON)).toBe(43_200);
+        // 12:00 UTC = 13:00 in Paris (CET, November): 11 h until the Paris midnight.
+        expect(retryAfterFor("daily", NOON, "Europe/Paris")).toBe(39_600);
     });
 });

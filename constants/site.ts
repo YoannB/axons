@@ -1,8 +1,21 @@
+import { LOCALES as SERVED_LOCALES } from "@/i18n/locales";
+import { resolveTimeZone } from "@/lib/day";
+import { isAiEnabled, isConsentRequired } from "@/lib/flags";
+
 export const SITE_NAME = "Axons";
 export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 export const AI_DAILY_LIMIT = Number(process.env.NEXT_PUBLIC_AI_DAILY_LIMIT ?? 0) || 0;
+// AI feature switch. NEXT_PUBLIC_AI_ENABLED is computed by next.config.ts at build time from the
+// PRESENCE of OPENROUTER_API_KEY (only the boolean reaches the client, never the key). No key or a
+// daily limit of 0 => every AI surface (buttons, counter, notices, dev reset) is hidden.
+export const AI_ENABLED = isAiEnabled(process.env.NEXT_PUBLIC_AI_ENABLED, AI_DAILY_LIMIT);
+// Time zone of the AI "day" (client counter AND server quota keys): empty => UTC.
+export const AI_QUOTA_TZ = resolveTimeZone(process.env.NEXT_PUBLIC_AI_QUOTA_TZ);
 export const ADS_ENABLED = process.env.NEXT_PUBLIC_ADS_ENABLED === "true";
 export const GTM_ID = process.env.NEXT_PUBLIC_GTM_ID ?? "";
+// The cookie banner exists only when a tracker that needs consent is configured (CNIL: no
+// banner theatre when the site sets no such tracker; functional storage needs none).
+export const CONSENT_REQUIRED = isConsentRequired({ gtmId: GTM_ID, adsEnabled: ADS_ENABLED });
 export const GITHUB_URL = "https://github.com/YoannB/axons";
 
 export type LocaleCode = "fr" | "en" | "es" | "de" | "it" | "pt";
@@ -13,14 +26,20 @@ export interface LocaleMeta {
     active: boolean;
 }
 
-export const LOCALES: LocaleMeta[] = [
-    { code: "fr", native: "Français", flag: "🇫🇷", active: true },
-    { code: "en", native: "English", flag: "🇬🇧", active: true },
-    { code: "es", native: "Español", flag: "🇪🇸", active: true },
-    { code: "de", native: "Deutsch", flag: "🇩🇪", active: true },
-    { code: "it", native: "Italiano", flag: "🇮🇹", active: true },
-    { code: "pt", native: "Português", flag: "🇵🇹", active: true },
+// Display metadata of every SUPPORTED locale. `active` = served on this site (NEXT_PUBLIC_LOCALES,
+// single source in i18n/locales.ts): the language switcher lists active locales only.
+const LOCALE_META: Omit<LocaleMeta, "active">[] = [
+    { code: "fr", native: "Français", flag: "🇫🇷" },
+    { code: "en", native: "English", flag: "🇬🇧" },
+    { code: "es", native: "Español", flag: "🇪🇸" },
+    { code: "de", native: "Deutsch", flag: "🇩🇪" },
+    { code: "it", native: "Italiano", flag: "🇮🇹" },
+    { code: "pt", native: "Português", flag: "🇵🇹" },
 ];
+export const LOCALES: LocaleMeta[] = LOCALE_META.map((l) => ({
+    ...l,
+    active: (SERVED_LOCALES as readonly string[]).includes(l.code),
+}));
 
 export const NAV = [
     { href: "/", key: "nav.home" },

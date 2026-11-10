@@ -70,10 +70,26 @@
         "testAi": "Testar a IA",
         "resetDone": "Limitador reiniciado.",
         "runSkill": "Executar a skill (demo)",
-        "elapsed": "{seconds} s"
+        "elapsed": "{seconds} s",
+        "tabsLabel": "Painéis",
+        "tabTerminal": "Terminal",
+        "tabOutput": "Saída",
+        "tabProblems": "Problemas",
+        "terminalTitle": "Demo encenada",
+        "terminalRun": "Iniciar a demo",
+        "terminalReset": "Repor",
+        "outputEmpty": "Ainda sem saída.",
+        "problemsEmpty": "Nenhum problema detetado.",
+        "terminalLines": [
+            "npm run demo",
+            "A ler a configuração…",
+            "A preparar os 6 idiomas…",
+            "A gerar as páginas estáticas…",
+            "Concluído: sequência simulada, sem chamada à IA."
+        ]
     },
     "aiNotice": {
-        "thirdParty": "O seu texto é enviado a um fornecedor de IA externo ({provider}). Este site não o guarda.",
+        "thirdParty": "O seu texto é enviado ao fornecedor de IA externo ({provider}) e ao modelo que este utiliza, que o podem guardar segundo as suas próprias condições. Este site, por si, não o guarda.",
         "quality": "Os modelos gratuitos podem ser lentos ou imprecisos: se o resultado parecer errado, basta executar de novo.",
         "wait": "Uma resposta pode demorar até 30 segundos quando o modelo gratuito está sobrecarregado."
     },
@@ -197,7 +213,8 @@
         "accept": "Aceitar",
         "refuse": "Recusar",
         "settings": "Preferências",
-        "link": "Saber mais"
+        "link": "Saber mais",
+        "manage": "Gerir cookies"
     },
     "theme": {
         "light": "Claro",

@@ -3,19 +3,22 @@
 // No "server-only" here: this module is also imported by the scheduled purge function
 // (netlify/functions/ai-quota-purge.ts), outside the Next bundler.
 import { createHmac } from "node:crypto";
+import { dayIn, resolveTimeZone, secondsUntilMidnightIn } from "../day";
 
 export type QuotaFailMode = "closed" | "open";
 export type QuotaDenyReason = "burst" | "daily" | "global";
 
 export interface QuotaConfig {
-    /** Useful calls / UTC day / IP. Same source as the client (NEXT_PUBLIC_AI_DAILY_LIMIT). */
+    /** Useful calls / quota day / IP. Same source as the client (NEXT_PUBLIC_AI_DAILY_LIMIT). */
     dailyLimit: number;
-    /** TOTAL calls / UTC day, all IPs combined (the wallet). */
+    /** TOTAL calls / quota day, all IPs combined (the wallet). */
     globalCap: number;
     /** Burst: accepted reservations / minute / IP. */
     perMinute: number;
     /** Store missing or failing: "closed" = 503 (default), "open" = let calls through. */
     failMode: QuotaFailMode;
+    /** IANA zone cutting the quota day (NEXT_PUBLIC_AI_QUOTA_TZ, shared with the client). UTC by default. */
+    timeZone: string;
 }
 
 export const DEFAULT_GLOBAL_CAP = 1000;
@@ -35,22 +38,21 @@ export function readQuotaConfig(env: Record<string, string | undefined>, dailyLi
         globalCap: parseNonNegativeInt(env.AI_GLOBAL_DAILY_CAP, DEFAULT_GLOBAL_CAP),
         perMinute: parseNonNegativeInt(env.AI_RATE_PER_MIN, DEFAULT_PER_MINUTE),
         failMode: env.AI_QUOTA_FAIL_MODE === "open" ? "open" : "closed",
+        timeZone: resolveTimeZone(env.NEXT_PUBLIC_AI_QUOTA_TZ),
     };
 }
 
 /* ---------------------------- time & keys ---------------------------- */
 
-/** UTC day "YYYY-MM-DD": identical to the client's todayISO() (lib/usage.ts). */
-export function utcDay(now: number): string {
-    return new Date(now).toISOString().slice(0, 10);
+/** Quota day "YYYY-MM-DD" in `tz` (UTC by default): identical to the client's todayISO() (lib/usage.ts). */
+export function quotaDay(now: number, tz?: string): string {
+    return dayIn(now, tz);
 }
 export function minuteIndex(now: number): number {
     return Math.floor(now / 60_000);
 }
-export function secondsUntilUtcMidnight(now: number): number {
-    const next = new Date(now);
-    next.setUTCHours(24, 0, 0, 0);
-    return Math.max(1, Math.ceil((next.getTime() - now) / 1000));
+export function secondsUntilQuotaMidnight(now: number, tz?: string): number {
+    return secondsUntilMidnightIn(now, tz);
 }
 
 // Keys prefixed by the DAY: Netlify Blobs has NO TTL, so the purge deletes the
@@ -172,7 +174,7 @@ export function casBackoffMs(attempt: number, rand: number): number {
     return Math.min(250, Math.round(10 * 2 ** attempt * (0.5 + rand)));
 }
 
-/** Retry-After (seconds): the minute for a burst, UTC midnight for a daily quota. */
-export function retryAfterFor(reason: QuotaDenyReason, now: number): number {
-    return reason === "burst" ? 60 : secondsUntilUtcMidnight(now);
+/** Retry-After (seconds): the minute for a burst, the next quota-day midnight otherwise. */
+export function retryAfterFor(reason: QuotaDenyReason, now: number, tz?: string): number {
+    return reason === "burst" ? 60 : secondsUntilQuotaMidnight(now, tz);
 }
