@@ -194,8 +194,7 @@
     },
     "common": {
         "loading": "Caricamento…",
-        "close": "Chiudi",
-        "soon": "Prossimamente"
+        "close": "Chiudi"
     },
     "pages": {
         "sitemap": {
@@ -355,5 +354,9 @@
             "onlyIn": "Disponibile solo in {language}",
             "empty": "Ancora nessun articolo."
         }
+    },
+    "notFound": {
+        "text": "Abbiamo setacciato l'intero multiverso: questa pagina non esiste in nessuna realtà conosciuta.",
+        "home": "Torna alla home"
     }
 }

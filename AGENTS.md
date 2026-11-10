@@ -31,7 +31,7 @@ editing, open the ONE doc matching your task from the index below; cross-refs ar
 | `messages/*.json`, served locales (`NEXT_PUBLIC_LOCALES`), localized URLs, `timeZone`, locale navigation                                                         | `docs/i18n.md`            |
 | Markdown articles: `content/articles/`, front matter, listing/latest block, article SEO (hreflang, JSON-LD, sitemap), slug-aware language switch                | `docs/articles.md`        |
 | text diff/similarity (`lib/text/`), DiffView, EditorPair, ChoiceChips, AiNotice, dirty-input guard, elapsed wait                                                 | `docs/text-tools.md`      |
-| visual/layout/animation: hero roulette, icon draw, video detach/dismiss, containers/rails, mobile overflow, header squeeze, ads/consent/dev-reset, Tabs/Terminal | `docs/seo-layout.md`      |
+| visual/layout/animation: hero roulette, icon draw, video detach/dismiss, containers/rails, mobile overflow, header squeeze, ads/consent/dev-reset, Tabs/Terminal, 404 empty state | `docs/seo-layout.md` |
 | tests (Vitest/Playwright), 100%-branch discipline, the closing-`---` gotcha, npm audit                                                                           | `docs/testing.md`         |
 | Storybook stories, component visual states, `.storybook/` config                                                                                                 | `docs/storybook.md`       |
 

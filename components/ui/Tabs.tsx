@@ -17,9 +17,17 @@ export function Tabs({ items, activeId, ariaLabel, onSelect, onClose, closeLabel
     const allLinks = items.every((t) => t.href);
 
     // Bring the active tab into view: a non-destructive DOM sync (scroll position), no state.
+    // Scrolls the STRIP only (horizontal scrollLeft). Never scrollIntoView: it scrolls every
+    // scrollable ancestor, the window included, so a strip below the fold made the page jump
+    // to it on load.
     useEffect(() => {
-        const el = listRef.current?.querySelector<HTMLElement>("[data-active='true']");
-        el?.scrollIntoView?.({ block: "nearest", inline: "nearest" });
+        const list = listRef.current;
+        const el = list?.querySelector<HTMLElement>("[data-active='true']");
+        if (!list || !el) return;
+        const tab = el.getBoundingClientRect();
+        const box = list.getBoundingClientRect();
+        if (tab.left < box.left) list.scrollLeft -= box.left - tab.left;
+        else if (tab.right > box.right) list.scrollLeft += tab.right - box.right;
     }, [activeId]);
 
     const list = (

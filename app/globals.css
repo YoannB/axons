@@ -1569,6 +1569,93 @@ html.has-consent .cookie-banner {
     margin: 0 0 8px;
 }
 
+/* ===== 404 / empty universe ===== */
+.not-found {
+    padding: 56px 0 80px;
+    text-align: center;
+}
+.not-found__code {
+    font-size: 3rem;
+    margin: 0;
+}
+.not-found .muted {
+    max-width: 46ch;
+    margin: 8px auto 22px;
+}
+.empty-universe {
+    display: block;
+    width: min(320px, 80vw);
+    height: auto;
+    margin: 0 auto 12px;
+}
+.empty-universe__star {
+    fill: var(--text-2);
+    animation: empty-universe-twinkle 3s ease-in-out infinite;
+}
+.empty-universe__ring {
+    stroke: var(--accent-2);
+    stroke-width: 3;
+    opacity: 0.7;
+}
+.empty-universe__suit {
+    fill: #e8edf8;
+    stroke: #9aa6c2;
+    stroke-width: 2;
+}
+.empty-universe__pack {
+    fill: #c7cfe0;
+    stroke: #9aa6c2;
+    stroke-width: 2;
+}
+.empty-universe__limb {
+    fill: none;
+    stroke: #e8edf8;
+    stroke-width: 9;
+    stroke-linecap: round;
+}
+.empty-universe__lens {
+    stroke: var(--accent-2);
+    stroke-width: 3;
+    stroke-linecap: round;
+}
+.empty-universe__glint {
+    fill: var(--accent-2);
+    opacity: 0.7;
+}
+.empty-universe__question {
+    fill: var(--accent-1);
+    font: 700 22px var(--font-sans);
+}
+.empty-universe__astronaut {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: empty-universe-float 6s ease-in-out infinite;
+}
+@keyframes empty-universe-float {
+    0%,
+    100% {
+        transform: translate(0, 0) rotate(0deg);
+    }
+    50% {
+        transform: translate(0, -8px) rotate(4deg);
+    }
+}
+@keyframes empty-universe-twinkle {
+    0%,
+    100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.25;
+    }
+}
+@media (prefers-reduced-motion: reduce) {
+    .empty-universe__star,
+    .empty-universe__astronaut {
+        animation: none;
+    }
+}
+
 /* ===== Articles (listing, "latest" block, article page) ===== */
 .article-feed {
     display: flex;

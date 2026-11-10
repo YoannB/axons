@@ -10,6 +10,15 @@ async function hydrated(page: Page) {
 }
 
 test.describe("Configuration du site", () => {
+    test("l'accueil reste en haut de page après l'hydratation", async ({ page }) => {
+        // Regression: the showcase Tabs used scrollIntoView on mount, which scrolled the WINDOW
+        // down to the terminal demo. The strip must scroll itself only.
+        await page.goto("/fr");
+        await hydrated(page);
+        await page.waitForTimeout(300);
+        expect(await page.evaluate(() => window.scrollY)).toBe(0);
+    });
+
     test("« Gérer mes cookies » rouvre le bandeau après un choix", async ({ page }) => {
         await page.goto("/");
         await hydrated(page);

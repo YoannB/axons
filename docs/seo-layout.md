@@ -89,7 +89,16 @@ builds. Resetting must push an info toast from the click handler (user intent), 
 `components/ui/Tabs.tsx`: a tab WITH `href` is a real link inside a `<nav>` (`aria-current=page`)
 so the URL stays the source of truth (direct URL, reload, back/forward); a tab WITHOUT `href`
 is a `<button aria-pressed>` switching a panel via `onSelect`. Do not turn page navigation into
-`role="tablist"`. The active tab is scrolled into view by a DOM-only effect (no state).
+`role="tablist"`. The active tab is scrolled into view by a DOM-only effect (no state)
+that sets the STRIP's own `scrollLeft`: never `scrollIntoView`, which also scrolls the window
+and made the home page jump to the showcase on load (guarded in `site-config.spec.ts`).
+
+## Empty state / 404
+
+`app/[locale]/not-found.tsx` shows `EmptyUniverse` (`components/ui`, decorative SVG,
+`aria-hidden`, theme tokens, CSS float/twinkle disabled under `prefers-reduced-motion`), the
+404 code, a `notFound.text` line and a "back to home" button. Reuse `EmptyUniverse` for any
+"nothing here" state rather than drawing a new illustration.
 `components/ui/Terminal.tsx`: plain-text lines (never innerHTML) in a `role="log"` live region.
 `hooks/use-scripted-sequence.ts` reveals lines on an interval (setState in the interval
 callback only) and shows everything at once under `prefers-reduced-motion`. A scripted demo is
