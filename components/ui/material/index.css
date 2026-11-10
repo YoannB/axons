@@ -1,0 +1,267 @@
+/* Styles TIED TO MATERIAL UI only (see docs/ui-material.md). Imported by MaterialProviders. */
+
+/* ===== Native controls: cancel the intrinsic width (size/cols) ===== */
+/* An <input>/<textarea> keeps an intrinsic width that defines its min-content;
+   min-width:0 on the MUI WRAPPER does NOT propagate to the native element. Without this, the
+   grid column refuses to shrink and the min-content bubbles up to the container
+   (e.g. a forced 768px). So min-width:0 + width/max-width:100% are set on the
+   native elements AND the MUI roots, here, at the adapter boundary. */
+.mui-field input,
+.mui-field textarea,
+.mui-field select,
+.MuiInputBase-root,
+.MuiOutlinedInput-root,
+.MuiFormControl-root,
+.MuiInputBase-input,
+.MuiOutlinedInput-input {
+    min-width: 0;
+    max-width: 100%;
+}
+.mui-field input,
+.mui-field textarea {
+    width: 100%;
+}
+
+/* ===== Field: FIXED light border (MUI outline) + SOLID, SMOOTH rotating ring ===== */
+@property --angle {
+    syntax: "<angle>";
+    initial-value: 0deg;
+    inherits: false;
+}
+.mui-field {
+    position: relative;
+    border-radius: var(--radius-md);
+    min-width: 0;
+}
+.mui-field::before {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    padding: 1px;
+    background: conic-gradient(
+        from var(--angle),
+        var(--accent-1),
+        var(--accent-2),
+        var(--accent-1),
+        var(--accent-2),
+        var(--accent-1)
+    );
+    -webkit-mask:
+        linear-gradient(#000 0 0) content-box,
+        linear-gradient(#000 0 0);
+    mask:
+        linear-gradient(#000 0 0) content-box,
+        linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity 0.25s ease;
+    pointer-events: none;
+    z-index: 1;
+}
+.mui-field:focus-within::before {
+    opacity: 1;
+    animation: spin 3s linear infinite;
+}
+.mui-field .MuiInputBase-input::placeholder {
+    color: var(--muted);
+    opacity: 1;
+}
+.mui-field .MuiFormHelperText-root:not(.Mui-error) {
+    color: var(--text-2);
+}
+.mui-field:focus-within .MuiOutlinedInput-notchedOutline {
+    border-color: transparent !important;
+}
+.mui-field input:not(:disabled),
+.mui-field textarea:not(:disabled) {
+    color: var(--text-1) !important;
+}
+.mui-field .MuiFormLabel-asterisk {
+    display: none;
+}
+@keyframes spin {
+    to {
+        --angle: 360deg;
+    }
+}
+.MuiOutlinedInput-notchedOutline {
+    border-color: var(--border-2) !important;
+}
+
+/* ===== Base MUI ===== */
+.MuiPaper-root {
+    background: var(--surface-1) !important;
+    color: var(--text-1) !important;
+}
+.MuiDialog-paper {
+    position: relative;
+    border: 1px solid var(--border-1) !important;
+    border-radius: var(--radius-lg) !important;
+}
+
+/* ===== Dialog close button: DEDICATED keyframe that ENDS visible ===== */
+.dialog-close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 32px;
+    height: 32px;
+    z-index: 2;
+    display: grid;
+    place-items: center;
+    background: transparent;
+    cursor: pointer;
+    border: 1px solid var(--border-1);
+    border-radius: 50%;
+    color: var(--text-2);
+    transition:
+        transform 0.25s ease,
+        color 0.2s ease,
+        border-color 0.2s ease;
+}
+.dialog-close:hover {
+    transform: rotate(90deg);
+    color: var(--accent-2);
+    border-color: var(--accent-2);
+}
+.dialog-close svg {
+    width: 16px;
+    height: 16px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+}
+.dialog-close svg path {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    animation: crossDraw 0.45s ease forwards;
+}
+@keyframes crossDraw {
+    from {
+        stroke-dashoffset: 1;
+    }
+    to {
+        stroke-dashoffset: 0;
+    }
+}
+
+/* ===== Primary button: keyframes referenced by sx (Button.tsx) ===== */
+@keyframes btnShift {
+    0%,
+    100% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+}
+@keyframes btnHalo {
+    0%,
+    100% {
+        box-shadow: 0 0 0 0 color-mix(in oklab, var(--accent-1) 0%, transparent);
+    }
+    50% {
+        box-shadow: 0 0 26px 2px color-mix(in oklab, var(--accent-1) 55%, transparent);
+    }
+}
+@keyframes btnSheen {
+    0% {
+        transform: translateX(-130%);
+    }
+    55%,
+    100% {
+        transform: translateX(130%);
+    }
+}
+
+/* ===== Toasts: 2-CLASS SPECIFICITY + BOTTOM-LEFT anchoring ===== */
+.MuiSnackbar-root .MuiAlert-root {
+    border-radius: var(--radius-md) !important;
+    box-shadow: 0 14px 44px rgba(0, 0, 0, 0.55) !important;
+    border: 1px solid rgba(255, 255, 255, 0.14) !important;
+    max-width: min(92vw, 440px);
+}
+.MuiAlert-message {
+    white-space: pre-wrap;
+    word-break: break-word;
+} /* Severity backgrounds via the neutral data-severity attribute (robust against MUI classes). */
+.MuiSnackbar-root .MuiAlert-root[data-severity="success"] {
+    background: linear-gradient(135deg, #059669, #10b981) !important;
+    color: #04130d !important;
+}
+.MuiSnackbar-root .MuiAlert-root[data-severity="error"] {
+    background: linear-gradient(135deg, #e11d48, #f43f5e) !important;
+    color: #fff !important;
+}
+.MuiSnackbar-root .MuiAlert-root[data-severity="info"] {
+    background: linear-gradient(135deg, #0891b2, #22d3ee) !important;
+    color: #04222b !important;
+}
+.MuiSnackbar-root .MuiAlert-root[data-severity="warning"] {
+    background: linear-gradient(135deg, #d97706, #f59e0b) !important;
+    color: #241303 !important;
+}
+.MuiSnackbar-root .MuiAlert-root[data-severity="success"] .MuiAlert-icon,
+.MuiSnackbar-root .MuiAlert-root[data-severity="info"] .MuiAlert-icon,
+.MuiSnackbar-root .MuiAlert-root[data-severity="warning"] .MuiAlert-icon {
+    color: inherit !important;
+}
+.MuiSnackbar-anchorOriginBottomLeft {
+    left: 16px;
+    bottom: 56px;
+}
+.MuiSnackbar-root .toast-with-progress {
+    position: relative;
+    overflow: hidden;
+}
+.MuiSnackbar-root .toast-with-progress::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: 3px;
+    width: 100%;
+    background: rgba(255, 255, 255, 0.55);
+    transform-origin: left center;
+    animation: toastProgress var(--toast-duration, 4000ms) linear forwards;
+}
+@keyframes toastProgress {
+    from {
+        transform: scaleX(1);
+    }
+    to {
+        transform: scaleX(0);
+    }
+}
+
+/* ===== Mobile: toasts TOP-CENTERED, below the header (64px), to keep clear of the
+   fixed video at the bottom right (otherwise both fixed layers overlap at the bottom).
+   Pure CSS = hydration-safe: material/Toast.tsx HARD-CODES anchorOrigin
+   {bottom,left} (see its anti-badge comment), so a responsive useMediaQuery
+   would switch the .MuiSnackbar-anchorOrigin* classes between SSR and
+   client => hydration mismatch. The CSS applies identically on both sides.
+   !important on ALL layout props: .MuiSnackbar-anchorOriginBottomLeft
+   has the same specificity (0,1,0) as .MuiSnackbar-root and the injection order
+   of Emotion / static CSS is not guaranteed => on a tie, without !important, the anchoring
+   rule would win and the toast would stay at the bottom. bottom:auto cancels the
+   anti-badge bottom:56px, with no conflict: there is no Netlify badge at the top.
+   Centered with left:0;right:0;margin-inline:auto + width:fit-content => NO
+   overridden transform => MUI's Grow transition (which animates the child, not the root)
+   stays intact. Targets .MuiSnackbar-root = STABLE root class, present whatever
+   the anchorOrigin. The Snackbar being portaled into body (disablePortal
+   false by default) and body/html having neither transform nor filter, fixed stays
+   relative to the viewport => top:76px is valid. ===== */
+@media (max-width: 900px) {
+    .MuiSnackbar-root {
+        top: 76px !important; /* 64px header + 12px of breathing room */
+        bottom: auto !important; /* cancels the bottom anchoring + the anti-badge bottom:56px */
+        left: 0 !important; /* cancels BottomLeft's left:16px */
+        right: 0 !important; /* adds the horizontal centering constraint */
+        width: fit-content !important;
+        max-width: calc(100vw - 32px) !important; /* bounded on mobile, no overflow */
+        margin-inline: auto !important; /* horizontal centering WITHOUT transform */
+    }
+}

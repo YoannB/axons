@@ -1,0 +1,318 @@
+{
+    "nav": {
+        "home": "Accueil",
+        "sitemap": "Plan du site",
+        "legal": "Mentions légales",
+        "privacy": "Confidentialité",
+        "cookies": "Cookies",
+        "github": "GitHub",
+        "menu": "Menu"
+    },
+    "hero": {
+        "badge": "Votre assistant IA, prêt en un clic",
+        "titleLead": "Le boilerplate Next.js pour vos",
+        "rotating": ["agents IA", "sites SEO", "apps Next.js", "démos OpenRouter"],
+        "subtitle": "Un socle moderne, rapide et SEO pour créer facilement des applications web avec l'IA. Composants prêts à l'emploi, multilingue, déployable sur Netlify.",
+        "ctaDemo": "Voir la démo",
+        "ctaPlan": "Plan du site",
+        "scrollCue": "Faire défiler vers le bas",
+        "limitSuffix": "Limité : {count} appels IA / jour",
+        "tech": {
+            "next": "Next.js 16+",
+            "nextSub": "App Router",
+            "ts": "TypeScript",
+            "tsSub": "Sécurité & stabilité",
+            "mui": "Material UI 9+",
+            "muiSub": "Composants modernes",
+            "or": "OpenRouter",
+            "orSub": "IA gratuite"
+        }
+    },
+    "showcase": {
+        "title": "Bibliothèque de composants",
+        "inputLabel": "Input",
+        "inputPlaceholder": "Votre texte...",
+        "textareaLabel": "Textarea",
+        "textareaPlaceholder": "Votre message...",
+        "btnPrimary": "Bouton principal",
+        "btnSecondary": "Bouton secondaire",
+        "chipLabel": "Chip",
+        "chipInfo": "Info",
+        "chipSuccess": "Validé",
+        "chipWarn": "À vérifier",
+        "chipRemoved": "Élément supprimé.",
+        "toastLabel": "Toast",
+        "toastFire": "Afficher un toast",
+        "toastMsg": "Toast affiché avec succès.",
+        "dialogLabel": "Dialog",
+        "dialogOpen": "Ouvrir le dialog",
+        "dialogTitle": "Fenêtre modale",
+        "dialogBody": "Contenu du dialog, isolé derrière l'API neutre.",
+        "dialogClose": "Fermer",
+        "confirmLabel": "Confirmer",
+        "confirmQuestion": "Êtes-vous sûr de vouloir continuer ?",
+        "confirmCancel": "Annuler",
+        "confirmOk": "Confirmer",
+        "gaugeLabel": "Score / Jauge",
+        "gaugeValue": "{value}%",
+        "iconsLabel": "Icônes animées",
+        "bcHome": "Accueil",
+        "bcSection": "Section",
+        "bcPage": "Page",
+        "langLabel": "Sélecteur de langue",
+        "langCurrent": "{name} (détecté automatiquement)",
+        "themeLabel": "Mode clair / sombre",
+        "themeSub": "Selon votre système",
+        "counterLabel": "Affichage du compteur",
+        "counterRemaining": "{count} appels restants",
+        "copyLabel": "Copier dans le presse‑papier",
+        "copyCopied": "Copié !",
+        "testAi": "Tester l'IA",
+        "resetDone": "Limiteur réinitialisé.",
+        "runSkill": "Exécuter la skill (démo)"
+    },
+    "seo": {
+        "title": "Guides & tutoriels",
+        "videoCaption": "Apprendre à créer des applications modernes avec Next.js 16",
+        "articlesTitle": "Pourquoi choisir {site} ?",
+        "why": [
+            "Un socle Next.js 16 ultra performant",
+            "SEO optimisé et multilingue (6 langues)",
+            "Composants UI réutilisables (Material UI)",
+            "Intégration simple avec l'IA (OpenRouter)",
+            "Déployable en un clic sur Netlify"
+        ],
+        "ctaTitle": "Prêt à démarrer ?",
+        "ctaText": "Explorez les composants et testez l'IA dès maintenant pour voir ce que vous pouvez créer !",
+        "ctaButton": "Tester l'IA",
+        "a1": {
+            "title": "Next.js 16 : le tutoriel complet (2026)",
+            "summary": "Découvrez comment créer une application full stack avec Next.js 16, en 13 étapes simples et concrètes : App Router, RSC, Server Actions, Turbopack, PPR, Prisma, Auth.js et déploiement.",
+            "source": "YouTube",
+            "duration": "12 min"
+        },
+        "a2": {
+            "title": "Créez une application React avec Next.js",
+            "summary": "Apprenez à démarrer un projet Next.js et à configurer votre environnement de développement : structure du dossier app/, Server Components par défaut, layout racine et rendu côté serveur pour SEO et rapidité.",
+            "source": "OpenClassrooms",
+            "duration": "8 min"
+        },
+        "a3": {
+            "title": "Next.js 16 : Tutoriel complet",
+            "summary": "Un guide complet pour maîtriser Next.js 16 et ses nouvelles fonctionnalités en 2026 : version stable 16.3.x, durcissement sécurité (avis CVE coordonnés), cache, images et hébergement souverain UE.",
+            "source": "Tech Insider",
+            "duration": "10 min"
+        }
+    },
+    "features": {
+        "multilang": "Multi‑langues",
+        "multilangSub": "FR, EN, ES, DE, IT, PT",
+        "theme": "Mode clair / sombre",
+        "themeSub": "Selon votre système",
+        "cookies": "Cookies",
+        "cookiesSub": "Gestion du consentement",
+        "storage": "Stockage local",
+        "storageSub": "Vos données sont locales",
+        "security": "Sécurisé",
+        "securitySub": "Protection anti‑bots"
+    },
+    "faq": {
+        "title": "Questions fréquentes",
+        "items": [
+            {
+                "q": "Qu'est‑ce qu'Axons ?",
+                "a": "Un boilerplate Next.js 16 / React 19 orienté SEO et IA, déployable sur Netlify, avec une bibliothèque de composants isolée (Material UI) et un branchement OpenRouter via Route Handler."
+            },
+            {
+                "q": "L'IA est‑elle payante ?",
+                "a": "Le modèle par défaut est un modèle gratuit OpenRouter (openrouter/free). Un quota quotidien limite les appels côté navigateur ; les erreurs sont remontées en toast pour relancer facilement."
+            },
+            {
+                "q": "Mes données partent‑elles quelque part ?",
+                "a": "Non. Le thème, le consentement cookies et le compteur quotidien sont stockés localement (cookie + localStorage). La clé OpenRouter reste côté serveur et n'est jamais exposée au navigateur."
+            },
+            {
+                "q": "Comment ajouter une nouvelle action IA ?",
+                "a": "Déposez un fichier dans capabilities/agents/ (ou un dossier capabilities/skills/<id>/), puis appelez POST /api/run avec { prompt, agentId?, skillId?, inputs? }. La route reste fine : composition, quota, timeout et erreurs vivent dans lib/ai (run → composeRun + runPrompt)."
+            },
+            {
+                "q": "Le site est‑il indexable par Google ?",
+                "a": "Oui : rendu serveur, URLs localisées, métadonnées, hreflang, sitemap XML et plan du site HTML sont fournis."
+            }
+        ]
+    },
+    "footer": {
+        "tagline": "Votre base pour des apps IA modernes",
+        "rights": "© {year} {site}. Tous droits réservés.",
+        "builtWith": "Construit avec Next.js, Material UI, next-intl et OpenRouter"
+    },
+    "cookie": {
+        "message": "Ce site utilise des cookies pour améliorer votre expérience, mesurer l'audience et afficher des publicités. Vous pouvez accepter ou refuser leur utilisation.",
+        "accept": "Accepter",
+        "refuse": "Refuser",
+        "settings": "Préférences",
+        "link": "En savoir plus"
+    },
+    "theme": { "light": "Clair", "dark": "Sombre", "system": "Système" },
+    "errors": {
+        "rate": "Limite quotidienne atteinte. Réessayez demain.",
+        "busy": "Trop de demandes en peu de temps. Réessayez dans une minute.",
+        "timeout": "L'IA met trop de temps à répondre (45 s). Merci de réessayer.",
+        "provider": "Le fournisseur IA est momentanément indisponible. Réessayez dans quelques instants.",
+        "invalid": "Requête invalide.",
+        "generic": "La génération IA a échoué. Réessayez.",
+        "empty": "L'IA n'a renvoyé aucun texte. Merci de réessayer.",
+        "successPrefix": "Réponse de l'IA : "
+    },
+    "common": { "loading": "Chargement…", "close": "Fermer", "soon": "Bientôt" },
+    "pages": {
+        "sitemap": {
+            "title": "Plan du site",
+            "intro": "Toutes les pages disponibles du site."
+        },
+        "legal": {
+            "title": "Mentions légales",
+            "intro": "Informations relatives à l'éditeur, à l'hébergeur et à la propriété intellectuelle du site.",
+            "sections": [
+                {
+                    "heading": "Éditeur du site",
+                    "body": [
+                        "Le présent site est édité par {editorName}, entrepreneur individuel exerçant sous l'enseigne {tradeName}, immatriculé sous le numéro SIREN {siren} (code APE {apeCode} – Programmation informatique), inscrit au registre national des entreprises, dont le siège est situé {address}. Entreprise individuelle sans capital social ; activité déclarée le {declaredDate}.",
+                        "Directeur de la publication : {publicationDirector}. Contact : {contactEmail}."
+                    ]
+                },
+                {
+                    "heading": "Hébergeur",
+                    "body": [
+                        "Le site est hébergé par Netlify, Inc., 2325 3rd Street, Suite 100, San Francisco, CA 94107, États-Unis (ou sa filiale européenne le cas échéant).",
+                        "Les données techniques nécessaires au fonctionnement du service (journaux de connexion, adresses IP) sont traitées par l'hébergeur dans le cadre de la fourniture du service."
+                    ]
+                },
+                {
+                    "heading": "Propriété intellectuelle",
+                    "body": [
+                        "L'ensemble des éléments du site (structure, textes, graphismes, logos, icônes, code source, composants) est protégé par le droit d'auteur, le droit des marques et le droit des dessins et modèles.",
+                        "Toute reproduction, représentation, modification, publication ou adaptation, totale ou partielle, par quelque procédé que ce soit, sans autorisation écrite préalable de l'éditeur, est interdite et constitue une contrefaçon sanctionnée par les articles L.335-2 et suivants du Code de la propriété intellectuelle."
+                    ]
+                },
+                {
+                    "heading": "Limitation de responsabilité",
+                    "body": [
+                        "Le site est fourni à titre indicatif. L'éditeur ne garantit pas l'exactitude, l'exhaustivité ou la mise à jour des informations diffusées, et ne pourra être tenu responsable des dommages directs ou indirects résultant de l'accès ou de l'utilisation du site.",
+                        "Les contenus générés par l'IA (via OpenRouter) le sont à titre d'assistance et ne sauraient engager la responsabilité de l'éditeur ; il appartient à l'utilisateur d'en vérifier l'exactitude."
+                    ]
+                },
+                {
+                    "heading": "Droit applicable",
+                    "body": [
+                        "Les présentes mentions sont régies par le droit français. Tout litige relèvera des tribunaux compétents du ressort du siège social de l'éditeur."
+                    ]
+                }
+            ]
+        },
+        "privacy": {
+            "title": "Politique de confidentialité",
+            "intro": "Traitement des données personnelles conformément au Règlement (UE) 2016/679 (RGPD) et à la loi « Informatique et Libertés ».",
+            "sections": [
+                {
+                    "heading": "Responsable de traitement",
+                    "body": [
+                        "Le responsable du traitement est {editorName}, entrepreneur individuel exerçant sous l'enseigne {tradeName}, immatriculé sous le numéro SIREN {siren} (code APE {apeCode} – Programmation informatique), inscrit au registre national des entreprises, dont le siège est situé {address}.",
+                        "Contact : {contactEmail}. Pour toute question relative à la protection des données, vous pouvez utiliser cette adresse e-mail."
+                    ]
+                },
+                {
+                    "heading": "Données collectées",
+                    "body": [
+                        "Ce site ne collecte volontairement aucune donnée personnelle identifiante côté serveur, hormis les éléments que vous transmettez librement pour obtenir une réponse IA.",
+                        "Les appels IA transitent par un Route Handler qui relaie une requête texte vers OpenRouter ; la clé API reste côté serveur et n'est jamais exposée au navigateur.",
+                        "Les préférences de thème, le consentement aux cookies et le compteur d'appels quotidiens sont stockés localement dans votre navigateur (cookie + localStorage) et ne sont pas transmis au serveur."
+                    ]
+                },
+                {
+                    "heading": "Finalités et base légale",
+                    "body": [
+                        "Les traitements mis en œuvre ont pour finalités : le fonctionnement du site (exécution du contrat / intérêt légitime), la mesure d'audience et l'affichage de publicités (consentement), et la fourniture de réponses IA à votre demande (exécution du service demandé).",
+                        "Si vous incluez des données personnelles dans un message soumis à l'IA, elles sont traitées uniquement pour produire la réponse demandée.",
+                        "La base légale de chaque traitement est indiquée ci-dessus ; les traitements reposant sur le consentement peuvent être interrompus à tout moment."
+                    ]
+                },
+                {
+                    "heading": "Durée de conservation",
+                    "body": [
+                        "Les données stockées localement (thème, consentement, compteur) sont conservées tant que votre navigateur les conserve et jusqu'à suppression par vos soins.",
+                        "Les journaux techniques de l'hébergeur sont conservés pour la durée strictement nécessaire au fonctionnement et à la sécurité du service."
+                    ]
+                },
+                {
+                    "heading": "Destinataires et transferts",
+                    "body": [
+                        "Les données ne sont pas cédées ni louées. Seuls l'hébergeur (Netlify) et, le cas échéant, le fournisseur d'IA (OpenRouter) sont susceptibles de traiter les données strictement nécessaires à l'exécution du service.",
+                        "Si un transfert hors Union européenne intervient, il est encadré par des garanties appropriées (clauses contractuelles types de la Commission européenne ou décision d'adéquation)."
+                    ]
+                },
+                {
+                    "heading": "Vos droits",
+                    "body": [
+                        "Vous disposez d'un droit d'accès, de rectification, d'effacement, de limitation, d'opposition et de portabilité de vos données, ainsi que du droit de définir des directives sur le sort de vos données après votre décès.",
+                        "Ces droits s'exercent gratuitement à l'adresse {contactEmail}. Vous pouvez également introduire une réclamation auprès de la CNIL (https://www.cnil.fr)."
+                    ]
+                },
+                {
+                    "heading": "Sécurité",
+                    "body": [
+                        "Des mesures techniques et organisationnelles raisonnables sont mises en œuvre pour protéger les données contre tout accès non autorisé, altération, divulgation ou destruction.",
+                        "La clé OpenRouter est stockée dans les variables d'environnement serveur et n'est jamais envoyée au client ni consignée dans les réponses."
+                    ]
+                }
+            ]
+        },
+        "cookies": {
+            "title": "Politique cookies",
+            "intro": "Description des cookies et traceurs déposés, de leurs finalités et de vos moyens de les gérer, conformément à la réglementation ePrivacy et à la loi « Informatique et Libertés ».",
+            "sections": [
+                {
+                    "heading": "Qu'est-ce qu'un cookie ?",
+                    "body": [
+                        "Un cookie est un petit fichier de texte déposé ou lu sur votre terminal (ordinateur, tablette, smartphone) lors de la consultation d'un site. Il permet de mémoriser des informations relatives à votre navigation ou à vos préférences."
+                    ]
+                },
+                {
+                    "heading": "Cookies utilisés",
+                    "body": [
+                        "Cookies de fonctionnement (thème clair/sombre, consentement) : strictement nécessaires, ils ne requièrent pas de consentement préalable et sont stockés localement.",
+                        "Cookie de compteur quotidien d'appels IA : mesure l'usage local du quota, stocké dans votre navigateur.",
+                        "Cookies de mesure d'audience et publicitaires : déposés uniquement après votre consentement, ils peuvent être refusés sans dégrader la navigation."
+                    ]
+                },
+                {
+                    "heading": "Consentement",
+                    "body": [
+                        "Lors de votre première visite, un bandeau vous permet d'accepter, de refuser ou de personnaliser le dépôt des cookies non essentiels.",
+                        "Tant que vous n'avez pas donné votre accord, seuls les cookies strictement nécessaires sont déposés. Votre choix est mémorisé et peut être modifié à tout moment via le lien « Cookies » du pied de page."
+                    ]
+                },
+                {
+                    "heading": "Durée de conservation",
+                    "body": [
+                        "Les cookies de consentement sont conservés au maximum six (6) mois, conformément aux recommandations de la CNIL, à l'exception des durées techniques strictement nécessaires.",
+                        "Les cookies de mesure d'audience sont conservés pour la durée minimale nécessaire à leur finalité."
+                    ]
+                },
+                {
+                    "heading": "Vos choix",
+                    "body": [
+                        "Vous pouvez à tout moment accepter ou refuser les cookies non essentiels via le bandeau ou la page « Cookies ».",
+                        "Vous pouvez également configurer votre navigateur pour bloquer ou supprimer les cookies ; certaines fonctionnalités du site pourraient alors ne pas fonctionner correctement."
+                    ]
+                },
+                {
+                    "heading": "Contact",
+                    "body": [
+                        "Pour toute question relative aux cookies, contactez-nous à l'adresse {contactEmail}. Vous pouvez aussi introduire une réclamation auprès de la CNIL."
+                    ]
+                }
+            ]
+        }
+    }
+}

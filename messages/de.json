@@ -1,0 +1,326 @@
+{
+    "nav": {
+        "home": "Startseite",
+        "sitemap": "Sitemap",
+        "legal": "Impressum",
+        "privacy": "Datenschutz",
+        "cookies": "Cookies",
+        "github": "GitHub",
+        "menu": "Menü"
+    },
+    "hero": {
+        "badge": "Dein KI-Assistent, bereit mit einem Klick",
+        "titleLead": "Das Next.js-Boilerplate für deine ",
+        "rotating": ["KI-Agenten", "SEO-Websites", "Next.js-Apps", "OpenRouter-Demos"],
+        "subtitle": "Eine moderne, schnelle und SEO-freundliche Grundlage, um einfach Web-Apps mit KI zu erstellen. Einsatzfertige Komponenten, mehrsprachig, deploybar auf Netlify.",
+        "ctaDemo": "Demo ansehen",
+        "ctaPlan": "Sitemap",
+        "scrollCue": "Nach unten scrollen",
+        "limitSuffix": "Begrenzt: {count} KI-Aufrufe / Tag",
+        "tech": {
+            "next": "Next.js 16+",
+            "nextSub": "App Router",
+            "ts": "TypeScript",
+            "tsSub": "Sicherheit und Stabilität",
+            "mui": "Material UI 9+",
+            "muiSub": "Moderne Komponenten",
+            "or": "OpenRouter",
+            "orSub": "Kostenlose KI"
+        }
+    },
+    "showcase": {
+        "title": "Komponentenbibliothek",
+        "inputLabel": "Eingabe",
+        "inputPlaceholder": "Dein Text...",
+        "textareaLabel": "Textbereich",
+        "textareaPlaceholder": "Deine Nachricht...",
+        "btnPrimary": "Primäre Schaltfläche",
+        "btnSecondary": "Sekundäre Schaltfläche",
+        "chipLabel": "Chip",
+        "chipInfo": "Info",
+        "chipSuccess": "Verifiziert",
+        "chipWarn": "Prüfen",
+        "chipRemoved": "Element entfernt.",
+        "toastLabel": "Toast",
+        "toastFire": "Toast anzeigen",
+        "toastMsg": "Toast erfolgreich angezeigt.",
+        "dialogLabel": "Dialog",
+        "dialogOpen": "Dialog öffnen",
+        "dialogTitle": "Modalfenster",
+        "dialogBody": "Dialoginhalt, isoliert hinter der neutralen API.",
+        "dialogClose": "Schließen",
+        "confirmLabel": "Bestätigen",
+        "confirmQuestion": "Bist du sicher, dass du fortfahren möchtest?",
+        "confirmCancel": "Abbrechen",
+        "confirmOk": "Bestätigen",
+        "gaugeLabel": "Punktzahl / Anzeige",
+        "gaugeValue": "{value}%",
+        "iconsLabel": "Animierte Symbole",
+        "bcHome": "Startseite",
+        "bcSection": "Abschnitt",
+        "bcPage": "Seite",
+        "langLabel": "Sprachauswahl",
+        "langCurrent": "{name} (automatisch erkannt)",
+        "themeLabel": "Heller / dunkler Modus",
+        "themeSub": "Entsprechend deinem System",
+        "counterLabel": "Zähleranzeige",
+        "counterRemaining": "{count} Aufrufe verbleibend",
+        "copyLabel": "In Zwischenablage kopieren",
+        "copyCopied": "Kopiert!",
+        "testAi": "KI testen",
+        "resetDone": "Begrenzer zurückgesetzt.",
+        "runSkill": "Skill ausführen (Demo)"
+    },
+    "seo": {
+        "title": "Anleitungen und Tutorials",
+        "videoCaption": "Lerne, moderne Apps mit Next.js 16 zu erstellen",
+        "articlesTitle": "Warum {site} wählen?",
+        "why": [
+            "Eine ultraschnelle Next.js-16-Grundlage",
+            "Optimiertes und mehrsprachiges SEO (6 Sprachen)",
+            "Wiederverwendbare UI-Komponenten (Material UI)",
+            "Einfache KI-Integration (OpenRouter)",
+            "Deployment mit einem Klick auf Netlify"
+        ],
+        "ctaTitle": "Bereit zu starten?",
+        "ctaText": "Entdecke die Komponenten und teste jetzt die KI, um zu sehen, was du erstellen kannst!",
+        "ctaButton": "KI testen",
+        "a1": {
+            "title": "Next.js 16: das komplette Tutorial (2026)",
+            "summary": "Erfahre, wie du mit Next.js 16 in 13 konkreten Schritten eine Full-Stack-App erstellst: App Router, RSC, Server Actions, Turbopack, PPR, Prisma, Auth.js und Deployment.",
+            "source": "YouTube",
+            "duration": "12 min"
+        },
+        "a2": {
+            "title": "React-App mit Next.js erstellen",
+            "summary": "Lerne, ein Next.js-Projekt zu starten und deine Entwicklungsumgebung einzurichten: Struktur des app/-Ordners, Server Components standardmäßig, Root-Layout und Server-Rendering für SEO und Geschwindigkeit.",
+            "source": "OpenClassrooms",
+            "duration": "8 min"
+        },
+        "a3": {
+            "title": "Next.js 16: Komplettes Tutorial",
+            "summary": "Ein vollständiger Leitfaden, um Next.js 16 und seine Neuerungen für 2026 zu beherrschen: stabile Version 16.3.x, koordinierte CVE-Sicherheitshärtung, Cache, Bilder und EU-souveränes Hosting.",
+            "source": "Tech Insider",
+            "duration": "10 min"
+        }
+    },
+    "features": {
+        "multilang": "Mehrsprachig",
+        "multilangSub": "FR, EN, ES, DE, IT, PT",
+        "theme": "Heller / dunkler Modus",
+        "themeSub": "Entsprechend deinem System",
+        "cookies": "Cookies",
+        "cookiesSub": "Einwilligungsverwaltung",
+        "storage": "Lokaler Speicher",
+        "storageSub": "Deine Daten bleiben lokal",
+        "security": "Gesichert",
+        "securitySub": "Bot-Schutz"
+    },
+    "faq": {
+        "title": "Häufig gestellte Fragen",
+        "items": [
+            {
+                "q": "Was ist Axons?",
+                "a": "Ein Next.js-16-/React-19-Boilerplate mit Fokus auf SEO und KI, deploybar auf Netlify, mit isolierter Komponentenbibliothek (Material UI) und OpenRouter-Anbindung über einen Route Handler."
+            },
+            {
+                "q": "Ist die KI kostenpflichtig?",
+                "a": "Das Standardmodell ist ein kostenloses OpenRouter-Modell (openrouter/free). Ein Tageskontingent begrenzt Browser-Aufrufe; Fehler werden als Toasts angezeigt, damit du einfach erneut versuchen kannst."
+            },
+            {
+                "q": "Gehen meine Daten irgendwohin?",
+                "a": "Nein. Thema, Cookie-Einwilligung und Tageszähler werden lokal gespeichert (Cookie + localStorage). Der OpenRouter-Schlüssel bleibt serverseitig und wird niemals dem Browser übermittelt."
+            },
+            {
+                "q": "Wie füge ich eine neue KI-Aktion hinzu?",
+                "a": "Lege eine Datei in capabilities/agents/ ab (oder einen Ordner capabilities/skills/<id>/) und rufe POST /api/run mit { prompt, agentId?, skillId?, inputs? } auf. Die Route bleibt schlank: Komposition, Kontingent, Timeout und Fehler liegen in lib/ai (run → composeRun + runPrompt)."
+            },
+            {
+                "q": "Ist die Website für Google indexierbar?",
+                "a": "Ja: Server-Rendering, lokalisierte URLs, Metadaten, hreflang, XML-Sitemap und HTML-Sitemap sind enthalten."
+            }
+        ]
+    },
+    "footer": {
+        "tagline": "Deine Basis für moderne KI-Apps",
+        "rights": "© {year} {site}. Alle Rechte vorbehalten.",
+        "builtWith": "Erstellt mit Next.js, Material UI, next-intl und OpenRouter"
+    },
+    "cookie": {
+        "message": "Diese Website verwendet Cookies, um deine Erfahrung zu verbessern, die Audience zu messen und Anzeigen zu schalten. Du kannst ihre Verwendung akzeptieren oder ablehnen.",
+        "accept": "Akzeptieren",
+        "refuse": "Ablehnen",
+        "settings": "Einstellungen",
+        "link": "Mehr erfahren"
+    },
+    "theme": {
+        "light": "Hell",
+        "dark": "Dunkel",
+        "system": "System"
+    },
+    "errors": {
+        "rate": "Tageslimit erreicht. Versuche es morgen erneut.",
+        "busy": "Zu viele Anfragen in kurzer Zeit. Versuche es in einer Minute erneut.",
+        "timeout": "Die KI braucht zu lange für eine Antwort (45 s). Bitte erneut versuchen.",
+        "provider": "Der KI-Anbieter ist vorübergehend nicht verfügbar. Bitte versuche es in wenigen Augenblicken erneut.",
+        "invalid": "Ungültige Anfrage.",
+        "generic": "Die KI-Generierung ist fehlgeschlagen. Bitte erneut versuchen.",
+        "empty": "Die KI hat keinen Text zurückgegeben. Bitte erneut versuchen.",
+        "successPrefix": "KI-Antwort: "
+    },
+    "common": {
+        "loading": "Laden…",
+        "close": "Schließen",
+        "soon": "Demnächst"
+    },
+    "pages": {
+        "sitemap": {
+            "title": "Sitemap",
+            "intro": "Alle verfügbaren Seiten der Website."
+        },
+        "legal": {
+            "title": "Impressum",
+            "intro": "Angaben zu Herausgeber, Hosting und geistigem Eigentum der Website.",
+            "sections": [
+                {
+                    "heading": "Herausgeber der Website",
+                    "body": [
+                        "Diese Website wird von {editorName} herausgegeben, einem Einzelunternehmer, der unter der Geschäftsbezeichnung {tradeName} tätig ist, eingetragen unter der SIREN-Nummer {siren} (APE-Code {apeCode} – Softwareprogrammierung), im nationalen Unternehmensregister registriert, mit Sitz in {address}. Einzelunternehmen ohne Gesellschaftskapital; Tätigkeit erklärt am {declaredDate}.",
+                        "Verantwortlich für die Veröffentlichung: {publicationDirector}. Kontakt: {contactEmail}."
+                    ]
+                },
+                {
+                    "heading": "Hoster",
+                    "body": [
+                        "Die Website wird von Netlify, Inc., 2325 3rd Street, Suite 100, San Francisco, CA 94107, Vereinigte Staaten (oder ihrer zuständigen europäischen Tochtergesellschaft) gehostet.",
+                        "Technische Daten, die für den Betrieb des Dienstes erforderlich sind (Verbindungslogs, IP-Adressen), werden vom Hoster im Rahmen der Dienstleistung verarbeitet."
+                    ]
+                },
+                {
+                    "heading": "Geistiges Eigentum",
+                    "body": [
+                        "Alle Elemente der Website (Struktur, Texte, Grafiken, Logos, Icons, Quellcode, Komponenten) sind durch Urheberrecht, Markenrecht und Designrecht geschützt.",
+                        "Jede Vervielfältigung, Darstellung, Änderung, Veröffentlichung oder Anpassung, ganz oder teilweise, auf irgendeinem Weg, ohne vorherige schriftliche Zustimmung des Herausgebers, ist verboten und stellt eine Rechtsverletzung dar."
+                    ]
+                },
+                {
+                    "heading": "Haftungsbeschränkung",
+                    "body": [
+                        "Die Website wird ausschließlich zu Informationszwecken bereitgestellt. Der Herausgeber übernimmt keine Gewähr für Genauigkeit, Vollständigkeit oder Aktualität der veröffentlichten Informationen und haftet nicht für direkte oder indirekte Schäden aus Zugang oder Nutzung der Website.",
+                        "KI-generierte Inhalte (über OpenRouter) werden als Unterstützung bereitgestellt und begründen keine Haftung des Herausgebers; es liegt in der Verantwortung des Nutzers, ihre Richtigkeit zu überprüfen."
+                    ]
+                },
+                {
+                    "heading": "Anwendbares Recht",
+                    "body": [
+                        "Diese Hinweise unterliegen dem französischen Recht. Für Streitigkeiten sind die zuständigen Gerichte am Sitz des Herausgebers maßgeblich."
+                    ]
+                }
+            ]
+        },
+        "privacy": {
+            "title": "Datenschutzerklärung",
+            "intro": "Verarbeitung personenbezogener Daten gemäß Verordnung (EU) 2016/679 (DSGVO) und dem französischen Datenschutzgesetz.",
+            "sections": [
+                {
+                    "heading": "Verantwortlicher",
+                    "body": [
+                        "Verantwortlicher für die Verarbeitung ist {editorName}, Einzelunternehmer, der unter der Geschäftsbezeichnung {tradeName} tätig ist, eingetragen unter der SIREN-Nummer {siren} (APE-Code {apeCode} – Softwareprogrammierung), registriert im nationalen Unternehmensregister, mit Sitz in {address}.",
+                        "Kontakt: {contactEmail}. Für Fragen zum Datenschutz können Sie diese E-Mail-Adresse verwenden."
+                    ]
+                },
+                {
+                    "heading": "Erhobene Daten",
+                    "body": [
+                        "Diese Website erhebt bewusst keine identifizierenden personenbezogenen Daten serverseitig, außer den Angaben, die Sie freiwillig übermitteln, um eine KI-Antwort zu erhalten.",
+                        "KI-Aufrufe laufen über einen Route Handler, der eine Textanfrage an OpenRouter weiterleitet; der API-Schlüssel bleibt serverseitig und wird niemals dem Browser übermittelt.",
+                        "Theme-Einstellungen, Cookie-Einwilligung und der Tageszähler werden lokal in Ihrem Browser gespeichert (Cookie + localStorage) und nicht an den Server übertragen."
+                    ]
+                },
+                {
+                    "heading": "Zwecke und Rechtsgrundlage",
+                    "body": [
+                        "Die Verarbeitungsvorgänge dienen: dem Betrieb der Website (Vertragserfüllung / berechtigtes Interesse), der Reichweitenmessung und Werbung (Einwilligung) sowie der Bereitstellung von KI-Antworten auf Ihre Anfrage (Erfüllung des angeforderten Dienstes).",
+                        "Sofern Sie personenbezogene Daten in eine an die KI übermittelte Nachricht eingeben, werden diese ausschließlich zur Erzeugung der angeforderten Antwort verarbeitet.",
+                        "Die Rechtsgrundlage jeder Verarbeitung ist oben angegeben; Verarbeitungen auf Grundlage der Einwilligung können jederzeit beendet werden."
+                    ]
+                },
+                {
+                    "heading": "Speicherdauer",
+                    "body": [
+                        "Lokal gespeicherte Daten (Theme, Einwilligung, Zähler) werden gespeichert, solange Ihr Browser sie speichert und bis Sie sie löschen.",
+                        "Technische Logs des Hosters werden nur für die Dauer aufbewahrt, die für Betrieb und Sicherheit des Dienstes strikt erforderlich ist."
+                    ]
+                },
+                {
+                    "heading": "Empfänger und Übermittlungen",
+                    "body": [
+                        "Daten werden nicht verkauft oder vermietet. Nur der Hoster (Netlify) und gegebenenfalls der KI-Anbieter (OpenRouter) können die streng erforderlichen Daten zur Erbringung des Dienstes verarbeiten.",
+                        "Sofern eine Übermittlung außerhalb der Europäischen Union erfolgt, wird sie durch geeignete Garantien abgesichert (Standardvertragsklauseln der Europäischen Kommission oder Angemessenheitsbeschluss)."
+                    ]
+                },
+                {
+                    "heading": "Ihre Rechte",
+                    "body": [
+                        "Sie haben das Recht auf Auskunft, Berichtigung, Löschung, Einschränkung, Widerspruch und Datenübertragbarkeit sowie das Recht, Anweisungen zum Schicksal Ihrer Daten nach Ihrem Tod zu geben.",
+                        "Diese Rechte können unentgeltlich unter {contactEmail} ausgeübt werden. Sie können sich auch bei der zuständigen Aufsichtsbehörde beschweren (CNIL in Frankreich, https://www.cnil.fr)."
+                    ]
+                },
+                {
+                    "heading": "Sicherheit",
+                    "body": [
+                        "Angemessene technische und organisatorische Maßnahmen werden umgesetzt, um Daten vor unbefugtem Zugriff, Veränderung, Offenlegung oder Zerstörung zu schützen.",
+                        "Der OpenRouter-Schlüssel wird in Server-Umgebungsvariablen gespeichert und niemals an den Client gesendet oder in Antworten aufgenommen."
+                    ]
+                }
+            ]
+        },
+        "cookies": {
+            "title": "Cookie-Richtlinie",
+            "intro": "Beschreibung der gesetzten Cookies und Tracker, ihrer Zwecke und wie Sie sie verwalten können, im Einklang mit ePrivacy und geltendem Datenschutzrecht.",
+            "sections": [
+                {
+                    "heading": "Was ist ein Cookie?",
+                    "body": [
+                        "Ein Cookie ist eine kleine Textdatei, die auf oder von Ihrem Gerät (Computer, Tablet, Smartphone) beim Besuch einer Website gespeichert oder gelesen wird. Sie wird verwendet, um Informationen über Ihr Surfverhalten oder Ihre Präferenzen zu speichern."
+                    ]
+                },
+                {
+                    "heading": "Verwendete Cookies",
+                    "body": [
+                        "Funktionale Cookies (hell/dunkel, Einwilligung): strikt erforderlich, sie benötigen keine vorherige Einwilligung und werden lokal gespeichert.",
+                        "Cookie für den täglichen KI-Aufrufzähler: misst die lokale Nutzung des Kontingents und wird in Ihrem Browser gespeichert.",
+                        "Cookies zur Reichweitenmessung und für Werbung: werden nur nach Ihrer Einwilligung gesetzt und können abgelehnt werden, ohne die Navigation zu beeinträchtigen."
+                    ]
+                },
+                {
+                    "heading": "Einwilligung",
+                    "body": [
+                        "Beim ersten Besuch ermöglicht Ihnen ein Banner, das Setzen nicht essenzieller Cookies zu akzeptieren, abzulehnen oder anzupassen.",
+                        "Bis Sie Ihre Zustimmung erteilen, werden nur strikt erforderliche Cookies gesetzt. Ihre Wahl wird gespeichert und kann jederzeit über den Link „Cookies“ im Footer geändert werden."
+                    ]
+                },
+                {
+                    "heading": "Speicherdauer",
+                    "body": [
+                        "Einwilligungs-Cookies werden maximal sechs (6) Monate gespeichert, entsprechend den Empfehlungen der Aufsichtsbehörden, außer bei strikt notwendigen technischen Laufzeiten.",
+                        "Cookies zur Reichweitenmessung werden für die minimal erforderliche Dauer ihres Zwecks gespeichert."
+                    ]
+                },
+                {
+                    "heading": "Ihre Entscheidungen",
+                    "body": [
+                        "Sie können nicht essenzielle Cookies jederzeit über das Banner oder die Seite „Cookies“ akzeptieren oder ablehnen.",
+                        "Sie können Ihren Browser auch so konfigurieren, dass Cookies blockiert oder gelöscht werden; einige Funktionen der Website funktionieren dann möglicherweise nicht korrekt."
+                    ]
+                },
+                {
+                    "heading": "Kontakt",
+                    "body": [
+                        "Für Fragen zu Cookies kontaktieren Sie uns bitte unter {contactEmail}. Sie können sich auch bei der zuständigen Aufsichtsbehörde beschweren."
+                    ]
+                }
+            ]
+        }
+    }
+}

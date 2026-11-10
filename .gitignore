@@ -32,10 +32,27 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+.env*.local
+!.env.example
 
 # vercel
 .vercel
 
+
+# tests / outils
+/coverage
+/playwright-report/
+/blob-report/
+/test-results/
+/storybook-static/
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+.DS_Store
+*.pem
+npm-debug.log*
+
+# Local Netlify folder
+.netlify
+deno.lock

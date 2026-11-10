@@ -1,0 +1,318 @@
+{
+    "nav": {
+        "home": "Home",
+        "sitemap": "Sitemap",
+        "legal": "Legal notice",
+        "privacy": "Privacy",
+        "cookies": "Cookies",
+        "github": "GitHub",
+        "menu": "Menu"
+    },
+    "hero": {
+        "badge": "Your AI assistant, ready in one click",
+        "titleLead": "The Next.js boilerplate for your",
+        "rotating": ["AI agents", "SEO sites", "Next.js apps", "OpenRouter demos"],
+        "subtitle": "A modern, fast and SEO foundation to easily build web apps with AI. Ready‑to‑use components, multilingual, deployable on Netlify.",
+        "ctaDemo": "See the demo",
+        "ctaPlan": "Sitemap",
+        "scrollCue": "Scroll down",
+        "limitSuffix": "Limited: {count} AI calls / day",
+        "tech": {
+            "next": "Next.js 16+",
+            "nextSub": "App Router",
+            "ts": "TypeScript",
+            "tsSub": "Security & stability",
+            "mui": "Material UI 9+",
+            "muiSub": "Modern components",
+            "or": "OpenRouter",
+            "orSub": "Free AI"
+        }
+    },
+    "showcase": {
+        "title": "Component library",
+        "inputLabel": "Input",
+        "inputPlaceholder": "Your text...",
+        "textareaLabel": "Textarea",
+        "textareaPlaceholder": "Your message...",
+        "btnPrimary": "Primary button",
+        "btnSecondary": "Secondary button",
+        "chipLabel": "Chip",
+        "chipInfo": "Info",
+        "chipSuccess": "Verified",
+        "chipWarn": "Review",
+        "chipRemoved": "Item removed.",
+        "toastLabel": "Toast",
+        "toastFire": "Show a toast",
+        "toastMsg": "Toast displayed successfully.",
+        "dialogLabel": "Dialog",
+        "dialogOpen": "Open dialog",
+        "dialogTitle": "Modal window",
+        "dialogBody": "Dialog content, isolated behind the neutral API.",
+        "dialogClose": "Close",
+        "confirmLabel": "Confirm",
+        "confirmQuestion": "Are you sure you want to continue?",
+        "confirmCancel": "Cancel",
+        "confirmOk": "Confirm",
+        "gaugeLabel": "Score / Gauge",
+        "gaugeValue": "{value}%",
+        "iconsLabel": "Animated icons",
+        "bcHome": "Home",
+        "bcSection": "Section",
+        "bcPage": "Page",
+        "langLabel": "Language selector",
+        "langCurrent": "{name} (auto‑detected)",
+        "themeLabel": "Light / dark mode",
+        "themeSub": "According to your system",
+        "counterLabel": "Counter display",
+        "counterRemaining": "{count} calls left",
+        "copyLabel": "Copy to clipboard",
+        "copyCopied": "Copied!",
+        "testAi": "Test the AI",
+        "resetDone": "Limiter reset.",
+        "runSkill": "Run the skill (demo)"
+    },
+    "seo": {
+        "title": "Guides & tutorials",
+        "videoCaption": "Learn to build modern apps with Next.js 16",
+        "articlesTitle": "Why choose {site}?",
+        "why": [
+            "An ultra‑performant Next.js 16 foundation",
+            "Optimized and multilingual SEO (6 languages)",
+            "Reusable UI components (Material UI)",
+            "Simple AI integration (OpenRouter)",
+            "One‑click deploy on Netlify"
+        ],
+        "ctaTitle": "Ready to start?",
+        "ctaText": "Explore the components and test the AI now to see what you can build!",
+        "ctaButton": "Test the AI",
+        "a1": {
+            "title": "Next.js 16: the complete tutorial (2026)",
+            "summary": "Learn how to build a full‑stack app with Next.js 16 in 13 concrete steps: App Router, RSC, Server Actions, Turbopack, PPR, Prisma, Auth.js and deployment.",
+            "source": "YouTube",
+            "duration": "12 min"
+        },
+        "a2": {
+            "title": "Build a React app with Next.js",
+            "summary": "Learn to start a Next.js project and set up your development environment: app/ folder structure, Server Components by default, root layout and server rendering for SEO and speed.",
+            "source": "OpenClassrooms",
+            "duration": "8 min"
+        },
+        "a3": {
+            "title": "Next.js 16: Complete tutorial",
+            "summary": "A complete guide to master Next.js 16 and its 2026 features: stable 16.3.x, coordinated CVE security hardening, cache, images and EU‑sovereign hosting.",
+            "source": "Tech Insider",
+            "duration": "10 min"
+        }
+    },
+    "features": {
+        "multilang": "Multilingual",
+        "multilangSub": "FR, EN, ES, DE, IT, PT",
+        "theme": "Light / dark mode",
+        "themeSub": "According to your system",
+        "cookies": "Cookies",
+        "cookiesSub": "Consent management",
+        "storage": "Local storage",
+        "storageSub": "Your data stays local",
+        "security": "Secured",
+        "securitySub": "Anti‑bot protection"
+    },
+    "faq": {
+        "title": "Frequently asked questions",
+        "items": [
+            {
+                "q": "What is Axons?",
+                "a": "A Next.js 16 / React 19 boilerplate focused on SEO and AI, deployable on Netlify, with an isolated component library (Material UI) and OpenRouter wiring through a Route Handler."
+            },
+            {
+                "q": "Is the AI paid?",
+                "a": "The default model is a free OpenRouter model (openrouter/free). A daily quota limits browser calls; errors surface as toasts so you can retry easily."
+            },
+            {
+                "q": "Does my data go anywhere?",
+                "a": "No. Theme, cookie consent and the daily counter are stored locally (cookie + localStorage). The OpenRouter key stays server‑side and is never exposed to the browser."
+            },
+            {
+                "q": "How do I add a new AI action?",
+                "a": "Drop a file in capabilities/agents/ (or a folder capabilities/skills/<id>/), then call POST /api/run with { prompt, agentId?, skillId?, inputs? }. The route stays thin: composition, quota, timeout and errors live in lib/ai (run → composeRun + runPrompt)."
+            },
+            {
+                "q": "Is the site indexable by Google?",
+                "a": "Yes: server rendering, localized URLs, metadata, hreflang, XML sitemap and an HTML sitemap are provided."
+            }
+        ]
+    },
+    "footer": {
+        "tagline": "Your base for modern AI apps",
+        "rights": "© {year} {site}. All rights reserved.",
+        "builtWith": "Built with Next.js, Material UI, next-intl and OpenRouter"
+    },
+    "cookie": {
+        "message": "This site uses cookies to improve your experience, measure audience and display ads. You can accept or refuse their use.",
+        "accept": "Accept",
+        "refuse": "Refuse",
+        "settings": "Preferences",
+        "link": "Learn more"
+    },
+    "theme": { "light": "Light", "dark": "Dark", "system": "System" },
+    "errors": {
+        "rate": "Daily limit reached. Try again tomorrow.",
+        "busy": "Too many requests in a short time. Try again in a minute.",
+        "timeout": "The AI is taking too long to respond (45s). Please retry.",
+        "provider": "The AI provider is temporarily unavailable. Retry in a moment.",
+        "invalid": "Invalid request.",
+        "generic": "AI generation failed. Retry.",
+        "empty": "The AI returned no text. Please retry.",
+        "successPrefix": "AI reply: "
+    },
+    "common": { "loading": "Loading…", "close": "Close", "soon": "Soon" },
+    "pages": {
+        "sitemap": {
+            "title": "Sitemap",
+            "intro": "All available pages of the site."
+        },
+        "legal": {
+            "title": "Legal notice",
+            "intro": "Information regarding the publisher, the host and the intellectual property of the site.",
+            "sections": [
+                {
+                    "heading": "Site publisher",
+                    "body": [
+                        "This website is published by {editorName}, a sole trader operating under the trade name {tradeName}, registered under SIREN number {siren} (APE code {apeCode} – Computer programming), listed in the national register of enterprises, with registered office at {address}. Sole proprietorship without share capital; activity declared on {declaredDate}.",
+                        "Publication director: {publicationDirector}. Contact: {contactEmail}."
+                    ]
+                },
+                {
+                    "heading": "Host",
+                    "body": [
+                        "The site is hosted by Netlify, Inc., 2325 3rd Street, Suite 100, San Francisco, CA 94107, United States (or its relevant European subsidiary).",
+                        "Technical data required to operate the service (connection logs, IP addresses) is processed by the host as part of providing the service."
+                    ]
+                },
+                {
+                    "heading": "Intellectual property",
+                    "body": [
+                        "All elements of the site (structure, texts, graphics, logos, icons, source code, components) are protected by copyright, trademark law and design law.",
+                        "Any reproduction, representation, modification, publication or adaptation, in whole or in part, by any means, without the publisher's prior written consent, is prohibited and constitutes infringement."
+                    ]
+                },
+                {
+                    "heading": "Limitation of liability",
+                    "body": [
+                        "The site is provided for informational purposes. The publisher does not warrant the accuracy, completeness or currency of the information published, and shall not be liable for any direct or indirect damages arising from access to or use of the site.",
+                        "AI-generated content (via OpenRouter) is provided as assistance and shall not engage the publisher's liability; it is the user's responsibility to verify its accuracy."
+                    ]
+                },
+                {
+                    "heading": "Applicable law",
+                    "body": [
+                        "These notices are governed by French law. Any dispute shall fall under the jurisdiction of the competent courts of the publisher's registered office."
+                    ]
+                }
+            ]
+        },
+        "privacy": {
+            "title": "Privacy policy",
+            "intro": "Processing of personal data in accordance with Regulation (EU) 2016/679 (GDPR) and the French Data Protection Act.",
+            "sections": [
+                {
+                    "heading": "Data controller",
+                    "body": [
+                        "The data controller is {editorName}, a sole trader operating under the trade name {tradeName}, registered under SIREN number {siren} (APE code {apeCode} – Computer programming), listed in the national register of enterprises, with registered office at {address}.",
+                        "Contact: {contactEmail}. For any question regarding data protection, you may use this e-mail address."
+                    ]
+                },
+                {
+                    "heading": "Data collected",
+                    "body": [
+                        "This site deliberately collects no identifiable personal data server-side, except for any information you freely submit to obtain an AI response.",
+                        "AI calls go through a Route Handler that relays a text request to OpenRouter; the API key stays server-side and is never exposed to the browser.",
+                        "Theme preferences, cookie consent and the daily call counter are stored locally in your browser (cookie + localStorage) and are not transmitted to the server."
+                    ]
+                },
+                {
+                    "heading": "Purposes and lawful basis",
+                    "body": [
+                        "The processing operations implemented serve: the functioning of the site (contract performance / legitimate interest), audience measurement and advertising (consent), and providing AI answers to your request (performance of the requested service).",
+                        "If you include personal data in a message submitted to the AI, it is processed solely to generate the requested response.",
+                        "The lawful basis of each processing operation is indicated above; consent-based processing can be stopped at any time."
+                    ]
+                },
+                {
+                    "heading": "Retention period",
+                    "body": [
+                        "Locally stored data (theme, consent, counter) is kept as long as your browser retains it and until you delete it.",
+                        "Host technical logs are kept for the period strictly necessary to operate and secure the service."
+                    ]
+                },
+                {
+                    "heading": "Recipients and transfers",
+                    "body": [
+                        "Data is not sold or rented. Only the host (Netlify) and, where applicable, the AI provider (OpenRouter) may process the data strictly necessary to deliver the service.",
+                        "If any transfer outside the European Union occurs, it is framed by appropriate safeguards (European Commission standard contractual clauses or an adequacy decision)."
+                    ]
+                },
+                {
+                    "heading": "Your rights",
+                    "body": [
+                        "You have the right to access, rectify, erase, restrict, object to and port your data, as well as the right to give instructions on the fate of your data after your death.",
+                        "These rights can be exercised free of charge at {contactEmail}. You may also lodge a complaint with the competent supervisory authority (CNIL in France, https://www.cnil.fr)."
+                    ]
+                },
+                {
+                    "heading": "Security",
+                    "body": [
+                        "Reasonable technical and organizational measures are implemented to protect data against unauthorized access, alteration, disclosure or destruction.",
+                        "The OpenRouter key is stored in server environment variables and is never sent to the client nor included in responses."
+                    ]
+                }
+            ]
+        },
+        "cookies": {
+            "title": "Cookie policy",
+            "intro": "Description of the cookies and trackers placed, their purposes and how you can manage them, in line with ePrivacy and applicable data-protection law.",
+            "sections": [
+                {
+                    "heading": "What is a cookie?",
+                    "body": [
+                        "A cookie is a small text file stored on or read from your device (computer, tablet, smartphone) when visiting a site. It is used to remember information about your browsing or your preferences."
+                    ]
+                },
+                {
+                    "heading": "Cookies used",
+                    "body": [
+                        "Functional cookies (light/dark theme, consent): strictly necessary, they do not require prior consent and are stored locally.",
+                        "Daily AI-call counter cookie: measures local usage of the quota, stored in your browser.",
+                        "Audience-measurement and advertising cookies: placed only after your consent, they can be refused without degrading navigation."
+                    ]
+                },
+                {
+                    "heading": "Consent",
+                    "body": [
+                        "On your first visit, a banner lets you accept, refuse or customize the placement of non-essential cookies.",
+                        "Until you give your agreement, only strictly necessary cookies are placed. Your choice is remembered and can be changed at any time via the \"Cookies\" link in the footer."
+                    ]
+                },
+                {
+                    "heading": "Retention period",
+                    "body": [
+                        "Consent cookies are kept for a maximum of six (6) months, in line with supervisory-authority recommendations, except for strictly necessary technical durations.",
+                        "Audience-measurement cookies are kept for the minimum period necessary for their purpose."
+                    ]
+                },
+                {
+                    "heading": "Your choices",
+                    "body": [
+                        "You can accept or refuse non-essential cookies at any time via the banner or the \"Cookies\" page.",
+                        "You can also configure your browser to block or delete cookies; some site features may then not work properly."
+                    ]
+                },
+                {
+                    "heading": "Contact",
+                    "body": [
+                        "For any question regarding cookies, contact us at {contactEmail}. You may also lodge a complaint with your supervisory authority."
+                    ]
+                }
+            ]
+        }
+    }
+}

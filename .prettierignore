@@ -1,0 +1,18 @@
+# Artefacts générés et dépendances (aligné sur les ignores ESLint)
+node_modules/
+.next/
+.netlify/
+out/
+build/
+coverage/
+storybook-static/
+playwright-report/
+test-results/
+next-env.d.ts
+next.config.compiled.js
+tsconfig.tsbuildinfo
+package-lock.json
+deno.lock
+
+# Bloc réécrit par `next dev` : ne pas le reformater
+AGENTS.md

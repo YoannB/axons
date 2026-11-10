@@ -1,0 +1,76 @@
+# Visual, layout & generic animation
+
+## Rotating hero word
+
+Reserve the max width with an invisible ghost span and animate absolutely-positioned in/out
+layers; never let the animated text drive layout (it reflows sibling grid columns and resizes
+inputs). Give the layers enough line-height/padding and `overflow:visible` so descenders
+(g, j, p, y) are not clipped by `background-clip:text`. The interval sets state in its
+callback (external system), never in an Effect body.
+
+## Icons (generic SVG)
+
+Draw the contour via `pathLength="1"` + animated `stroke-dashoffset`, with a dotted ghost
+outline that stays visible (the "pencil sketch"); the draw cycle returns to `dashoffset:1`
+(not `-1`) so the ghost fills the shape and nothing is ever fully blank. Solid marks (e.g.
+cookie chips) are rendered as filled `.ui-icon__dot` paths, excluded from the draw/ghost
+animation, so the glyph is recognizable at a glance.
+
+## Detach-on-scroll video player
+
+BIDIRECTIONAL but geometry-locked. The trigger sentinel is `position:absolute` at the TOP of
+the media (independent of the fixed state), and an in-flow PLACEHOLDER takes the same height
+the moment the media goes `fixed`, so the block height is identical in both states and the
+sentinel is never displaced by the toggle (no flow↔fixed oscillation). The caption is rendered
+OUTSIDE the media component (in flow) so the placeholder equals the media to the pixel. Pinning
+fires the instant the top leaves the viewport and un-pins the instant it re-appears. The
+embedded iframe is NEVER unmounted to "pause": `everMounted` is sticky-true and play/pause is
+driven by the provider postMessage API (YouTube `enablejsapi=1`); the poster shows only until
+first mount. The media is sized and centered (normal ≤ 560px, short ≤ 320px), never full-width.
+The player is DISMISSIBLE: a `.seo-video-close` button (CSS-only visibility, shown solely under
+`.is-pinned`) calls `store.dismissVideo()`, an IN-MEMORY `videoDismissed` flag on
+`lib/store.ts` (NOT persisted, NOT hydrated in `getServerState` beyond the `false` default).
+Dismissed ⇒ the component forces `pinned = mode === 'fixed' && !videoDismissed`, so the reader
+returns to flow at its original slot and never re-pins on scroll; the flag survives SPA
+navigation (provider stays mounted) and resets on full reload / F5 (new document ⇒ new store
+from the factory). No geometry changes on dismiss (placeholder == media height), so no jump and
+no oscillation.
+
+## Container & rails discipline
+
+ONE `.container` layer per content column. Pages already wrapped in `PageShell`'s `Container`
+must NOT add a second `.container` on inner blocks (Hero grid, Feature strip, …): double
+max-width + double padding crushes the center column and is a top cause of cramped layouts AND
+of mobile horizontal overflow. The center column width is governed by the side rails; keep them
+symmetric and THIN (160px wide). Never 300+300 (that steals 600px from the content and squeezes
+the feature strip). Three SEO resources are listed full-width in a single column (no auto-fill
+grid that leaves an orphan gap); horizontal leaderboards are centered (`margin-inline:auto`).
+
+## Mobile guards
+
+`html, body { overflow-x: clip }` (clip, NOT hidden: hidden creates a scroll container that
+breaks the sticky header and the fixed video). Below 900px the rails are `display:none` and the
+header nav becomes an absolutely-positioned dropdown; the video stays `fixed` but is dismissable
+(see _Detach-on-scroll_ above) and toasts move to top-center (see _Toasts_ in
+`docs/ui-material.md`), so the bottom is free. Header row must not overflow on narrow screens:
+below 900px reduce gaps; below 600px hide the header `LimitBadge` and compact the language
+switcher (hide the redundant current-locale text via `font-size:0` on `.lang__btn`, restored on
+`.lang__flag`/`.lang__caret`); below 480px hide the brand WORD (`.brand > span { display:none }`)
+keeping the `Logo`, because the `<Link class="brand">` carries `aria-label={SITE_NAME}` so the
+accessible name survives (no a11y regression). This guarantees the theme toggle is never cut off
+by `overflow-x: clip`. Clamp the hero title font-size on small screens so the longest rotating
+word (nowrap) cannot overflow horizontally. The mobile nav panel is scrollable when taller than
+the viewport (`max-height: calc(100dvh - 64px)` with a `vh` fallback, `overflow-y:auto`).
+
+## Ads, bots, and the dev-only reset
+
+Ad slots render placeholders in development and are hidden in production until real tags and
+consent exist (`components/ui/AdSlot.tsx`, `ADS_ENABLED`). The decision to render is taken SOLELY
+on the build-inlined `ADS_ENABLED` constant — NEVER on `typeof window !== 'undefined'` inside an
+SSR'd component, because the server (window undefined) and client (window defined) would render
+different trees and throw a hydration mismatch (the exact class of bug already killed in
+`AdSlot` and the `ENVIRONMENT_FALLBACK` family). When `ADS_ENABLED` is true and real tags/consent
+are not wired, the slot renders `null` deterministically on both sides; the rail keeps its fixed
+grid width, so there is no CLS. The anti-bot icon from the mockup is NOT rendered. The limiter
+reset button is gated by `process.env.NODE_ENV === 'development'` and inlined away in production
+builds. Resetting must push an info toast from the click handler (user intent), not from an Effect.
