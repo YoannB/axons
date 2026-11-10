@@ -2,6 +2,7 @@
 import { LOCALES, type LocaleCode } from "@/constants/site";
 import { routing, usePathname, useRouter } from "@/i18n/routing";
 import { cn } from "@/lib/cn";
+import { switchTarget } from "@/lib/locale-switch";
 import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
 
@@ -37,7 +38,11 @@ export function LanguageSwitcher() {
         setOpen(false);
         // Runtime guard: only served locales are listed, this also protects against a future change.
         if (!(routing.locales as readonly string[]).includes(code)) return;
-        router.replace({ pathname }, { locale: code as ActiveLocale, scroll: false });
+        // A dynamic route (translated article slug) takes its param from the page's hreflang
+        // alternate for `code`, read at click time from <head> (lib/locale-switch.ts).
+        const alternate = document.querySelector<HTMLLinkElement>(`link[rel="alternate"][hreflang="${code}"]`);
+        const target = switchTarget(pathname, alternate?.href ?? null);
+        router.replace(target as Parameters<typeof router.replace>[0], { locale: code as ActiveLocale, scroll: false });
     };
 
     return (

@@ -1,6 +1,7 @@
 {
     "nav": {
         "home": "Accueil",
+        "articles": "Articles",
         "sitemap": "Plan du site",
         "legal": "Mentions légales",
         "privacy": "Confidentialité",
@@ -193,8 +194,7 @@
     },
     "common": {
         "loading": "Chargement…",
-        "close": "Fermer",
-        "soon": "Bientôt"
+        "close": "Fermer"
     },
     "pages": {
         "sitemap": {
@@ -344,6 +344,19 @@
                     ]
                 }
             ]
+        },
+        "articles": {
+            "title": "Articles",
+            "intro": "Guides et notes de fond sur le site, publiés en Markdown.",
+            "latestTitle": "Derniers articles",
+            "viewAll": "Tous les articles",
+            "publishedOn": "Publié le {date}",
+            "onlyIn": "Disponible uniquement en {language}",
+            "empty": "Aucun article pour le moment."
         }
+    },
+    "notFound": {
+        "text": "Nous avons fouillé tout le multivers : cette page n'existe dans aucune réalité connue.",
+        "home": "Retour à l'accueil"
     }
 }

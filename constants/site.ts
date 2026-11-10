@@ -43,6 +43,7 @@ export const LOCALES: LocaleMeta[] = LOCALE_META.map((l) => ({
 
 export const NAV = [
     { href: "/", key: "nav.home" },
+    { href: "/articles", key: "nav.articles" },
     { href: "/sitemap", key: "nav.sitemap" },
     { href: "/legal", key: "nav.legal" },
     { href: "/privacy", key: "nav.privacy" },

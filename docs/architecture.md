@@ -19,6 +19,13 @@
   providers + chrome (Header/Footer/CookieBanner/GtmScript/SplashLoader). MUST NOT contain
   `<html>`/`<body>` nor import `globals.css`. Exposes `generateStaticParams`.
 - `app/[locale]/page.tsx` + legal/sitemap pages = static Server Components (`params:{locale}`).
+- `app/[locale]/[...rest]/page.tsx` = catch-all calling `notFound()`: unknown paths under a
+  locale render `app/[locale]/not-found.tsx` INSIDE the segment layout. Without it Next renders
+  its default 404 outside the layout (no providers, no SplashLoader) and the splash never
+  leaves. `app/not-found.tsx` (root) only serves paths matching no locale: language-neutral,
+  the splash is hidden by CSS (`body:has(.root-not-found)`), never removed.
+- `app/[locale]/articles/**` = article listing + pages, fed by `content/articles/` (site
+  content read through `lib/articles/source.ts`, NOT model-facing); see `docs/articles.md`.
 - `app/api/run/route.ts` = the ONE unified AI entry; `app/api/hello/route.ts` = legacy
   adapter delegating to `run({ agentId:'hello' })` (see _HTTP_ in `docs/ai-capabilities.md`).
 - `components/ui/` = neutral public API + generic SVG/CSS (no MUI). `components/ui/material/`

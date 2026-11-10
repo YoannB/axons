@@ -13,6 +13,7 @@ export { CopyButton } from "./CopyButton";
 export { Dialog } from "./Dialog";
 export { DiffLegend, DiffView } from "./DiffView";
 export { EditorPair } from "./EditorPair";
+export { EmptyUniverse } from "./EmptyUniverse";
 export { Gauge } from "./Gauge";
 export { Icon } from "./Icon";
 export { Input } from "./Input";

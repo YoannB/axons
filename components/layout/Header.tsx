@@ -44,7 +44,10 @@ export function Header() {
                         <Link
                             key={n.href}
                             href={n.href}
-                            className={cn("site-nav__link", pathname === n.href && "is-active")}
+                            className={cn(
+                                "site-nav__link",
+                                (pathname === n.href || pathname.startsWith(`${n.href}/`)) && "is-active",
+                            )}
                             onClick={close}
                         >
                             {t(n.key.split(".")[1])}

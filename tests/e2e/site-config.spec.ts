@@ -10,6 +10,39 @@ async function hydrated(page: Page) {
 }
 
 test.describe("Configuration du site", () => {
+    test("une URL inconnue affiche la 404 localisée, pas le splash figé", async ({ page }) => {
+        // Regression: without app/[locale]/[...rest] Next rendered its default 404 outside the
+        // [locale] layout (no SplashLoader), so the splash never left the screen.
+        // Unprefixed path first: once a locale is visited, its cookie redirects "/dsqd" there.
+        for (const [url, button] of [
+            ["/dsqd", "Back to home"],
+            ["/fr/dsqd", "Retour à l'accueil"],
+            ["/de/a/b", "Zurück zur Startseite"],
+        ]) {
+            await page.goto(url);
+            await hydrated(page);
+            await expect(page.getByRole("banner")).toBeVisible();
+            await expect(page.getByRole("heading", { level: 1, name: "404" })).toBeVisible();
+            await expect(page.getByRole("button", { name: button })).toBeVisible();
+        }
+    });
+
+    test("un chemin hors locale affiche la 404 neutre sans splash", async ({ page }) => {
+        const response = await page.goto("/x.y");
+        expect(response?.status()).toBe(404);
+        await expect(page.locator("#app-splash")).toBeHidden();
+        await expect(page.getByRole("heading", { level: 1, name: "404" })).toBeVisible();
+    });
+
+    test("l'accueil reste en haut de page après l'hydratation", async ({ page }) => {
+        // Regression: the showcase Tabs used scrollIntoView on mount, which scrolled the WINDOW
+        // down to the terminal demo. The strip must scroll itself only.
+        await page.goto("/fr");
+        await hydrated(page);
+        await page.waitForTimeout(300);
+        expect(await page.evaluate(() => window.scrollY)).toBe(0);
+    });
+
     test("« Gérer mes cookies » rouvre le bandeau après un choix", async ({ page }) => {
         await page.goto("/");
         await hydrated(page);

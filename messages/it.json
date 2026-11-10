@@ -1,6 +1,7 @@
 {
     "nav": {
         "home": "Home",
+        "articles": "Articoli",
         "sitemap": "Mappa del sito",
         "legal": "Note legali",
         "privacy": "Privacy",
@@ -193,8 +194,7 @@
     },
     "common": {
         "loading": "Caricamento…",
-        "close": "Chiudi",
-        "soon": "Prossimamente"
+        "close": "Chiudi"
     },
     "pages": {
         "sitemap": {
@@ -344,6 +344,19 @@
                     ]
                 }
             ]
+        },
+        "articles": {
+            "title": "Articoli",
+            "intro": "Guide e note di approfondimento sul sito, pubblicate in Markdown.",
+            "latestTitle": "Ultimi articoli",
+            "viewAll": "Tutti gli articoli",
+            "publishedOn": "Pubblicato il {date}",
+            "onlyIn": "Disponibile solo in {language}",
+            "empty": "Ancora nessun articolo."
         }
+    },
+    "notFound": {
+        "text": "Abbiamo setacciato l'intero multiverso: questa pagina non esiste in nessuna realtà conosciuta.",
+        "home": "Torna alla home"
     }
 }

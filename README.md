@@ -686,6 +686,10 @@ Do not create a second AI client hook.
 
 For "text in, text out" apps (proofreading, rephrasing, summaries with a visible delta), Axons ships AI-agnostic building blocks: a word diff and a similarity score with configurable bands (`lib/text/`), `DiffView`, `EditorPair`, `ChoiceChips`, `AiNotice`, a character counter on `Textarea`, and the `useDirtyGuard` / `useElapsedSeconds` hooks. They are documented in Storybook (no home-page demo: a before/after editor belongs to the derived product). See `docs/text-tools.md`.
 
+### Markdown articles
+
+Articles live in the repository, one folder per article and one Markdown file per language (`content/articles/<id>/<locale>.md`) with a YAML front matter (title, translated slug, date, description, optional image). Axons generates the localized listing (`/articles`, `/fr/articles`, `/de/artikel`…), one page per translation with its translated URL, hreflang, canonical, JSON-LD and sitemap entries, plus a "latest articles" block on the home page. A missing translation falls back to another language in the listing, without duplicate pages. Invalid front matter fails the build. See `docs/articles.md`.
+
 ## Design references and mockups
 
 Axons can be used with visual references.
@@ -892,6 +896,7 @@ When transforming Axons into a new app, update at least:
 - feature strip
 - FAQ
 - SEO resources
+- articles in `content/articles/` (the two demo articles, and `tests/e2e/articles.spec.ts` which relies on them)
 - footer links
 - sitemap page
 
@@ -924,6 +929,7 @@ High-level layout:
   capabilities/        # Model-facing agents and skills
   components/          # Neutral UI API, MUI adapter, layout/home/content components
   constants/           # Site constants, navigation, locales, SEO resources
+  content/             # Markdown articles (content/articles/<id>/<locale>.md)
   docs/                # Detailed on-demand documentation for coding agents
   hooks/               # Client hooks, including the single AI call hook
   i18n/                # next-intl routing and request configuration
