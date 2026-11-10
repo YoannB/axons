@@ -93,46 +93,6 @@
         "quality": "Kostenlose Modelle können langsam oder ungenau sein: Wirkt das Ergebnis falsch, starten Sie einfach erneut.",
         "wait": "Eine Antwort kann bis zu 30 Sekunden dauern, wenn das kostenlose Modell ausgelastet ist."
     },
-    "textTools": {
-        "title": "Textwerkzeuge",
-        "intro": "Wort-Diff, Ähnlichkeitswert und gekoppelte Editoren: generische Bausteine für jedes Umschreibwerkzeug. Diese Demo ruft keine KI auf: Bearbeiten Sie Ihren Text, der Diff aktualisiert sich live.",
-        "presetsLabel": "Beispiele",
-        "presets": {
-            "typo": "Tippfehler",
-            "punctuation": "Zeichensetzung"
-        },
-        "sourceLabel": "Ihr Text",
-        "sourcePlaceholder": "Wählen Sie ein Beispiel oder geben Sie einen Text ein…",
-        "resultLabel": "Unterschiede zum Referenztext",
-        "resultPlaceholder": "Wählen Sie ein Beispiel, um es mit seinem Referenztext zu vergleichen.",
-        "reset": "Zurücksetzen",
-        "legend": {
-            "insert": "Hinzugefügt",
-            "replace": "Korrigiert",
-            "delete": "Entfernt"
-        },
-        "similarity": "Ähnlichkeit",
-        "bands": {
-            "perfect": "Identisch",
-            "great": "Wenige Änderungen",
-            "good": "Mäßige Änderungen",
-            "low": "Viele Änderungen"
-        },
-        "confirmTitle": "Text verwerfen?",
-        "confirmMessage": "Ihre Änderungen gehen verloren.",
-        "confirmOk": "Verwerfen",
-        "confirmCancel": "Weiter bearbeiten",
-        "examples": {
-            "typo": {
-                "before": "Danke für ihr Feedback, ich schicke ihnen das korigierte Dokument morgen früh.",
-                "after": "Danke für Ihr Feedback, ich schicke Ihnen das korrigierte Dokument morgen früh."
-            },
-            "punctuation": {
-                "before": "Hallo Maria ich melde mich wegen des Angebots ist es noch gültig",
-                "after": "Hallo Maria, ich melde mich wegen des Angebots: Ist es noch gültig?"
-            }
-        }
-    },
     "seo": {
         "title": "Anleitungen und Tutorials",
         "videoCaption": "Lerne, moderne Apps mit Next.js 16 zu erstellen",

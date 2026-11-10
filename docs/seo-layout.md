@@ -27,6 +27,10 @@ fires the instant the top leaves the viewport and un-pins the instant it re-appe
 embedded iframe is NEVER unmounted to "pause": `everMounted` is sticky-true and play/pause is
 driven by the provider postMessage API (YouTube `enablejsapi=1`); the poster shows only until
 first mount. The media is sized and centered (normal ≤ 560px, short ≤ 320px), never full-width.
+While pinned, `hooks/use-footer-clearance.ts` writes the visible footer height into the CSS
+variable `--footer-clearance` (scroll/resize, rAF-throttled, no React state) and the fixed
+player's `bottom` adds it, so the player rises above the footer and never hides its links
+(Manage cookies, GitHub). The detach sentinel is unaffected (no oscillation).
 The player is DISMISSIBLE: a `.seo-video-close` button (CSS-only visibility, shown solely under
 `.is-pinned`) calls `store.dismissVideo()`, an IN-MEMORY `videoDismissed` flag on
 `lib/store.ts` (NOT persisted, NOT hydrated in `getServerState` beyond the `false` default).

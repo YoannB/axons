@@ -93,46 +93,6 @@
         "quality": "Los modelos gratuitos pueden ser lentos o imprecisos: si el resultado parece incorrecto, vuelve a lanzarlo.",
         "wait": "Una respuesta puede tardar hasta 30 segundos cuando el modelo gratuito está saturado."
     },
-    "textTools": {
-        "title": "Herramientas de texto",
-        "intro": "Diff palabra por palabra, puntuación de similitud y editores emparejados: piezas genéricas para cualquier herramienta de reescritura. Esta demo no llama a ninguna IA: edita tu texto y el diff se actualiza en directo.",
-        "presetsLabel": "Ejemplos",
-        "presets": {
-            "typo": "Erratas",
-            "punctuation": "Puntuación"
-        },
-        "sourceLabel": "Tu texto",
-        "sourcePlaceholder": "Elige un ejemplo o escribe un texto…",
-        "resultLabel": "Diferencias con el texto de referencia",
-        "resultPlaceholder": "Elige un ejemplo para compararlo con su texto de referencia.",
-        "reset": "Restablecer",
-        "legend": {
-            "insert": "Añadido",
-            "replace": "Corregido",
-            "delete": "Eliminado"
-        },
-        "similarity": "Similitud",
-        "bands": {
-            "perfect": "Idéntico",
-            "great": "Algunos retoques",
-            "good": "Cambios moderados",
-            "low": "Muchos cambios"
-        },
-        "confirmTitle": "¿Descartar tu texto?",
-        "confirmMessage": "Se perderán tus cambios.",
-        "confirmOk": "Descartar",
-        "confirmCancel": "Seguir editando",
-        "examples": {
-            "typo": {
-                "before": "Gracias por tus comentarios, te enviare el documento corejido mañana por la mañana.",
-                "after": "Gracias por tus comentarios, te enviaré el documento corregido mañana por la mañana."
-            },
-            "punctuation": {
-                "before": "Hola María te escribo sobre el presupuesto sigue siendo válido",
-                "after": "Hola María, te escribo sobre el presupuesto: ¿sigue siendo válido?"
-            }
-        }
-    },
     "seo": {
         "title": "Guías y tutoriales",
         "videoCaption": "Aprende a crear aplicaciones modernas con Next.js 16",

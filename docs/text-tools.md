@@ -63,5 +63,8 @@ NOT here.
 5. When the source changes after a reply, the old diff is stale: derive "stale" at render
    (`source !== sourceOfReply`) and show the placeholder instead of a misleading diff.
 
-The home demo (`components/home/TextToolsShowcase.tsx`) shows steps 1, 3 and 4 with a fixed
-reference text instead of a model reply, and is covered by `tests/e2e/text-tools.spec.ts`.
+There is deliberately NO text-tool demo on the Axons home page: a before/after editor is a
+product (e.g. a proofreading app), not a boilerplate section. The pieces are documented and
+exercised in Storybook (`UI/DiffView`, `UI/EditorPair`, `UI/ChoiceChips`, `UI/AiNotice`,
+`UI/Textarea`, `UI/Gauge`) and the pure logic in `tests/unit/text-*.test.ts`. `messages/*.json`
+keeps the reusable `aiNotice` copy.

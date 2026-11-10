@@ -684,7 +684,7 @@ Do not create a second AI client hook.
 
 ### Text tools kit
 
-For "text in, text out" apps (proofreading, rephrasing, summaries with a visible delta), Axons ships AI-agnostic building blocks: a word diff and a similarity score with configurable bands (`lib/text/`), `DiffView`, `EditorPair`, `ChoiceChips`, `AiNotice`, a character counter on `Textarea`, and the `useDirtyGuard` / `useElapsedSeconds` hooks. The home page demonstrates them without any AI call. See `docs/text-tools.md`.
+For "text in, text out" apps (proofreading, rephrasing, summaries with a visible delta), Axons ships AI-agnostic building blocks: a word diff and a similarity score with configurable bands (`lib/text/`), `DiffView`, `EditorPair`, `ChoiceChips`, `AiNotice`, a character counter on `Textarea`, and the `useDirtyGuard` / `useElapsedSeconds` hooks. They are documented in Storybook (no home-page demo: a before/after editor belongs to the derived product). See `docs/text-tools.md`.
 
 ## Design references and mockups
 
