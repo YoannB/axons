@@ -2,7 +2,7 @@
 import type { Meta, StoryObj } from "@storybook/react";
 // RELATIVE import (not the '@' alias, which is not declared in Storybook's Vite config).
 // Icon is a neutral component; Chip passes it through as is (ReactNode) → the animation
-// is carried by Icon + globals.css, with no extra layer and no MUI leak.
+// is carried by Icon + styles/ui/icons.css, with no extra layer and no MUI leak.
 import { Chip } from "../Chip";
 import { Icon } from "../Icon";
 

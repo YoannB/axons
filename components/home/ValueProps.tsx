@@ -5,7 +5,7 @@ import { useAiCall } from "@/hooks/use-ai-call";
 import { useTranslations } from "next-intl";
 
 // The CTA is wrapped in a neutral centered container (no MUI class is targeted
-// in globals.css: the adapter boundary forbids it).
+// in styles/home/value-props.css: the adapter boundary forbids it).
 export function ValueProps() {
     const t = useTranslations("seo");
     const { call, pending, canCall } = useAiCall();

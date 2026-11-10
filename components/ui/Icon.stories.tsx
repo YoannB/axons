@@ -28,7 +28,7 @@ const meta = {
         docs: {
             description: {
                 component:
-                    "Generic SVG icon of the neutral API (outside material). The drawing animation (ghost outline + stroke via pathLength/stroke-dashoffset, see docs/seo-layout.md) is carried by the component and its neutral CSS (globals.css); it is independent of the material layer. This page is also visual proof: the material layer's animated chips consume exactly this component through the `icon` prop (ReactNode passed through as is).",
+                    "Generic SVG icon of the neutral API (outside material). The drawing animation (ghost outline + stroke via pathLength/stroke-dashoffset, see docs/seo-layout.md) is carried by the component and its neutral CSS (styles/ui/icons.css); it is independent of the material layer. This page is also visual proof: the material layer's animated chips consume exactly this component through the `icon` prop (ReactNode passed through as is).",
             },
         },
     },

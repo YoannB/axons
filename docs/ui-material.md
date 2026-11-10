@@ -14,13 +14,13 @@ prop-leak — that is on you).
 
 `buildTheme(mode)` takes the RESOLVED light/dark value (never a hardcoded `'dark'`);
 `palette.background.default` and `paper` are `transparent` so `CssBaseline` does not paint
-`<body>` and `globals.css` tokens stay authoritative (a hardcoded dark + opaque CssBaseline
+`<body>` and `styles/tokens.css` tokens stay authoritative (a hardcoded dark + opaque CssBaseline
 background is what previously broke light mode). Light mode = a TINTED background (`--bg-0`
 soft blue-grey, not white) with white shadowed cards; accent glow reduced via `--glow`.
 Tokens in `:root` / `[data-theme="light"]` are the single source of truth for colors.
 `defaultChannel`/`paperChannel` are explicitly `undefined` (MUI v9 cannot derive a channel
-from `'transparent'`; omitting them kills the `palette.*Channel` warning while globals.css
-keeps control of backgrounds).
+from `'transparent'`; omitting them kills the `palette.*Channel` warning while
+`styles/base.css` keeps control of backgrounds).
 
 ## Disabled buttons without a painted background
 
@@ -88,11 +88,12 @@ Long messages wrap (`max-width` + `white-space:pre-wrap`).
 
 ## Styling system / CSS file ownership
 
-General CSS in `app/globals.css` using `--*` custom properties, themed via
+General CSS in `styles/**` (imported in cascade order by the `app/globals.css` manifest; which
+file owns what: `docs/styles.md`) using `--*` custom properties (`styles/tokens.css`), themed via
 `[data-theme="light"|"dark"]` on `<html>`. MUI-specific CSS ONLY in
 `components/ui/material/index.css`. The MUI theme reads the same CSS variables so light/dark
 has a single source of truth. `@property --angle` drives the rotating field border. Respect
-`prefers-reduced-motion` (global kill-switch present).
+`prefers-reduced-motion` (global kill-switch in `styles/a11y.css`).
 
 ## MUI v9 authoring rules & integration entry
 

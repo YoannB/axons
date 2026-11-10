@@ -10,7 +10,7 @@ const meta = {
         docs: {
             description: {
                 component:
-                    'Neutral circular SVG gauge (outside material). The colored arc follows `value`/`max` (animated stroke-dashoffset); a sparkle continuously sweeps the arc (.gauge__sheen class, neutral CSS in globals.css, same principle as the Button\'s btnSheen). The <svg> carries role="img" + aria-label (given label or computed percentage) → accessible without visible text. Hover strengthens the glow (CSS, no geometry change). Covers the 0/100 bounds, intermediate steps, sizes and a custom ratio via max.',
+                    'Neutral circular SVG gauge (outside material). The colored arc follows `value`/`max` (animated stroke-dashoffset); a sparkle continuously sweeps the arc (.gauge__sheen class, neutral CSS in styles/ui/gauge.css, same principle as the Button\'s btnSheen). The <svg> carries role="img" + aria-label (given label or computed percentage) → accessible without visible text. Hover strengthens the glow (CSS, no geometry change). Covers the 0/100 bounds, intermediate steps, sizes and a custom ratio via max.',
             },
         },
     },
