@@ -35,6 +35,17 @@ an invisible ghost. The adapter overrides ONLY those two variants in the disable
   palette channel, which cannot derive from `var()` and re-triggers the warning); runtime
   resolution is identical server/client → no hydration mismatch, follows both themes.
 
+## Button as a link (`href`)
+
+Never wrap a `Button` in an `<a>`/`Link` (interactive content inside interactive content is
+invalid HTML: two tab stops, ambiguous role). Pass `href` instead: the adapter hands it to
+MUI's `LinkComponent`, so the root is a real `<a>` with the SAME classes (halo, gradient,
+hover, disabled rules unchanged). An internal pathname (typed `AppInternalHref`, from
+`i18n/routing` pathnames) goes through next-intl's `Link` (localized URL); `https:`/`http:`/
+`mailto:` stays a plain `<a>`. A disabled/loading link drops its `href` and falls back to a
+`<button disabled>` (not focusable, not navigable). `type` is ignored in link mode. E2E guard:
+`tests/e2e/button-link.spec.ts` (no `a button` in the hero / 404, keyboard Tab + Enter).
+
 ## MUI-control animations (no geometry on hover)
 
 - Buttons: NEVER translate/scale on `:hover` (moving the box changes the pointer hit-area →
