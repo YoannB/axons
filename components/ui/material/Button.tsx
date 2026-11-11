@@ -1,7 +1,8 @@
 "use client";
 import MuiButton from "@mui/material/Button";
 import CircularProgress from "@mui/material/CircularProgress";
-import type { AppButtonProps } from "../types";
+import { Link } from "@/i18n/routing";
+import type { AppButtonProps, AppHref } from "../types";
 
 const VARIANT = {
     primary: "contained",
@@ -10,6 +11,24 @@ const VARIANT = {
 } as const;
 
 const SIZE = { sm: "small", md: "medium", lg: "large" } as const;
+
+// Internal = a typed pathname of i18n/routing ("/..." or a { pathname, params } object).
+// Anything else (https:, http:, mailto:) is external and stays a plain <a>.
+const isInternal = (href: AppHref) => typeof href !== "string" || href.startsWith("/");
+
+// LINK MODE (href): MUI ButtonBase renders `LinkComponent` instead of <button> as soon as an
+// href is present, with the SAME root classes => identical halo/gradient/hover/disabled
+// styling, and no <button> nested in an <a> (invalid HTML: interactive inside interactive).
+// Internal hrefs use next-intl's Link (localized URL, client navigation, prefetch).
+// A disabled/loading link drops its href: ButtonBase then falls back to a real disabled
+// <button> (not focusable, not navigable) instead of an <a aria-disabled> that still has a URL.
+function linkProps(href: AppHref | undefined, inactive: boolean | undefined) {
+    if (href === undefined || inactive) return {};
+    // MUI types href as string; ButtonBase forwards it untouched to LinkComponent, which
+    // accepts next-intl's typed href (string pathname or { pathname, params } object).
+    if (isInternal(href)) return { href: href as unknown as string, LinkComponent: Link };
+    return { href: href as string };
+}
 
 // NO transform on :hover: moving the box changes the pointer hit area and
 // creates an endless oscillation (hover -> translate -> mouse out -> un-hover -> ...).
@@ -23,6 +42,7 @@ export function Button({
     loading,
     fullWidth,
     type = "button",
+    href,
     onClick,
     iconLeft,
     iconRight,
@@ -32,6 +52,7 @@ export function Button({
     id,
 }: AppButtonProps) {
     const isPrimary = variant === "primary";
+    const link = linkProps(href, disabled || loading);
     return (
         <MuiButton
             id={id}
@@ -41,7 +62,9 @@ export function Button({
             color="primary"
             disabled={disabled || loading}
             fullWidth={fullWidth}
-            type={type}
+            // A link has no form type (ButtonBase only sets `type` on a <button> anyway).
+            type={link.href ? undefined : type}
+            {...link}
             onClick={onClick}
             aria-label={ariaLabel}
             startIcon={loading ? <CircularProgress size={16} color="inherit" /> : iconLeft}

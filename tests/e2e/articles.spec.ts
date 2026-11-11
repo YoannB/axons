@@ -59,7 +59,7 @@ test.describe("Articles", () => {
         await expect(page.getByRole("heading", { level: 1, name: "404" })).toBeVisible();
         await expect(page.locator('meta[name="robots"]').first()).toHaveAttribute("content", /noindex/);
         await expect(page.getByText("Nous avons fouillé tout le multivers")).toBeVisible();
-        await page.getByRole("button", { name: "Retour à l'accueil" }).click();
+        await page.getByRole("link", { name: "Retour à l'accueil" }).click();
         await expect(page).toHaveURL(/\/fr$/);
     });
 

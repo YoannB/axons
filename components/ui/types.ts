@@ -1,15 +1,28 @@
+import type { Link } from "@/i18n/routing";
 import type { DiffOp } from "@/lib/text/diff";
-import type { ReactNode } from "react";
+import type { ComponentProps, ReactNode } from "react";
 // CLEAN application types: no sx, classes or MUI types cross this API.
 export type ButtonVariant = "primary" | "secondary" | "ghost";
 export type ButtonSize = "sm" | "md" | "lg";
+/** Internal route: a typed pathname of `i18n/routing` (localized by next-intl's Link). */
+export type AppInternalHref = ComponentProps<typeof Link>["href"];
+/** External URL: rendered as a plain <a>, never localized. */
+export type AppExternalHref = `https://${string}` | `http://${string}` | `mailto:${string}`;
+export type AppHref = AppInternalHref | AppExternalHref;
 export interface AppButtonProps {
     variant?: ButtonVariant;
     size?: ButtonSize;
     disabled?: boolean;
     loading?: boolean;
     fullWidth?: boolean;
+    /** Ignored when `href` is set (a link has no form type). */
     type?: "button" | "submit" | "reset";
+    /**
+     * Renders a real link styled as the button (never a <button> inside an <a>, which HTML
+     * forbids). An internal pathname goes through `Link` from `@/i18n/routing` (localized
+     * URL, client navigation); an external URL is a plain <a>.
+     */
+    href?: AppHref;
     onClick?: () => void;
     iconLeft?: ReactNode;
     iconRight?: ReactNode;
