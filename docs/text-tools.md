@@ -15,7 +15,8 @@ NOT here.
   token OR same skeleton (case/accent/apostrophe-insensitive), so an accent fix is a visible
   `replace` and an inserted comma does not shift the alignment. Only two non-whitespace
   tokens fuse into a `replace`. LCS is O(n·m) in tokens: ALWAYS bound the input upstream
-  (`Textarea maxLength`, and the server bound on `/api/run`).
+  (`Textarea maxLength`, and the server bound on `/api/run`: the agent's `maxPromptChars`, see
+  _Agent contract_ in `docs/ai-capabilities.md`).
 - `lib/text/similarity.ts` — `diffStats` (whitespace-only ops ignored), `similarityPercent`
   (one edit = one unit against the longer side's word count, clamped to [0, 100]),
   `bandFor(percent, bands?)` with `DEFAULT_BANDS` 100 / 95 / 90 / 0. Bands are data: pass your
