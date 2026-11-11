@@ -3,7 +3,7 @@ import { AiError, clientErrorPayload, statusFor, type AiErrorCode } from "@/lib/
 import { describe, expect, it } from "vitest";
 
 describe("AiError", () => {
-    it("conserve code, status et message technique", () => {
+    it("keeps code, status and technical message", () => {
         const error = new AiError("provider", "raw provider failure", 502);
 
         expect(error).toBeInstanceOf(Error);
@@ -13,14 +13,14 @@ describe("AiError", () => {
         expect(error.message).toBe("raw provider failure");
     });
 
-    it("utilise le code comme message par défaut", () => {
+    it("uses the code as the default message", () => {
         const error = new AiError("timeout");
 
         expect(error.message).toBe("timeout");
         expect(error.status).toBe(500);
     });
 
-    it("permet un status personnalisé", () => {
+    it("allows a custom status", () => {
         const error = new AiError("invalid", undefined, 400);
 
         expect(error.status).toBe(400);
@@ -38,7 +38,7 @@ describe("clientErrorPayload — AiError", () => {
         ["generic", "failed"],
     ];
 
-    it.each(cases)("cartographie %s vers le message public %s", (code, publicMessage) => {
+    it.each(cases)("maps %s to the public message %s", (code, publicMessage) => {
         const payload = clientErrorPayload(new AiError(code, "technical detail"));
 
         expect(payload).toEqual({
@@ -49,7 +49,7 @@ describe("clientErrorPayload — AiError", () => {
         });
     });
 
-    it("ne fuit jamais le message technique brut", () => {
+    it("never leaks the raw technical message", () => {
         const payload = clientErrorPayload(
             new AiError("provider", "OPENROUTER_API_KEY missing upstream prompt leaked", 502),
         );
@@ -59,7 +59,7 @@ describe("clientErrorPayload — AiError", () => {
         expect(payload.error.message).not.toContain("prompt");
     });
 
-    it("couvre la branche default de publicMessage pour un code inconnu", () => {
+    it("covers the default branch of publicMessage for an unknown code", () => {
         const payload = clientErrorPayload(new AiError("unknown-code" as AiErrorCode, undefined, 500));
 
         expect(payload).toEqual({
@@ -71,8 +71,8 @@ describe("clientErrorPayload — AiError", () => {
     });
 });
 
-describe("clientErrorPayload — erreur inconnue", () => {
-    it("normalise une Error classique en generic/failed", () => {
+describe("clientErrorPayload — unknown error", () => {
+    it("normalizes a plain Error to generic/failed", () => {
         const payload = clientErrorPayload(new Error("boom"));
 
         expect(payload).toEqual({
@@ -83,7 +83,7 @@ describe("clientErrorPayload — erreur inconnue", () => {
         });
     });
 
-    it("normalise une valeur non-Error en generic/failed", () => {
+    it("normalizes a non-Error value to generic/failed", () => {
         const payload = clientErrorPayload("string failure");
 
         expect(payload).toEqual({
@@ -96,14 +96,14 @@ describe("clientErrorPayload — erreur inconnue", () => {
 });
 
 describe("statusFor", () => {
-    it("retourne le status porté par AiError", () => {
+    it("returns the status carried by AiError", () => {
         expect(statusFor(new AiError("invalid", undefined, 400))).toBe(400);
         expect(statusFor(new AiError("rate", undefined, 429))).toBe(429);
         expect(statusFor(new AiError("timeout", undefined, 504))).toBe(504);
         expect(statusFor(new AiError("provider", undefined, 502))).toBe(502);
     });
 
-    it("retourne 500 pour une erreur inconnue", () => {
+    it("returns 500 for an unknown error", () => {
         expect(statusFor(new Error("boom"))).toBe(500);
         expect(statusFor(null)).toBe(500);
         expect(statusFor(undefined)).toBe(500);

@@ -40,7 +40,7 @@ export interface CasDeps {
 /** Too many concurrent writes on one key: treated as a store failure (fail mode). */
 export class QuotaContentionError extends Error {
     constructor(key: string) {
-        super(`quota: CAS abandonnée sur ${key}`);
+        super(`quota: CAS given up on ${key}`);
         this.name = "QuotaContentionError";
     }
 }
@@ -48,7 +48,7 @@ export class QuotaContentionError extends Error {
 /** The store did not answer in time: treated as a store failure (fail mode). */
 export class QuotaTimeoutError extends Error {
     constructor(ms: number) {
-        super(`quota: store sans réponse après ${ms} ms`);
+        super(`quota: store did not respond after ${ms} ms`);
         this.name = "QuotaTimeoutError";
     }
 }

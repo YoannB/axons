@@ -31,8 +31,8 @@ vi.mock("@/i18n/routing", () => ({
 
 import { articleJsonLd, articleMetadata, articlePath, pageMetadata } from "@/lib/seo";
 
-describe("pageMetadata — métadonnées de base", () => {
-    it("retourne le titre et la description fournis", () => {
+describe("pageMetadata — base metadata", () => {
+    it("returns the given title and description", () => {
         const metadata = pageMetadata({ title: "Titre", description: "Description", href: "/", locale: "en" });
 
         expect(metadata.title).toBe("Titre");
@@ -41,19 +41,19 @@ describe("pageMetadata — métadonnées de base", () => {
 });
 
 describe("pageMetadata — canonical", () => {
-    it("pointe vers l'URL de la locale par défaut sur la page par défaut", () => {
+    it("points to the default locale URL on the default page", () => {
         const metadata = pageMetadata({ title: "Legal", description: "Legal page", href: "/legal", locale: "en" });
 
         expect(metadata.alternates?.canonical).toBe("https://example.com/legal");
     });
 
-    it("pointe vers l'URL de SA locale sur une traduction (pas vers la locale par défaut)", () => {
+    it("points to ITS locale URL on a translation (not to the default locale)", () => {
         const metadata = pageMetadata({ title: "Légal", description: "Mentions", href: "/legal", locale: "fr" });
 
         expect(metadata.alternates?.canonical).toBe("https://example.com/fr/legal");
     });
 
-    it("normalise la racine avec un slash final", () => {
+    it("normalizes the root with a trailing slash", () => {
         const metadata = pageMetadata({ title: "Home", description: "Home page", href: "/", locale: "en" });
 
         expect(metadata.alternates?.canonical).toBe("https://example.com/");
@@ -61,7 +61,7 @@ describe("pageMetadata — canonical", () => {
 });
 
 describe("pageMetadata — hreflang", () => {
-    it("ajoute une entrée par locale configurée", () => {
+    it("adds one entry per configured locale", () => {
         const metadata = pageMetadata({
             title: "Privacy",
             description: "Privacy page",
@@ -75,7 +75,7 @@ describe("pageMetadata — hreflang", () => {
         });
     });
 
-    it("ajoute x-default aligné sur la locale par défaut, quelle que soit la page", () => {
+    it("adds x-default aligned with the default locale, whatever the page", () => {
         const metadata = pageMetadata({
             title: "Cookies",
             description: "Cookies page",
@@ -86,7 +86,7 @@ describe("pageMetadata — hreflang", () => {
         expect(metadata.alternates?.languages?.["x-default"]).toBe("https://example.com/cookies");
     });
 
-    it("ne produit pas de double slash sur la racine localisée", () => {
+    it("does not produce a double slash on the localized root", () => {
         const metadata = pageMetadata({ title: "Home", description: "Home page", href: "/", locale: "en" });
 
         expect(metadata.alternates?.languages).toEqual({
@@ -98,7 +98,7 @@ describe("pageMetadata — hreflang", () => {
 });
 
 describe("pageMetadata — OpenGraph", () => {
-    it("duplique titre, description, URL canonique, type et locale de la page", () => {
+    it("duplicates the page's title, description, canonical URL, type and locale", () => {
         const metadata = pageMetadata({ title: "Plan", description: "Plan du site", href: "/sitemap", locale: "fr" });
 
         expect(metadata.openGraph).toEqual({
@@ -129,14 +129,14 @@ const BOTH: ArticleEntry = {
 const FR_ONLY: ArticleEntry = { id: "demo", translations: { fr: article("fr", "bonjour") } };
 
 describe("articlePath", () => {
-    it("construit le chemin localisé avec le slug traduit", () => {
+    it("builds the localized path with the translated slug", () => {
         expect(articlePath("fr", "bonjour")).toBe("/fr/articles/bonjour");
         expect(articlePath("en", "hello")).toBe("/articles/hello");
     });
 });
 
 describe("articleMetadata", () => {
-    it("canonical = URL de la traduction affichée, hreflang = traductions existantes", () => {
+    it("canonical = URL of the displayed translation, hreflang = existing translations", () => {
         const metadata = articleMetadata(BOTH, "fr");
 
         expect(metadata.alternates).toEqual({
@@ -151,7 +151,7 @@ describe("articleMetadata", () => {
         expect(metadata.description).toBe("Description fr");
     });
 
-    it("x-default retombe sur la page elle-même sans traduction dans la locale par défaut", () => {
+    it("x-default falls back to the page itself without a translation in the default locale", () => {
         const metadata = articleMetadata(FR_ONLY, "fr");
 
         expect(metadata.alternates?.languages).toEqual({
@@ -160,7 +160,7 @@ describe("articleMetadata", () => {
         });
     });
 
-    it("OpenGraph de type article, avec date et image absolue quand elle existe", () => {
+    it("OpenGraph of type article, with date and absolute image when it exists", () => {
         expect(articleMetadata(BOTH, "en").openGraph).toEqual({
             title: "Title en",
             description: "Description en",
@@ -172,13 +172,13 @@ describe("articleMetadata", () => {
         });
     });
 
-    it("OpenGraph sans image quand l'article n'en a pas", () => {
+    it("OpenGraph without image when the article has none", () => {
         expect(articleMetadata(BOTH, "fr").openGraph).not.toHaveProperty("images");
     });
 });
 
 describe("articleJsonLd", () => {
-    it("sérialise un BlogPosting avec URL, langue et image", () => {
+    it("serializes a BlogPosting with URL, language and image", () => {
         expect(JSON.parse(articleJsonLd(BOTH, "en", "Site"))).toEqual({
             "@context": "https://schema.org",
             "@type": "BlogPosting",
@@ -193,7 +193,7 @@ describe("articleJsonLd", () => {
         });
     });
 
-    it("omet l'image absente et échappe < pour ne jamais fermer la balise script", () => {
+    it("omits the missing image and escapes < so it never closes the script tag", () => {
         const entry: ArticleEntry = {
             id: "demo",
             translations: { fr: article("fr", "bonjour", { title: "</script><b>" }) },

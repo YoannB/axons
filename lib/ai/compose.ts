@@ -45,7 +45,7 @@ function filterResources(resources: SkillResource[], include?: string[]): SkillR
 
 export function composeRun({ prompt, agent, skill, inputs = {}, includeResources }: ComposeInput): ComposedRun {
     const user = prompt?.trim();
-    if (!user) throw new Error("composeRun : prompt obligatoire et non vide.");
+    if (!user) throw new Error("composeRun: prompt is required and must not be empty.");
 
     const sections: string[] = [];
 

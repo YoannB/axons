@@ -16,7 +16,7 @@ export const metadata = {
         default: `${SITE_NAME} — Next.js AI/SEO boilerplate`,
         template: `%s · ${SITE_NAME}`,
     },
-    description: "Boilerplate Next.js 16 orienté SEO et IA (OpenRouter), déployable sur Netlify.",
+    description: "Next.js 16 boilerplate for SEO and AI (OpenRouter), deployable on Netlify.",
     openGraph: { siteName: SITE_NAME, type: "website", url: SITE_URL },
 };
 

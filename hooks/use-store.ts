@@ -6,7 +6,7 @@ export const StoreContext = createContext<Store | null>(null);
 
 export function useStore(): Store {
     const s = useContext(StoreContext);
-    if (!s) throw new Error("useStore doit être utilisé sous <AppStateProvider>.");
+    if (!s) throw new Error("useStore must be used inside <AppStateProvider>.");
     return s;
 }
 

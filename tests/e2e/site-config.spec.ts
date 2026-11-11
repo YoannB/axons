@@ -9,8 +9,8 @@ async function hydrated(page: Page) {
     await expect(page.locator("#app-splash")).toHaveClass(/is-leaving/);
 }
 
-test.describe("Configuration du site", () => {
-    test("une URL inconnue affiche la 404 localisée, pas le splash figé", async ({ page }) => {
+test.describe("Site configuration", () => {
+    test("an unknown URL shows the localized 404, not the frozen splash", async ({ page }) => {
         // Regression: without app/[locale]/[...rest] Next rendered its default 404 outside the
         // [locale] layout (no SplashLoader), so the splash never left the screen.
         // Unprefixed path first: once a locale is visited, its cookie redirects "/dsqd" there.
@@ -27,14 +27,14 @@ test.describe("Configuration du site", () => {
         }
     });
 
-    test("un chemin hors locale affiche la 404 neutre sans splash", async ({ page }) => {
+    test("a path outside any locale shows the neutral 404 without splash", async ({ page }) => {
         const response = await page.goto("/x.y");
         expect(response?.status()).toBe(404);
         await expect(page.locator("#app-splash")).toBeHidden();
         await expect(page.getByRole("heading", { level: 1, name: "404" })).toBeVisible();
     });
 
-    test("l'accueil reste en haut de page après l'hydratation", async ({ page }) => {
+    test("home stays at the top of the page after hydration", async ({ page }) => {
         // Regression: the showcase Tabs used scrollIntoView on mount, which scrolled the WINDOW
         // down to the terminal demo. The strip must scroll itself only.
         await page.goto("/fr");
@@ -43,7 +43,7 @@ test.describe("Configuration du site", () => {
         expect(await page.evaluate(() => window.scrollY)).toBe(0);
     });
 
-    test("« Gérer mes cookies » rouvre le bandeau après un choix", async ({ page }) => {
+    test('"Manage my cookies" reopens the banner after a choice', async ({ page }) => {
         await page.goto("/");
         await hydrated(page);
         await acceptCookiesButton(page).click();
@@ -57,7 +57,7 @@ test.describe("Configuration du site", () => {
         await expect(cookieBanner(page)).toBeHidden();
     });
 
-    test("la démo terminal déroule la séquence scénarisée sans requête réseau", async ({ page }) => {
+    test("the terminal demo plays the scripted sequence without network requests", async ({ page }) => {
         await page.goto("/fr");
         await hydrated(page);
         const calls: string[] = [];
@@ -74,7 +74,7 @@ test.describe("Configuration du site", () => {
         expect(calls).toEqual([]);
     });
 
-    test("avec prefers-reduced-motion, la séquence s'affiche d'un coup", async ({ page }) => {
+    test("with prefers-reduced-motion, the sequence shows at once", async ({ page }) => {
         await page.emulateMedia({ reducedMotion: "reduce" });
         await page.goto("/fr");
         await hydrated(page);
@@ -85,7 +85,7 @@ test.describe("Configuration du site", () => {
         });
     });
 
-    test("les onglets basculent de panneau", async ({ page }) => {
+    test("tabs switch panels", async ({ page }) => {
         await page.goto("/fr");
         await hydrated(page);
         const showcase = page.locator("#showcase");
@@ -94,7 +94,7 @@ test.describe("Configuration du site", () => {
         await expect(showcase.getByText("Aucun problème détecté.")).toBeVisible();
     });
 
-    test("en-têtes : encadrement limité à la même origine par défaut", async ({ request }) => {
+    test("headers: framing limited to the same origin by default", async ({ request }) => {
         const res = await request.get("/");
         expect(res.headers()["x-frame-options"]).toBe("SAMEORIGIN");
         expect(res.headers()["content-security-policy"]).toContain("frame-ancestors 'self'");

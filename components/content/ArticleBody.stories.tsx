@@ -2,33 +2,33 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { ArticleBody } from "./ArticleBody";
 
-const SAMPLE = `Un paragraphe avec du **gras**, de l'_italique_, du \`code\`, un [lien interne](/articles) et un [lien externe](https://nextjs.org).
+const SAMPLE = `A paragraph with **bold**, _italics_, \`code\`, an [internal link](/articles) and an [external link](https://nextjs.org).
 
-# Un titre de niveau 1 (rétrogradé en h2)
+# A level-1 heading (demoted to h2)
 
-## Une liste
+## A list
 
-- premier point ;
-- [x] tâche faite ;
-- [ ] tâche à faire.
+- first item;
+- [x] done task;
+- [ ] task to do.
 
-## Un tableau (GFM)
+## A table (GFM)
 
-| Champ  | Rôle                          |
+| Field  | Role                          |
 | ------ | ----------------------------- |
-| \`slug\` | Dernier segment de l'URL      |
-| \`date\` | Jour de publication (AAAA-MM-JJ) |
+| \`slug\` | Last segment of the URL       |
+| \`date\` | Publication day (YYYY-MM-DD)  |
 
-## Du code
+## Some code
 
 \`\`\`yaml
-title: "Écrire un article"
-slug: ecrire-un-article
+title: "Writing an article"
+slug: writing-an-article
 \`\`\`
 
-> Une citation, et du HTML brut ignoré : <b>non interprété</b>.
+> A quote, and ignored raw HTML: <b>not interpreted</b>.
 
-![Couverture](/articles/writing-articles/cover.svg)
+![Cover](/articles/writing-articles/cover.svg)
 `;
 
 const meta = {
@@ -39,7 +39,7 @@ const meta = {
         docs: {
             description: {
                 component:
-                    "Corps d'article Markdown rendu en éléments React (`react-markdown` + `remark-gfm`), sans `dangerouslySetInnerHTML` : le HTML brut du source n'est pas interprété. Un `# Titre` devient `<h2>` (le `<h1>` est le titre de la page) ; les liens externes s'ouvrent dans un nouvel onglet avec `noopener` ; les tableaux larges défilent dans leur propre boîte (pas de débordement mobile).",
+                    "Markdown article body rendered as React elements (`react-markdown` + `remark-gfm`), without `dangerouslySetInnerHTML`: raw HTML in the source is not interpreted. A `# Heading` becomes `<h2>` (the `<h1>` is the page title); external links open in a new tab with `noopener`; wide tables scroll inside their own box (no mobile overflow).",
             },
         },
     },
@@ -60,7 +60,7 @@ export const AllElements: Story = {};
 export const NarrowTable: Story = {
     args: {
         markdown:
-            "| a | b | c | d | e | f |\n| - | - | - | - | - | - |\n| une-valeur-longue | une-valeur-longue | une-valeur-longue | une-valeur-longue | une-valeur-longue | une-valeur-longue |",
+            "| a | b | c | d | e | f |\n| - | - | - | - | - | - |\n| a-long-value | a-long-value | a-long-value | a-long-value | a-long-value | a-long-value |",
     },
     decorators: [
         (Story) => (

@@ -15,7 +15,7 @@ async function ready(page: Page) {
 }
 
 test.describe("Articles", () => {
-    test("liste -> article -> changement de langue sur le slug traduit", async ({ page }) => {
+    test("list -> article -> language switch on the translated slug", async ({ page }) => {
         await page.goto("/fr/articles");
         await ready(page);
         await expect(page.getByRole("heading", { level: 1, name: "Articles" })).toBeVisible();
@@ -36,7 +36,7 @@ test.describe("Articles", () => {
         await expect(page.getByRole("heading", { level: 1, name: "Einen Artikel in Axons schreiben" })).toBeVisible();
     });
 
-    test("canonical, hreflang et JSON-LD de la page article", async ({ page }) => {
+    test("canonical, hreflang and JSON-LD of the article page", async ({ page }) => {
         await page.goto("/fr/articles/visite-de-l-architecture");
         const canonical = page.locator('link[rel="canonical"]');
         await expect(canonical).toHaveAttribute("href", /\/fr\/articles\/visite-de-l-architecture$/);
@@ -52,7 +52,7 @@ test.describe("Articles", () => {
         expect(jsonLd).toMatchObject({ "@type": "BlogPosting", inLanguage: "fr", datePublished: "2026-11-03" });
     });
 
-    test("un slug d'une autre langue mène à la page 404, non indexable", async ({ page }) => {
+    test("a slug from another language leads to the 404 page, not indexable", async ({ page }) => {
         // Soft 404: app/[locale]/loading.tsx starts streaming before notFound() runs, so Next keeps
         // the 200 status and adds robots noindex (same behavior as every page under [locale]).
         await page.goto("/fr/articles/architecture-tour");
@@ -63,7 +63,7 @@ test.describe("Articles", () => {
         await expect(page).toHaveURL(/\/fr$/);
     });
 
-    test("l'accueil affiche les derniers articles avec un lien vers la liste", async ({ page }) => {
+    test("home shows the latest articles with a link to the list", async ({ page }) => {
         await page.goto("/fr");
         await ready(page);
         const block = page.locator("#latest-articles");
@@ -73,7 +73,7 @@ test.describe("Articles", () => {
         await expect(page).toHaveURL(/\/fr\/articles$/);
     });
 
-    test("le sitemap liste chaque traduction d'article", async ({ request }) => {
+    test("the sitemap lists every article translation", async ({ request }) => {
         const xml = await (await request.get("/sitemap.xml")).text();
         expect(xml).toContain("/fr/articles/ecrire-un-article</loc>");
         expect(xml).toContain("/articles/writing-an-article</loc>");

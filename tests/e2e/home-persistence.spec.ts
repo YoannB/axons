@@ -1,8 +1,8 @@
 import { expect, test } from "@playwright/test";
 import { acceptCookiesButton, cookieBanner, themeToggle } from "./support/home";
 
-test.describe("Home — persistance client", () => {
-    test("le consentement cookies persiste après rechargement", async ({ page }) => {
+test.describe("Home — client persistence", () => {
+    test("cookie consent persists after reload", async ({ page }) => {
         await page.goto("/");
 
         const banner = cookieBanner(page);
@@ -16,7 +16,7 @@ test.describe("Home — persistance client", () => {
         await expect(cookieBanner(page)).toBeHidden();
     });
 
-    test("le thème persiste après rechargement", async ({ page }) => {
+    test("theme persists after reload", async ({ page }) => {
         await page.goto("/");
 
         await themeToggle(page).click();

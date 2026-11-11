@@ -14,13 +14,13 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 export const Primary: Story = {
-    args: { variant: "primary", children: "Bouton principal" },
+    args: { variant: "primary", children: "Primary button" },
 };
 export const Loading: Story = {
-    args: { variant: "primary", loading: true, children: "Envoi…" },
+    args: { variant: "primary", loading: true, children: "Sending…" },
 };
 export const Disabled: Story = {
-    args: { variant: "secondary", disabled: true, children: "Secondaire" },
+    args: { variant: "secondary", disabled: true, children: "Secondary" },
 };
 
 // LINK MODE: `href` renders a real <a> styled as the button (never <a><button>). An internal
@@ -33,30 +33,30 @@ const withLocale: NonNullable<Story["decorators"]> = [
     ),
 ];
 export const AsLink: Story = {
-    args: { variant: "secondary", size: "lg", href: "/sitemap", children: "Plan du site" },
+    args: { variant: "secondary", size: "lg", href: "/sitemap", children: "Sitemap" },
     decorators: withLocale,
     parameters: {
         docs: {
             description: {
-                story: "Avec `href`, le bouton est un vrai lien `<a>` (même halo/dégradé) : une seule tabulation, Entrée navigue. Chemin interne => URL localisée (`/fr/plan-du-site`).",
+                story: "With `href`, the button is a real `<a>` link (same glow/gradient): a single tab stop, Enter navigates. Internal path => localized URL (`/fr/plan-du-site`, the decorator forces the `fr` locale).",
             },
         },
     },
 };
 export const AsLinkPrimary: Story = {
-    args: { variant: "primary", href: "/", children: "Retour à l'accueil" },
+    args: { variant: "primary", href: "/", children: "Back to home" },
     decorators: withLocale,
 };
 export const ExternalLink: Story = {
-    args: { variant: "ghost", href: "https://github.com/YoannB/axons", children: "Code source" },
+    args: { variant: "ghost", href: "https://github.com/YoannB/axons", children: "Source code" },
 };
 export const DisabledLink: Story = {
-    args: { variant: "secondary", href: "/sitemap", disabled: true, children: "Plan du site" },
+    args: { variant: "secondary", href: "/sitemap", disabled: true, children: "Sitemap" },
     decorators: withLocale,
     parameters: {
         docs: {
             description: {
-                story: "Un lien désactivé perd son `href` et redevient un `<button disabled>` : ni focusable, ni navigable.",
+                story: "A disabled link loses its `href` and becomes a `<button disabled>` again: neither focusable nor navigable.",
             },
         },
     },

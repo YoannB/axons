@@ -10,7 +10,7 @@ const meta = {
         docs: {
             description: {
                 component:
-                    "Illustration décorative d'état vide (page 404, liste sans contenu) : un astronaute flotte avec sa loupe entre les étoiles et une planète. SVG neutre (sans MUI), `aria-hidden` (le texte de la page porte le sens), couleurs issues des tokens du thème, animations CSS coupées sous `prefers-reduced-motion`.",
+                    "Decorative empty-state illustration (404 page, list without content): an astronaut floats with a magnifying glass between the stars and a planet. Neutral SVG (no MUI), `aria-hidden` (the page text carries the meaning), colors from the theme tokens, CSS animations turned off under `prefers-reduced-motion`.",
             },
         },
     },

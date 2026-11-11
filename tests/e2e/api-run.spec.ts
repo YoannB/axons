@@ -6,11 +6,11 @@ function e2eIp(suffix: string): string {
     return `e2e-${suffix}-${info.workerIndex}-${info.testId}`;
 }
 
-test.describe("POST /api/run — contrat serveur, sans appel modèle", () => {
+test.describe("POST /api/run — server contract, no model call", () => {
     // Serial mode to limit the effects of the best-effort in-memory rate limit.
     test.describe.configure({ mode: "serial" });
 
-    test("body non JSON → 400 invalid", async ({ request }) => {
+    test("non-JSON body → 400 invalid", async ({ request }) => {
         const response = await request.post("/api/run", {
             headers: {
                 "content-type": "application/json",
@@ -30,7 +30,7 @@ test.describe("POST /api/run — contrat serveur, sans appel modèle", () => {
         });
     });
 
-    test("prompt manquant → 400 invalid", async ({ request }) => {
+    test("missing prompt → 400 invalid", async ({ request }) => {
         const response = await request.post("/api/run", {
             headers: {
                 "x-forwarded-for": e2eIp("missing-prompt"),
@@ -49,7 +49,7 @@ test.describe("POST /api/run — contrat serveur, sans appel modèle", () => {
         });
     });
 
-    test("prompt vide → 400 invalid", async ({ request }) => {
+    test("empty prompt → 400 invalid", async ({ request }) => {
         const response = await request.post("/api/run", {
             headers: {
                 "x-forwarded-for": e2eIp("empty-prompt"),
@@ -70,7 +70,7 @@ test.describe("POST /api/run — contrat serveur, sans appel modèle", () => {
         });
     });
 
-    test("prompt whitespace → 400 invalid", async ({ request }) => {
+    test("whitespace-only prompt → 400 invalid", async ({ request }) => {
         const response = await request.post("/api/run", {
             headers: {
                 "x-forwarded-for": e2eIp("whitespace-prompt"),
@@ -91,7 +91,7 @@ test.describe("POST /api/run — contrat serveur, sans appel modèle", () => {
         });
     });
 
-    test("agentId inconnu → 400 invalid", async ({ request }) => {
+    test("unknown agentId → 400 invalid", async ({ request }) => {
         const response = await request.post("/api/run", {
             headers: {
                 "x-forwarded-for": e2eIp("missing-agent"),
@@ -113,7 +113,7 @@ test.describe("POST /api/run — contrat serveur, sans appel modèle", () => {
         });
     });
 
-    test("skillId inconnu → 400 invalid", async ({ request }) => {
+    test("unknown skillId → 400 invalid", async ({ request }) => {
         const response = await request.post("/api/run", {
             headers: {
                 "x-forwarded-for": e2eIp("missing-skill"),
@@ -139,7 +139,7 @@ test.describe("POST /api/run — contrat serveur, sans appel modèle", () => {
         ["agentId", "../../docs/architecture"],
         ["skillId", "../agents"],
     ] as const) {
-        test(`${field} avec traversée de chemin → 400 invalid`, async ({ request }) => {
+        test(`${field} with path traversal → 400 invalid`, async ({ request }) => {
             const response = await request.post("/api/run", {
                 headers: {
                     "x-forwarded-for": e2eIp(`traversal-${field}`),

@@ -21,7 +21,7 @@ export function resolveLocales(
     const unknown = codes.filter((c) => !supported.includes(c));
     if (unknown.length > 0) {
         throw new Error(
-            `NEXT_PUBLIC_LOCALES invalide : ${unknown.map((c) => JSON.stringify(c)).join(", ")} hors de [${supported.join(", ")}].`,
+            `Invalid NEXT_PUBLIC_LOCALES: ${unknown.map((c) => JSON.stringify(c)).join(", ")} not in [${supported.join(", ")}].`,
         );
     }
     return [...new Set(codes)] as AppLocale[];
@@ -38,7 +38,7 @@ export function resolveDefaultLocale(raw: string | undefined, locales: readonly 
 
     if (!locales.includes(value)) {
         throw new Error(
-            `NEXT_PUBLIC_DEFAULT_LOCALE invalide : ${JSON.stringify(value)} n'est pas dans [${locales.join(", ")}].`,
+            `Invalid NEXT_PUBLIC_DEFAULT_LOCALE: ${JSON.stringify(value)} is not in [${locales.join(", ")}].`,
         );
     }
 

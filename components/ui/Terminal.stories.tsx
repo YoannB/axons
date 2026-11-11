@@ -7,10 +7,10 @@ import type { AppTerminalLine } from "./types";
 
 const LINES: AppTerminalLine[] = [
     { id: "1", kind: "command", text: "npm run generate-site" },
-    { id: "2", text: "Initialisation du projet…" },
-    { id: "3", kind: "success", text: "Création des composants" },
-    { id: "4", kind: "success", text: "Optimisation SEO (meta, sitemap, robots.txt)" },
-    { id: "5", kind: "success", text: "Site en ligne !" },
+    { id: "2", text: "Initializing the project…" },
+    { id: "3", kind: "success", text: "Creating the components" },
+    { id: "4", kind: "success", text: "SEO optimization (meta, sitemap, robots.txt)" },
+    { id: "5", kind: "success", text: "Site is live!" },
     { id: "6", kind: "link", text: "https://axons-preview.netlify.app", href: "https://axons-preview.netlify.app" },
 ];
 
@@ -18,17 +18,17 @@ function Scripted() {
     const seq = useScriptedSequence(LINES.length, 400);
     return (
         <Terminal
-            ariaLabel="Démo"
+            ariaLabel="Demo"
             title="Terminal"
             lines={LINES.slice(0, seq.shown)}
             running={seq.status === "running"}
             actions={
                 <>
                     <Button size="sm" variant="primary" onClick={seq.start} disabled={seq.status === "running"}>
-                        Lancer
+                        Run
                     </Button>
                     <Button size="sm" variant="ghost" onClick={seq.reset}>
-                        Réinitialiser
+                        Reset
                     </Button>
                 </>
             }
@@ -44,11 +44,11 @@ const meta = {
         docs: {
             description: {
                 component:
-                    "Console en lecture seule (neutre, sans MUI) : lignes typées `command | output | success | error | link`, texte React (jamais d'innerHTML), région `role=log` + `aria-live=polite` (les nouvelles lignes sont annoncées), hauteur maximale via `rows`, curseur clignotant quand `running`. Associée à `useScriptedSequence` pour une démo scénarisée ; avec `prefers-reduced-motion`, la séquence s'affiche d'un coup.",
+                    "Read-only console (neutral, no MUI): typed lines `command | output | success | error | link`, React text (never innerHTML), `role=log` + `aria-live=polite` region (new lines are announced), maximum height via `rows`, blinking cursor while `running`. Paired with `useScriptedSequence` for a scripted demo; with `prefers-reduced-motion`, the sequence shows at once.",
             },
         },
     },
-    args: { lines: LINES, ariaLabel: "Démo", title: "Terminal" },
+    args: { lines: LINES, ariaLabel: "Demo", title: "Terminal" },
 } satisfies Meta<typeof Terminal>;
 
 export default meta;
@@ -60,7 +60,7 @@ export const WithError: Story = {
     args: {
         lines: [
             { id: "1", kind: "command", text: "npm run build" },
-            { id: "2", kind: "error", text: "Échec : variable NEXT_PUBLIC_LOCALES invalide" },
+            { id: "2", kind: "error", text: "Failed: invalid NEXT_PUBLIC_LOCALES variable" },
         ],
     },
 };

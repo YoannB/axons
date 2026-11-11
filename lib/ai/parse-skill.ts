@@ -39,7 +39,7 @@ function finiteOrThrow(raw: string | undefined, field: string, fallback: number)
     const n = Number(raw);
 
     if (!Number.isFinite(n)) {
-        throw new Error(`Skill invalide : champ "${field}" non numérique (${JSON.stringify(raw)}).`);
+        throw new Error(`Invalid skill: field "${field}" is not numeric (${JSON.stringify(raw)}).`);
     }
 
     return n;
@@ -71,7 +71,7 @@ function splitFrontmatter(raw: string): { front: string; body: string } {
     const lines = cleaned.split("\n");
 
     if (lines[0]?.trim() !== "---") {
-        throw new Error("Skill invalide : frontmatter manquant (--- de tête et de queue requis).");
+        throw new Error("Invalid skill: missing frontmatter (opening and closing --- required).");
     }
 
     let endIndex = -1;
@@ -84,7 +84,7 @@ function splitFrontmatter(raw: string): { front: string; body: string } {
     }
 
     if (endIndex === -1) {
-        throw new Error("Skill invalide : frontmatter manquant (--- de tête et de queue requis).");
+        throw new Error("Invalid skill: missing frontmatter (opening and closing --- required).");
     }
 
     return {
@@ -206,13 +206,13 @@ export function parseSkill(raw: string): SkillDef {
     const name = top.scalars.name;
 
     if (!name) {
-        throw new Error("Skill invalide : champ name requis.");
+        throw new Error("Invalid skill: name field required.");
     }
 
     const description = top.scalars.description;
 
     if (!description) {
-        throw new Error("Skill invalide : champ description requis.");
+        throw new Error("Invalid skill: description field required.");
     }
 
     return {

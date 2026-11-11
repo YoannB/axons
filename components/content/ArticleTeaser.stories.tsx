@@ -10,17 +10,17 @@ const meta = {
         docs: {
             description: {
                 component:
-                    "Aperçu d'un article interne (liste `/articles` et bloc « derniers articles » de l'accueil). Compatible Server Component : aucun hook, les libellés arrivent déjà formatés. Le titre est un vrai lien vers l'URL localisée de la traduction affichée ; la vignette est un doublon décoratif (`aria-hidden`, hors tabulation). En repli de langue, un badge indique la langue de l'original et le titre/résumé portent `lang`.",
+                    "Preview of an internal article (the `/articles` list and the home page's \"latest articles\" block). Server Component compatible: no hook, labels arrive already formatted. The title is a real link to the localized URL of the displayed translation; the thumbnail is a decorative duplicate (`aria-hidden`, out of the tab order). On a language fallback, a badge shows the original's language and the title/summary carry `lang`.",
             },
         },
     },
     args: {
-        title: "Écrire un article dans Axons",
-        description: "Un dossier par article, un fichier Markdown par langue : de l'entête YAML au sitemap.",
-        slug: "ecrire-un-article",
-        locale: "fr",
+        title: "Writing an article in Axons",
+        description: "One folder per article, one Markdown file per language: from the front matter to the sitemap.",
+        slug: "writing-an-article",
+        locale: "en",
         date: "2026-11-10",
-        dateLabel: "Publié le 10 novembre 2026",
+        dateLabel: "Published on November 10, 2026",
     },
     decorators: [
         (Story) => (
@@ -38,12 +38,12 @@ export const WithCover: Story = { args: { image: "/articles/writing-articles/cov
 export const WithoutCover: Story = {};
 export const LanguageFallback: Story = {
     args: {
-        title: "A five-minute tour of the Axons architecture",
-        description: "The few boundaries that hold Axons together.",
-        slug: "architecture-tour",
-        locale: "en",
-        dateLabel: "Publié le 3 novembre 2026",
-        fallback: { flag: "🇬🇧", label: "English", title: "Disponible uniquement en English" },
+        title: "Écrire un article dans Axons",
+        description: "Un dossier par article, un fichier Markdown par langue : de l'entête YAML au sitemap.",
+        slug: "ecrire-un-article",
+        locale: "fr",
+        dateLabel: "Published on November 3, 2026",
+        fallback: { flag: "🇫🇷", label: "Français", title: "Only available in Français" },
     },
 };
 export const InHomeBlock: Story = { args: { headingLevel: "h3", image: "/articles/writing-articles/cover.svg" } };

@@ -2,24 +2,24 @@
 import { cn } from "@/lib/cn";
 import { describe, expect, it } from "vitest";
 
-describe("cn — jointure de classes CSS", () => {
-    it("retourne une chaîne vide sans partie", () => {
+describe("cn — CSS class joining", () => {
+    it("returns an empty string with no part", () => {
         expect(cn()).toBe("");
     });
 
-    it("joint les parties truthy avec un espace simple", () => {
+    it("joins truthy parts with a single space", () => {
         expect(cn("alpha", "beta")).toBe("alpha beta");
     });
 
-    it("ignore false, null et undefined", () => {
+    it("ignores false, null and undefined", () => {
         expect(cn("a", false, null, undefined, "b")).toBe("a b");
     });
 
-    it("conserve la chaîne '0' car elle est truthy en JavaScript", () => {
+    it("keeps the string '0' because it is truthy in JavaScript", () => {
         expect(cn("0")).toBe("0");
     });
 
-    it("ne normalise ni ne trimme les espaces internes", () => {
+    it("neither normalizes nor trims inner spaces", () => {
         expect(cn(" a ", "b ")).toBe(" a  b ");
     });
 });

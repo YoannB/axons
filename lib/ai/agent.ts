@@ -33,7 +33,7 @@ function stripSafetyPrefix(text: string, logTag: string): string {
 
     const stripped = text.replace(SAFETY_PREFIX, "").trim();
 
-    console.warn(`[ai:${logTag}] préfixe de safety retiré, len=${text.length}->${stripped.length}`);
+    console.warn(`[ai:${logTag}] safety prefix stripped, len=${text.length}->${stripped.length}`);
 
     return stripped;
 }
@@ -99,7 +99,7 @@ export async function runPrompt({
 
         if (result.finishReason === "length") {
             console.warn(
-                `[ai:${logTag}] finishReason=length (troncature) len=${cleaned.length} extrait=${cleaned.slice(0, 160)}`,
+                `[ai:${logTag}] finishReason=length (truncation) len=${cleaned.length} excerpt=${cleaned.slice(0, 160)}`,
             );
             throw new AiError("generic", undefined, 502);
         }
@@ -116,7 +116,7 @@ export async function runPrompt({
         // Provider 429 (common on openrouter/free): transient, NOT our daily quota.
         if (/quota|429|rate/i.test(err.message ?? "")) throw new AiError("busy", undefined, 429);
 
-        console.error(`[ai:${logTag}] échec OpenRouter`, err);
+        console.error(`[ai:${logTag}] OpenRouter failure`, err);
         throw new AiError("provider", undefined, 502);
     }
 }

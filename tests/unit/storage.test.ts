@@ -60,28 +60,28 @@ afterEach(() => {
     setWindow(originalWindow);
 });
 
-describe("storage — constantes", () => {
-    it("expose les clés localStorage déclarées centralisement", () => {
+describe("storage — constants", () => {
+    it("exposes the centrally declared localStorage keys", () => {
         expect(LS_USAGE).toBe("axons-usage");
         expect(LS_THEME_MODE).toBe("axons-theme-mode");
     });
 });
 
-describe("readLS — branche SSR (typeof window === undefined)", () => {
-    it("retourne immédiatement le fallback", () => {
+describe("readLS — SSR branch (typeof window === undefined)", () => {
+    it("returns the fallback immediately", () => {
         expect(readLS("any", "fallback")).toBe("fallback");
     });
 });
 
-describe("readLS — branche client", () => {
-    it("retourne le fallback si la clé est absente", () => {
+describe("readLS — client branch", () => {
+    it("returns the fallback when the key is missing", () => {
         const storage = createLocalStorageStub();
         setWindow({ localStorage: storage });
 
         expect(readLS("missing", "fallback")).toBe("fallback");
     });
 
-    it("retourne le fallback si la valeur stockée est une chaîne vide", () => {
+    it("returns the fallback when the stored value is an empty string", () => {
         const storage = createLocalStorageStub();
         storage.store.set("empty", "");
         setWindow({ localStorage: storage });
@@ -89,7 +89,7 @@ describe("readLS — branche client", () => {
         expect(readLS("empty", "fallback")).toBe("fallback");
     });
 
-    it("parse une valeur JSON valide", () => {
+    it("parses a valid JSON value", () => {
         const storage = createLocalStorageStub();
         storage.store.set("usage", JSON.stringify({ date: "2026-10-20", count: 2 }));
         setWindow({ localStorage: storage });
@@ -100,7 +100,7 @@ describe("readLS — branche client", () => {
         });
     });
 
-    it("retourne le fallback si JSON.parse lève", () => {
+    it("returns the fallback when JSON.parse throws", () => {
         const storage = createLocalStorageStub();
         storage.store.set("broken", "{");
         setWindow({ localStorage: storage });
@@ -108,7 +108,7 @@ describe("readLS — branche client", () => {
         expect(readLS("broken", "fallback")).toBe("fallback");
     });
 
-    it("autorise un fallback null", () => {
+    it("allows a null fallback", () => {
         const storage = createLocalStorageStub();
         setWindow({ localStorage: storage });
 
@@ -116,14 +116,14 @@ describe("readLS — branche client", () => {
     });
 });
 
-describe("writeLS — branche SSR", () => {
-    it("ne lève pas et n'écrit nulle part", () => {
+describe("writeLS — SSR branch", () => {
+    it("does not throw and writes nowhere", () => {
         expect(() => writeLS("any", { a: 1 })).not.toThrow();
     });
 });
 
-describe("writeLS — branche client", () => {
-    it("sérialise la valeur en JSON", () => {
+describe("writeLS — client branch", () => {
+    it("serializes the value to JSON", () => {
         const storage = createLocalStorageStub();
         setWindow({ localStorage: storage });
 
@@ -132,7 +132,7 @@ describe("writeLS — branche client", () => {
         expect(storage.store.get("theme")).toBe('{"mode":"dark"}');
     });
 
-    it("stocke une chaîne sous forme de valeur JSON", () => {
+    it("stores a string as a JSON value", () => {
         const storage = createLocalStorageStub();
         setWindow({ localStorage: storage });
 
@@ -141,7 +141,7 @@ describe("writeLS — branche client", () => {
         expect(storage.store.get("raw")).toBe('"v"');
     });
 
-    it("avale silencieusement une erreur de setItem", () => {
+    it("silently swallows a setItem error", () => {
         const storage = createLocalStorageStub({
             setItem: () => {
                 throw new Error("QuotaExceededError");

@@ -14,27 +14,27 @@ const meta = {
         docs: {
             description: {
                 component:
-                    "Puce neutre de la couche material. Couleurs sémantiques publiques conformes à AppChipProps (default | info | success | warning | error — primary/secondary ne font PAS partie de l'API). Icône optionnelle animée via le composant neutre Icon (transité tel quel). Suppression via onDelete, labels longs, barre de filtres.",
+                    "Neutral chip of the material layer. Public semantic colors per AppChipProps (default | info | success | warning | error — primary/secondary are NOT part of the API). Optional animated icon via the neutral Icon component (passed through as is). Deletion via onDelete, long labels, filter bar.",
             },
         },
     },
     argTypes: {
-        label: { control: "text", description: "Texte affiché dans la puce." },
+        label: { control: "text", description: "Text shown in the chip." },
         color: {
             control: "select",
             options: ["default", "info", "success", "warning", "error"],
-            description: "Couleur sémantique publique (AppChipProps).",
+            description: "Public semantic color (AppChipProps).",
         },
         icon: {
             table: { disable: true },
-            description: "Icône optionnelle (ReactNode). Passer <Icon animated /> pour l'animation.",
+            description: "Optional icon (ReactNode). Pass <Icon animated /> for the animation.",
         },
         onDelete: {
             table: { disable: true },
-            description: "Callback de suppression. Absent ⇒ puce non supprimable.",
+            description: "Delete callback. Absent ⇒ chip not deletable.",
         },
     },
-    args: { label: "Composant", color: "default" },
+    args: { label: "Component", color: "default" },
 } satisfies Meta<typeof Chip>;
 
 export default meta;
@@ -42,28 +42,28 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {};
 export const Info: Story = { args: { color: "info", label: "Information" } };
-export const Success: Story = { args: { color: "success", label: "Succès" } };
+export const Success: Story = { args: { color: "success", label: "Success" } };
 export const Warning: Story = {
-    args: { color: "warning", label: "Attention" },
+    args: { color: "warning", label: "Warning" },
 };
-export const Error: Story = { args: { color: "error", label: "Erreur" } };
+export const Error: Story = { args: { color: "error", label: "Error" } };
 
 export const WithAnimatedIcon: Story = {
     args: {
         color: "success",
-        label: "Vérifié",
+        label: "Verified",
         icon: <Icon name="check" size={14} animated />,
     },
 };
 
 export const Deletable: Story = {
-    args: { color: "info", label: "Filtre actif", onDelete: () => {} },
+    args: { color: "info", label: "Active filter", onDelete: () => {} },
 };
 
 export const DeletableWithAnimatedIcon: Story = {
     args: {
         color: "warning",
-        label: "À vérifier",
+        label: "To check",
         icon: <Icon name="bolt" size={14} animated />,
         onDelete: () => {},
     },
@@ -72,7 +72,7 @@ export const DeletableWithAnimatedIcon: Story = {
 export const LongLabel: Story = {
     args: {
         color: "info",
-        label: "Une étiquette volontairement longue pour vérifier l'espacement, la lisibilité et le comportement en wrap",
+        label: "A deliberately long label to check spacing, readability and wrapping behavior",
     },
 };
 
@@ -86,7 +86,7 @@ export const Palette: Story = {
             <Chip {...args} color="error" label="Error" />
         </div>
     ),
-    args: { label: "Puce" },
+    args: { label: "Chip" },
 };
 
 /** Exact trio from the interface (ComponentShowcase): icons animated in cascade. */
@@ -94,13 +94,8 @@ export const ShowcaseRow: Story = {
     render: () => (
         <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>
             <Chip label="Info" color="info" icon={<Icon name="sparkles" size={14} animated />} />
-            <Chip label="Validé" color="success" icon={<Icon name="check" size={14} animated />} />
-            <Chip
-                label="À vérifier"
-                color="warning"
-                icon={<Icon name="bolt" size={14} animated />}
-                onDelete={() => {}}
-            />
+            <Chip label="Validated" color="success" icon={<Icon name="check" size={14} animated />} />
+            <Chip label="To check" color="warning" icon={<Icon name="bolt" size={14} animated />} onDelete={() => {}} />
         </div>
     ),
 };
@@ -108,11 +103,11 @@ export const ShowcaseRow: Story = {
 export const FilterBar: Story = {
     render: () => (
         <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>
-            <Chip label="Tous les statuts" color="default" />
-            <Chip label="Actifs" color="success" icon={<Icon name="check" size={14} animated />} onDelete={() => {}} />
-            <Chip label="En attente" color="warning" onDelete={() => {}} />
-            <Chip label="Erreurs" color="error" onDelete={() => {}} />
-            <Chip label="Archivés" color="info" onDelete={() => {}} />
+            <Chip label="All statuses" color="default" />
+            <Chip label="Active" color="success" icon={<Icon name="check" size={14} animated />} onDelete={() => {}} />
+            <Chip label="Pending" color="warning" onDelete={() => {}} />
+            <Chip label="Errors" color="error" onDelete={() => {}} />
+            <Chip label="Archived" color="info" onDelete={() => {}} />
         </div>
     ),
 };

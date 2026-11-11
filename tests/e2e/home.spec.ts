@@ -1,8 +1,8 @@
 import { expect, test } from "@playwright/test";
 import { acceptCookiesButton, cookieBanner, languageButton, languageOption, themeToggle } from "./support/home";
 
-test.describe("Home — smoke structurel", () => {
-    test("affiche le hero, la bibliothèque de composants, la section SEO et la FAQ", async ({ page }) => {
+test.describe("Home — structural smoke", () => {
+    test("shows the hero, the component library, the SEO section and the FAQ", async ({ page }) => {
         await page.goto("/");
 
         await expect(page.locator("h1")).toBeVisible();
@@ -11,7 +11,7 @@ test.describe("Home — smoke structurel", () => {
         await expect(page.locator("#faq")).toBeVisible();
     });
 
-    test("le bandeau cookies apparaît puis se masque après acceptation", async ({ page }) => {
+    test("the cookie banner appears then hides after acceptance", async ({ page }) => {
         await page.goto("/");
 
         const banner = cookieBanner(page);
@@ -22,7 +22,7 @@ test.describe("Home — smoke structurel", () => {
         await expect(banner).toBeHidden();
     });
 
-    test("bascule de langue FR ↔ EN conserve la page courante", async ({ page }) => {
+    test("FR ↔ EN language switch keeps the current page", async ({ page }) => {
         await page.goto("/");
 
         await languageButton(page).click();
@@ -36,7 +36,7 @@ test.describe("Home — smoke structurel", () => {
         await expect(page).toHaveURL(/^(?!.*\/fr)/);
     });
 
-    test("le toggle de thème pose data-theme sur <html>", async ({ page }) => {
+    test("the theme toggle sets data-theme on <html>", async ({ page }) => {
         await page.goto("/");
 
         const before = await page.getAttribute("html", "data-theme");

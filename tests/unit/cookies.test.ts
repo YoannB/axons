@@ -60,38 +60,38 @@ afterEach(() => {
     setDocument(originalDocument);
 });
 
-describe("cookies — constantes", () => {
-    it("expose les noms de cookies non httpOnly", () => {
+describe("cookies — constants", () => {
+    it("exposes the non-httpOnly cookie names", () => {
         expect(COOKIE_THEME).toBe("axons-theme");
         expect(COOKIE_CONSENT).toBe("axons-consent");
     });
 });
 
-describe("setCookie — branche SSR (typeof document === undefined)", () => {
-    it("ne lève pas et n'écrit nulle part", () => {
+describe("setCookie — SSR branch (typeof document === undefined)", () => {
+    it("does not throw and writes nowhere", () => {
         expect(() => setCookie("any", "value")).not.toThrow();
     });
 });
 
-describe("getCookie — branche SSR (typeof document === undefined)", () => {
-    it("retourne null", () => {
+describe("getCookie — SSR branch (typeof document === undefined)", () => {
+    it("returns null", () => {
         expect(getCookie("any")).toBeNull();
     });
 });
 
-describe("setCookie/getCookie — branche client", () => {
+describe("setCookie/getCookie — client branch", () => {
     beforeEach(() => {
         setDocument(createDocumentStub());
     });
 
-    it("écrit puis lit une valeur simple", () => {
+    it("writes then reads a simple value", () => {
         setCookie(COOKIE_THEME, "dark");
 
         expect(getCookie(COOKIE_THEME)).toBe("dark");
         expect(globalRef.document?.jar.get(COOKIE_THEME)).toBe("dark");
     });
 
-    it("encode puis décode les caractères réservés", () => {
+    it("encodes then decodes reserved characters", () => {
         const value = "a b;c=d?e";
 
         setCookie("query", value);
@@ -100,17 +100,17 @@ describe("setCookie/getCookie — branche client", () => {
         expect(getCookie("query")).toBe(value);
     });
 
-    it("retourne null si le cookie est absent", () => {
+    it("returns null when the cookie is missing", () => {
         expect(getCookie("missing")).toBeNull();
     });
 
-    it("retourne une chaîne vide pour un cookie de valeur vide", () => {
+    it("returns an empty string for a cookie with an empty value", () => {
         setCookie("empty", "");
 
         expect(getCookie("empty")).toBe("");
     });
 
-    it("surcharge une même clé", () => {
+    it("overwrites the same key", () => {
         setCookie("theme", "light");
         setCookie("theme", "dark");
 
@@ -118,7 +118,7 @@ describe("setCookie/getCookie — branche client", () => {
         expect(globalRef.document?.jar.size).toBe(1);
     });
 
-    it("lit plusieurs cookies distincts", () => {
+    it("reads several distinct cookies", () => {
         setCookie("theme", "dark");
         setCookie("consent", "accepted");
 
@@ -126,7 +126,7 @@ describe("setCookie/getCookie — branche client", () => {
         expect(getCookie("consent")).toBe("accepted");
     });
 
-    it("lit un nom de cookie contenant un point", () => {
+    it("reads a cookie name containing a dot", () => {
         setCookie("a.b", "1");
 
         expect(getCookie("a.b")).toBe("1");

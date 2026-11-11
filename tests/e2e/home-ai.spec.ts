@@ -2,8 +2,8 @@ import { expect, test } from "@playwright/test";
 import { aiButton, firstToast, mockHello, mockHelloSequence, mockHelloWithCounter, toastByText } from "./support/ai";
 import { usageCount } from "./support/storage";
 
-test.describe("Home — appel IA (client boundary)", () => {
-    test("réponse utile : pending guard, toast succès, crédit consommé", async ({ page }) => {
+test.describe("Home — AI call (client boundary)", () => {
+    test("useful reply: pending guard, success toast, credit consumed", async ({ page }) => {
         const counter = await mockHelloWithCounter(page, {
             delayMs: 400,
             body: { text: "E2E useful reply" },
@@ -27,7 +27,7 @@ test.describe("Home — appel IA (client boundary)", () => {
         expect(await usageCount(page)).toBe(1);
     });
 
-    test("erreur HTTP : toast d'erreur, bouton réactivé, crédit non consommé", async ({ page }) => {
+    test("HTTP error: error toast, button re-enabled, credit not consumed", async ({ page }) => {
         await mockHello(page, {
             status: 500,
             body: {
@@ -50,7 +50,7 @@ test.describe("Home — appel IA (client boundary)", () => {
         expect(await usageCount(page)).toBeNull();
     });
 
-    test("réponse 200 vide : toast d'erreur, crédit non consommé", async ({ page }) => {
+    test("empty 200 reply: error toast, credit not consumed", async ({ page }) => {
         await mockHello(page, {
             body: { text: "" },
         });
@@ -67,7 +67,7 @@ test.describe("Home — appel IA (client boundary)", () => {
         expect(await usageCount(page)).toBeNull();
     });
 
-    test("réponse 200 sans champ text : toast d'erreur, crédit non consommé", async ({ page }) => {
+    test("200 reply without text field: error toast, credit not consumed", async ({ page }) => {
         await mockHello(page, {
             body: {},
         });
@@ -84,7 +84,7 @@ test.describe("Home — appel IA (client boundary)", () => {
         expect(await usageCount(page)).toBeNull();
     });
 
-    test("erreur rate limit : toast d'erreur, crédit non consommé", async ({ page }) => {
+    test("rate limit error: error toast, credit not consumed", async ({ page }) => {
         await mockHello(page, {
             status: 429,
             body: {
@@ -107,7 +107,7 @@ test.describe("Home — appel IA (client boundary)", () => {
         expect(await usageCount(page)).toBeNull();
     });
 
-    test("crédit consommé uniquement sur réponse utile : erreur puis succès", async ({ page }) => {
+    test("credit consumed only on a useful reply: error then success", async ({ page }) => {
         await mockHelloSequence(page, [
             {
                 status: 429,

@@ -16,8 +16,8 @@ timeoutMs: 25000
 Salue dans la langue {locale}.
 `;
 
-describe("parseAgent — chemin nominal", () => {
-    it("extrait frontmatter + prompt (regex OK, toutes clés présentes)", () => {
+describe("parseAgent — nominal path", () => {
+    it("extracts frontmatter + prompt (regex OK, all keys present)", () => {
         expect(parseAgent(FULL)).toEqual({
             id: "hello",
             name: "Salutation IA",
@@ -28,27 +28,27 @@ describe("parseAgent — chemin nominal", () => {
             systemPrompt: "Salue dans la langue {locale}.",
         });
     });
-    it("tolère CRLF", () => {
+    it("tolerates CRLF", () => {
         expect(parseAgent(FULL.replace(/\n/g, "\r\n")).id).toBe("hello");
     });
-    it("tolère BOM + blancs tête/queue", () => {
+    it("tolerates BOM + leading/trailing whitespace", () => {
         expect(parseAgent("\uFEFF\n\n" + FULL + "\n\n").id).toBe("hello");
     });
-    it("normalise espaces autour cle/valeur", () => {
+    it("normalizes spaces around key/value", () => {
         const a = parseAgent("---\n  id  :  hello  \n---\nb");
         expect(a.id).toBe("hello");
         expect(a.name).toBe("hello");
     });
-    it("préserve un '---' interne au corps (capture lazy)", () => {
+    it("preserves an inner '---' in the body (lazy capture)", () => {
         expect(parseAgent("---\nid: x\n---\nintro\n---\nfin").systemPrompt).toBe("intro\n---\nfin");
     });
-    it("corps vide => ''", () => {
+    it("empty body => ''", () => {
         expect(parseAgent("---\nid: x\n---\n").systemPrompt).toBe("");
     });
 });
 
-describe("parseAgent — défauts (branche ?? DEFAULTS)", () => {
-    it("n'exige que id", () => {
+describe("parseAgent — defaults (?? DEFAULTS branch)", () => {
+    it("requires only id", () => {
         expect(parseAgent("---\nid: x\n---\nbody")).toMatchObject({
             id: "x",
             name: "x",
@@ -58,10 +58,10 @@ describe("parseAgent — défauts (branche ?? DEFAULTS)", () => {
             timeoutMs: 25000,
         });
     });
-    it("ignore une ligne sans ': '", () => {
+    it("ignores a line without ': '", () => {
         expect(parseAgent("---\nid: x\ntemperature0.9\n---\nb").temperature).toBe(0.7);
     });
-    it("coerce les numériques écrits en chaînes", () => {
+    it("coerces numerics written as strings", () => {
         const a = parseAgent("---\nid: x\ntemperature: 0.9\nmaxTokens: 512\ntimeoutMs: 30000\n---\nb");
         expect(a.temperature).toBe(0.9);
         expect(a.maxTokens).toBe(512);
@@ -69,44 +69,44 @@ describe("parseAgent — défauts (branche ?? DEFAULTS)", () => {
     });
 });
 
-describe("parseAgent — erreurs d'auteur (branches throw)", () => {
-    it("rejecte absence de '---' de clôture", () => {
+describe("parseAgent — authoring errors (throw branches)", () => {
+    it("rejects a missing closing '---'", () => {
         expect(() => parseAgent("---\nid: x\nbody")).toThrow(/frontmatter/);
     });
-    it("rejecte absence de '---' de tête", () => {
+    it("rejects a missing opening '---'", () => {
         expect(() => parseAgent("id: x\n---\nbody")).toThrow(/frontmatter/);
     });
-    it("rejecte chaîne vide", () => {
+    it("rejects an empty string", () => {
         expect(() => parseAgent("")).toThrow(/frontmatter/);
     });
-    it("rejecte id absent", () => {
-        expect(() => parseAgent("---\nname: y\n---\nbody")).toThrow(/id requis/);
+    it("rejects a missing id", () => {
+        expect(() => parseAgent("---\nname: y\n---\nbody")).toThrow(/id field required/);
     });
-    it("rejecte id vide", () => {
-        expect(() => parseAgent("---\nid:\n---\nbody")).toThrow(/id requis/);
+    it("rejects an empty id", () => {
+        expect(() => parseAgent("---\nid:\n---\nbody")).toThrow(/id field required/);
     });
-    it("rejecte température non finie (NaN)", () => {
+    it("rejects a non-finite temperature (NaN)", () => {
         expect(() => parseAgent("---\nid: x\ntemperature: abc\n---\nb")).toThrow(/temperature/);
     });
-    it("rejecte timeoutMs Infinity", () => {
+    it("rejects timeoutMs Infinity", () => {
         expect(() => parseAgent("---\nid: x\ntimeoutMs: Infinity\n---\nb")).toThrow(/timeoutMs/);
     });
-    it("accepte maxTokens vide => 0 (Number('') fini, ne throw PAS)", () => {
+    it("accepts empty maxTokens => 0 (Number('') is finite, does NOT throw)", () => {
         expect(parseAgent("---\nid: x\nmaxTokens: \n---\nb").maxTokens).toBe(0);
     });
 });
 
 describe("renderPrompt", () => {
-    it("remplace les placeholders connus", () => {
+    it("replaces known placeholders", () => {
         expect(renderPrompt("Hello {locale}", { locale: "fr" })).toBe("Hello fr");
     });
-    it("vide les placeholders inconnus (?? '')", () => {
+    it("empties unknown placeholders (?? '')", () => {
         expect(renderPrompt("A {missing} B", {})).toBe("A  B");
     });
-    it("remplace chaque occurrence (/g)", () => {
+    it("replaces every occurrence (/g)", () => {
         expect(renderPrompt("{x}-{x}", { x: "1" })).toBe("1-1");
     });
-    it("ignore un placeholder avec espace (\\w+ ne matche pas)", () => {
+    it("ignores a placeholder with a space (\\w+ does not match)", () => {
         expect(renderPrompt("{a b} ok", { "a b": "z" })).toBe("{a b} ok");
     });
 });

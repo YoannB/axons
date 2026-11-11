@@ -192,11 +192,11 @@ describe("parseSkill — authoring errors", () => {
     });
 
     it("rejects missing name", () => {
-        expect(() => parseSkill("---\ndescription: d\n---\nb")).toThrow(/name requis/);
+        expect(() => parseSkill("---\ndescription: d\n---\nb")).toThrow(/name field required/);
     });
 
     it("rejects missing description", () => {
-        expect(() => parseSkill("---\nname: n\n---\nb")).toThrow(/description requis/);
+        expect(() => parseSkill("---\nname: n\n---\nb")).toThrow(/description field required/);
     });
 
     it("rejects non-finite top-level temperature", () => {
@@ -303,15 +303,15 @@ describe("validateSkillInputs", () => {
     });
 });
 
-describe("assertCapabilityId — garde anti-traversée", () => {
-    it.each(["hello", "i18n-copy", "a", "0", "a".repeat(64)])("accepte le slug %j", (id) => {
+describe("assertCapabilityId — anti-traversal guard", () => {
+    it.each(["hello", "i18n-copy", "a", "0", "a".repeat(64)])("accepts the slug %j", (id) => {
         expect(assertCapabilityId(id)).toBe(id);
     });
 
     it.each(["", "../secret", "..", "a/b", "a\b", "hello.md", "Hello", "-hello", "a b", "a".repeat(65)])(
-        "rejette %j",
+        "rejects %j",
         (id) => {
-            expect(() => assertCapabilityId(id)).toThrow(/Identifiant de capacité invalide/);
+            expect(() => assertCapabilityId(id)).toThrow(/Invalid capability id/);
         },
     );
 });

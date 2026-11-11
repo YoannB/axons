@@ -23,7 +23,7 @@ export default async function purgeAiQuota(): Promise<void> {
             for (let i = 0; i < page.blobs.length; i += BATCH) {
                 if (Date.now() - started > BUDGET_MS) {
                     console.warn(
-                        `[ai:quota-purge] budget épuisé, ${deleted} clés supprimées, suite au prochain passage`,
+                        `[ai:quota-purge] budget exhausted, ${deleted} keys deleted, the rest on the next run`,
                     );
                     return;
                 }
@@ -33,7 +33,7 @@ export default async function purgeAiQuota(): Promise<void> {
             }
         }
     }
-    console.log(`[ai:quota-purge] ${deleted} clés supprimées`);
+    console.log(`[ai:quota-purge] ${deleted} keys deleted`);
 }
 
 export const config = { schedule: "@daily" };

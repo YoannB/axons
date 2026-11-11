@@ -22,9 +22,9 @@ export function parseFrameAncestors(raw: string | undefined): string[] {
         .filter(Boolean);
     if (tokens.length === 0) return ["'self'"];
     const invalid = tokens.filter((t) => !SOURCE.test(t));
-    if (invalid.length > 0) throw new Error(`FRAME_ANCESTORS invalide : ${invalid.join(", ")}`);
+    if (invalid.length > 0) throw new Error(`Invalid FRAME_ANCESTORS: ${invalid.join(", ")}`);
     if (tokens.includes("'none'")) {
-        if (tokens.length > 1) throw new Error("FRAME_ANCESTORS : 'none' ne se combine avec aucune autre source");
+        if (tokens.length > 1) throw new Error("FRAME_ANCESTORS: 'none' cannot be combined with any other source");
         return ["'none'"];
     }
     return [...new Set(["'self'", ...tokens])];
