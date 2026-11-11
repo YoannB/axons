@@ -358,5 +358,11 @@
     "notFound": {
         "text": "Hemos registrado todo el multiverso: esta página no existe en ninguna realidad conocida.",
         "home": "Volver al inicio"
+    },
+    "meta": {
+        "home": {
+            "title": "Axons — el boilerplate Next.js para tus agentes de IA",
+            "description": "Una base Next.js 16 moderna, rápida y optimizada para SEO para crear aplicaciones de IA multilingües, desplegables en Netlify."
+        }
     }
 }
