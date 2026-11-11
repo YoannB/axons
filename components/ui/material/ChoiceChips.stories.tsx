@@ -4,9 +4,9 @@ import { useState } from "react";
 import { ChoiceChips } from "../ChoiceChips";
 
 const OPTIONS = [
-    { value: "linkedin", label: "Post LinkedIn" },
-    { value: "email", label: "E-mail pro" },
-    { value: "long", label: "Texte long" },
+    { value: "linkedin", label: "LinkedIn post" },
+    { value: "email", label: "Work email" },
+    { value: "long", label: "Long text" },
 ] as const;
 type Value = (typeof OPTIONS)[number]["value"];
 
@@ -14,8 +14,8 @@ function Demo({ initial, disabled }: { initial: Value | null; disabled?: boolean
     const [value, setValue] = useState<Value | null>(initial);
     return (
         <div style={{ display: "grid", gap: 8 }}>
-            <ChoiceChips ariaLabel="Exemples" options={OPTIONS} value={value} onChange={setValue} disabled={disabled} />
-            <small style={{ color: "var(--muted)" }}>Sélection : {value ?? "aucune"}</small>
+            <ChoiceChips ariaLabel="Examples" options={OPTIONS} value={value} onChange={setValue} disabled={disabled} />
+            <small style={{ color: "var(--muted)" }}>Selection: {value ?? "none"}</small>
         </div>
     );
 }
@@ -28,11 +28,11 @@ const meta = {
         docs: {
             description: {
                 component:
-                    "Groupe de puces à choix unique (exemples, préréglages, modes). Accessibilité : `role=radiogroup` + `role=radio`/`aria-checked`, tabindex itinérant (Tab entre sur la puce sélectionnée, les flèches déplacent ET sélectionnent, Espace/Entrée sélectionnent). `disabled` gèle le groupe pendant un appel IA.",
+                    "Single-choice chip group (examples, presets, modes). Accessibility: `role=radiogroup` + `role=radio`/`aria-checked`, roving tabindex (Tab enters on the selected chip, arrows move AND select, Space/Enter select). `disabled` freezes the group during an AI call.",
             },
         },
     },
-    args: { options: OPTIONS, value: null, onChange: () => {}, ariaLabel: "Exemples" },
+    args: { options: OPTIONS, value: null, onChange: () => {}, ariaLabel: "Examples" },
 } satisfies Meta<typeof ChoiceChips>;
 
 export default meta;

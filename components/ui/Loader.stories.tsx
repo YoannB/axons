@@ -13,11 +13,11 @@ import { Loader, SplashLoader } from "./Loader";
  * (TS2604/2786, "Story: {}").
  */
 const fallbackMessages = {
-    common: { loading: "Chargement…" },
+    common: { loading: "Loading…" },
 } as unknown as ComponentProps<typeof NextIntlClientProvider>["messages"];
 
 const withTranslations = (Story: ComponentType) => (
-    <NextIntlClientProvider locale="fr" messages={fallbackMessages}>
+    <NextIntlClientProvider locale="en" messages={fallbackMessages}>
         <Story />
     </NextIntlClientProvider>
 );
@@ -61,7 +61,7 @@ function DismissDemo() {
                         cursor: "pointer",
                     }}
                 >
-                    Masquer le splash
+                    Hide the splash
                 </button>
             )}
             {dismissed && <SplashLoader />}
@@ -78,26 +78,26 @@ const meta = {
         docs: {
             description: {
                 component:
-                    'Indicateurs de chargement neutres. `Loader` : bloc déclaratif (role="status", aria-live="polite", aria-label constant) composé du Logo (taille via `size`), d\'une barre animée (`showBar`) et d\'un libellé localisé (`showText`) — utilisé en Suspense / appels IA. `SplashLoader` : retourne null et masque le #app-splash pré-hydratation via la classe .is-leaving (transition opacity/visibility, nœud jamais retiré du DOM).',
+                    'Neutral loading indicators. `Loader`: declarative block (role="status", aria-live="polite", constant aria-label) made of the Logo (size via `size`), an animated bar (`showBar`) and a localized label (`showText`) — used in Suspense / AI calls. `SplashLoader`: returns null and hides the pre-hydration #app-splash via the .is-leaving class (opacity/visibility transition, node never removed from the DOM).',
             },
         },
     },
     argTypes: {
         size: {
             control: { type: "number", min: 16, max: 160, step: 4 },
-            description: "Taille du Logo (icône du site) en px. Défaut 56.",
+            description: "Size of the Logo (site icon) in px. Default 56.",
         },
         showIcon: {
             control: "boolean",
-            description: "Afficher le Logo. Défaut true.",
+            description: "Show the Logo. Default true.",
         },
         showBar: {
             control: "boolean",
-            description: "Afficher la barre de progression. Défaut true.",
+            description: "Show the progress bar. Default true.",
         },
         showText: {
             control: "boolean",
-            description: "Afficher le libellé localisé. Défaut true.",
+            description: "Show the localized label. Default true.",
         },
     },
     args: { size: 56, showIcon: true, showBar: true, showText: true },
@@ -154,7 +154,7 @@ export const FullPageSplash: Story = {
     parameters: {
         docs: {
             description: {
-                story: "Structure du splash plein écran (conteneur #app-splash reconstitué + Loader grande taille). Le .splash-logo respirant du markup serveur n'est pas reproduit (Logo.tsx non fourni) : on vérifie ici le conteneur fixed centré et la barre animée.",
+                story: "Structure of the full-screen splash (rebuilt #app-splash container + large Loader). The breathing .splash-logo of the server markup is not reproduced (Logo.tsx not provided): this checks the centered fixed container and the animated bar.",
             },
         },
     },
@@ -167,7 +167,7 @@ export const SplashDismissal: Story = {
     parameters: {
         docs: {
             description: {
-                story: "Avant clic : #app-splash visible (Loader + déclencheur). Au clic, SplashLoader se monte et son effet ajoute .is-leaving => fondu opacity/visibility/pointer-events, sans retrait du nœud du DOM (mutation additive, conforme react-effects.md). Le conteneur étant fixed z:9999, il couvre le canvas pendant la démo.",
+                story: "Before the click: #app-splash visible (Loader + trigger). On click, SplashLoader mounts and its effect adds .is-leaving => opacity/visibility/pointer-events fade, without removing the node from the DOM (additive mutation, per react-effects.md). The container being fixed z:9999, it covers the canvas during the demo.",
             },
         },
     },

@@ -65,37 +65,37 @@ const meta = {
         docs: {
             description: {
                 component:
-                    "Champ de saisie neutre. Parité interface : libellé FIXE externe (l'astérisque de `required` y est porté), libellé interne neutralisé. L'anneau rotatif est l'unique contour au focus (l'outline MUI est masquée en CSS material, plus de double bordure). Couvre placeholder, requis, désactivé, texte d'aide, erreur, priorité error/helperText et types HTML natifs.",
+                    "Neutral input field. Interface parity: FIXED external label (it carries the `required` asterisk), inner label neutralized. The rotating ring is the only focus outline (the MUI outline is hidden in the material CSS, no more double border). Covers placeholder, required, disabled, helper text, error, error/helperText priority and native HTML types.",
             },
         },
     },
     argTypes: {
-        label: { control: "text", description: "Texte du libellé FIXE externe." },
-        value: { control: "text", description: "Valeur initiale." },
-        placeholder: { control: "text", description: "Placeholder lorsque vide." },
-        disabled: { control: "boolean", description: "Désactive le champ." },
+        label: { control: "text", description: "Text of the FIXED external label." },
+        value: { control: "text", description: "Initial value." },
+        placeholder: { control: "text", description: "Placeholder when empty." },
+        disabled: { control: "boolean", description: "Disables the field." },
         required: {
             control: "boolean",
-            description: "Marque obligatoire (astérisque sur le libellé externe + attribut natif).",
+            description: "Required marker (asterisk on the external label + native attribute).",
         },
         error: {
             control: "text",
-            description: "Message d'erreur (prime sur helperText).",
+            description: "Error message (takes precedence over helperText).",
         },
-        helperText: { control: "text", description: "Texte d'aide sans erreur." },
+        helperText: { control: "text", description: "Helper text when there is no error." },
         type: {
             control: "select",
             options: ["text", "email", "password", "number", "search", "tel", "url"],
-            description: "Type HTML natif.",
+            description: "Native HTML type.",
         },
         id: {
             control: "text",
-            description: "Identifiant DOM (association/tests).",
+            description: "DOM id (association/tests).",
         },
-        name: { control: "text", description: "Nom de champ (formulaires)." },
+        name: { control: "text", description: "Field name (forms)." },
         onChange: {
             table: { disable: true },
-            description: "Désactivé : état local de démonstration.",
+            description: "Disabled: local demo state.",
         },
     },
     args: { label: "Label", value: "", onChange: noop },
@@ -107,84 +107,84 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
     args: {
-        label: "Nom complet",
-        placeholder: "Jean Dupont",
-        helperText: "Saisissez votre prénom et votre nom.",
+        label: "Full name",
+        placeholder: "Jane Doe",
+        helperText: "Enter your first and last name.",
     },
 };
 export const Required: Story = {
     args: {
-        label: "Adresse email",
+        label: "Email address",
         type: "email",
         required: true,
-        helperText: "Ce champ est obligatoire.",
+        helperText: "This field is required.",
     },
 };
 export const Disabled: Story = {
     args: {
-        label: "Identifiant",
+        label: "Username",
         value: "USER-123",
         disabled: true,
-        helperText: "Modifiable uniquement par un administrateur.",
+        helperText: "Only an administrator can change it.",
     },
 };
 export const HelperText: Story = {
     args: {
-        label: "Titre du projet",
-        placeholder: "Mon projet",
-        helperText: "50 caractères maximum.",
+        label: "Project title",
+        placeholder: "My project",
+        helperText: "50 characters maximum.",
     },
 };
 export const Error: Story = {
     args: {
-        label: "Adresse email",
+        label: "Email address",
         type: "email",
-        value: "jean.example",
-        error: "Format d'email invalide.",
+        value: "jane.example",
+        error: "Invalid email format.",
     },
 };
 export const ErrorOverridesHelperText: Story = {
     args: {
-        label: "Mot de passe",
+        label: "Password",
         type: "password",
-        error: "Le mot de passe est requis.",
-        helperText: "Cette aide ne doit pas s'afficher lorsqu'une erreur est présente.",
+        error: "The password is required.",
+        helperText: "This hint must not show when an error is present.",
     },
 };
 export const Password: Story = {
     args: {
-        label: "Mot de passe",
+        label: "Password",
         type: "password",
         placeholder: "••••••••",
-        helperText: "8 caractères minimum.",
+        helperText: "8 characters minimum.",
     },
 };
 export const Search: Story = {
     args: {
-        label: "Recherche",
+        label: "Search",
         type: "search",
-        placeholder: "Rechercher un article…",
+        placeholder: "Search for an article…",
     },
 };
 export const FormAttributes: Story = {
     args: {
         id: "company-website",
         name: "website",
-        label: "Site web",
+        label: "Website",
         type: "url",
-        placeholder: "https://exemple.fr",
-        helperText: "Inclure le protocole https://.",
+        placeholder: "https://example.com",
+        helperText: "Include the https:// protocol.",
     },
 };
 export const Types: Story = {
     render: () => (
         <div style={{ display: "grid", gap: "1rem", maxWidth: "420px" }}>
-            <LabeledInput id="input-text" label="Text" type="text" value="Texte libre" />
+            <LabeledInput id="input-text" label="Text" type="text" value="Free text" />
             <LabeledInput id="input-email" label="Email" type="email" value="user@example.com" />
-            <LabeledInput id="input-password" label="Mot de passe" type="password" value="secret" />
-            <LabeledInput id="input-number" label="Nombre" type="number" value="42" />
-            <LabeledInput id="input-search" label="Recherche" type="search" placeholder="Rechercher…" value="" />
-            <LabeledInput id="input-tel" label="Téléphone" type="tel" value="+33123456789" />
+            <LabeledInput id="input-password" label="Password" type="password" value="secret" />
+            <LabeledInput id="input-number" label="Number" type="number" value="42" />
+            <LabeledInput id="input-search" label="Search" type="search" placeholder="Search…" value="" />
+            <LabeledInput id="input-tel" label="Phone" type="tel" value="+33123456789" />
             <LabeledInput id="input-url" label="URL" type="url" value="https://example.com" />
         </div>
     ),

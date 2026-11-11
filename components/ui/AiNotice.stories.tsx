@@ -10,16 +10,16 @@ const meta = {
         docs: {
             description: {
                 component:
-                    "Mentions de transparence affichées près d'une action IA : fournisseur tiers, qualité variable des modèles gratuits, temps d'attente. Les lignes arrivent déjà traduites (`messages/*.json`, espace `aiNotice`) : le composant reste neutre (pas de next-intl). Liste vide = rien n'est rendu.",
+                    "Transparency notices shown next to an AI action: third-party provider, variable quality of free models, wait time. Lines arrive already translated (`messages/*.json`, `aiNotice` namespace): the component stays neutral (no next-intl). Empty list = nothing is rendered.",
             },
         },
     },
-    argTypes: { items: { control: "object", description: "Lignes déjà traduites." } },
+    argTypes: { items: { control: "object", description: "Already translated lines." } },
     args: {
         items: [
-            "Votre texte est envoyé au fournisseur d'IA tiers (OpenRouter) et au modèle qu'il sollicite, qui peuvent le conserver selon leurs propres conditions. Ce site, lui, ne le conserve pas.",
-            "Les modèles gratuits peuvent être lents ou imprécis : si le résultat vous semble faux, relancez simplement.",
-            "Une réponse peut prendre jusqu'à 30 secondes quand le modèle gratuit est saturé.",
+            "Your text is sent to the third-party AI provider (OpenRouter) and to the model it routes to, which may keep it under their own terms. This site itself does not store it.",
+            "Free models can be slow or imprecise: if the result looks wrong, simply run it again.",
+            "A reply can take up to 30 seconds when the free model is busy.",
         ],
     },
 } satisfies Meta<typeof AiNotice>;
@@ -28,5 +28,5 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {};
-export const SingleLine: Story = { args: { items: ["Réponse générée par une IA : vérifiez-la avant de la publier."] } };
+export const SingleLine: Story = { args: { items: ["AI-generated reply: check it before publishing it."] } };
 export const Empty: Story = { args: { items: [] } };

@@ -11,7 +11,7 @@ const meta = {
         docs: {
             description: {
                 component:
-                    'Fil d’Ariane neutre exposant l’API publique du projet. Le dernier élément est automatiquement traité comme la page courante : il est rendu en texte simple et porte aria-current="page". Les éléments précédents ne deviennent des liens que s’ils possèdent un href.',
+                    'Neutral breadcrumb exposing the project’s public API. The last item is automatically treated as the current page: it is rendered as plain text and carries aria-current="page". Previous items only become links when they have an href.',
             },
         },
     },
@@ -20,8 +20,7 @@ const meta = {
             table: {
                 disable: true,
             },
-            description:
-                "Liste ordonnée des éléments du fil d’Ariane. Chaque élément contient un label et, facultativement, un href.",
+            description: "Ordered list of the breadcrumb items. Each item holds a label and, optionally, an href.",
         },
     },
 } satisfies Meta<typeof Breadcrumb>;
@@ -30,9 +29,9 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 const defaultItems: AppBreadcrumbItem[] = [
-    { label: "Accueil", href: "/" },
-    { label: "Catalogue", href: "/catalogue" },
-    { label: "Composants UI", href: "/catalogue/composants-ui" },
+    { label: "Home", href: "/" },
+    { label: "Catalog", href: "/catalog" },
+    { label: "UI components", href: "/catalog/ui-components" },
     { label: "Breadcrumb" },
 ];
 
@@ -44,15 +43,15 @@ export const Default: Story = {
 
 export const SingleCurrentPage: Story = {
     args: {
-        items: [{ label: "Tableau de bord" }],
+        items: [{ label: "Dashboard" }],
     },
 };
 
 export const LastItemWithHrefIsCurrent: Story = {
     args: {
         items: [
-            { label: "Accueil", href: "/" },
-            { label: "Paramètres", href: "/parametres" },
+            { label: "Home", href: "/" },
+            { label: "Settings", href: "/settings" },
         ],
     },
 };
@@ -60,8 +59,8 @@ export const LastItemWithHrefIsCurrent: Story = {
 export const IntermediateItemWithoutHref: Story = {
     args: {
         items: [
-            { label: "Accueil", href: "/" },
-            { label: "Étape intermédiaire" },
+            { label: "Home", href: "/" },
+            { label: "Intermediate step" },
             { label: "Confirmation", href: "/confirmation" },
         ],
     },
@@ -70,22 +69,22 @@ export const IntermediateItemWithoutHref: Story = {
 export const LongHierarchy: Story = {
     args: {
         items: [
-            { label: "Accueil", href: "/" },
-            { label: "Espace client", href: "/espace-client" },
-            { label: "Facturation", href: "/espace-client/facturation" },
-            { label: "Factures", href: "/espace-client/facturation/factures" },
+            { label: "Home", href: "/" },
+            { label: "Customer area", href: "/customer-area" },
+            { label: "Billing", href: "/customer-area/billing" },
+            { label: "Invoices", href: "/customer-area/billing/invoices" },
             {
-                label: "Facture 2026-0042",
-                href: "/espace-client/facturation/factures/2026-0042",
+                label: "Invoice 2026-0042",
+                href: "/customer-area/billing/invoices/2026-0042",
             },
-            { label: "Détail du paiement" },
+            { label: "Payment details" },
         ],
     },
 };
 
 export const WithoutLinks: Story = {
     args: {
-        items: [{ label: "Étape 1" }, { label: "Étape 2" }, { label: "Étape 3" }, { label: "Étape finale" }],
+        items: [{ label: "Step 1" }, { label: "Step 2" }, { label: "Step 3" }, { label: "Final step" }],
     },
 };
 

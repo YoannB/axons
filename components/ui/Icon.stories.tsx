@@ -28,7 +28,7 @@ const meta = {
         docs: {
             description: {
                 component:
-                    "Icône SVG générique de l'API neutre (hors material). L'animation de dessin (contour fantôme + tracé via pathLength/stroke-dashoffset, cf. docs/seo-layout.md) est portée par le composant et son CSS neutre (globals.css) ; elle est indépendante de la couche material. Cette page sert aussi de preuve visuelle : les chips animés de la couche material consomment exactement ce composant via la prop `icon` (ReactNode transitée telle quelle).",
+                    "Generic SVG icon of the neutral API (outside material). The drawing animation (ghost outline + stroke via pathLength/stroke-dashoffset, see docs/seo-layout.md) is carried by the component and its neutral CSS (globals.css); it is independent of the material layer. This page is also visual proof: the material layer's animated chips consume exactly this component through the `icon` prop (ReactNode passed through as is).",
             },
         },
     },
@@ -36,19 +36,19 @@ const meta = {
         name: {
             control: "select",
             options: ICON_NAMES,
-            description: "Nom de l'icône (union IconName).",
+            description: "Icon name (IconName union).",
         },
         size: {
             control: { type: "number", min: 12, max: 64, step: 2 },
-            description: "Taille en pixels (carré).",
+            description: "Size in pixels (square).",
         },
         animated: {
             control: "boolean",
-            description: "Active le cycle de dessin (classe .ui-icon--animated).",
+            description: "Enables the drawing cycle (.ui-icon--animated class).",
         },
         className: {
             control: "text",
-            description: "Classe additionnelle optionnelle.",
+            description: "Optional extra class.",
         },
     },
     args: { name: "check", size: 24, animated: false },

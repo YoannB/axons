@@ -7,29 +7,29 @@ import type { AppTabItem } from "./types";
 
 const PANELS: AppTabItem[] = [
     { id: "terminal", label: "Terminal" },
-    { id: "output", label: "Sortie" },
-    { id: "problems", label: "Problèmes" },
+    { id: "output", label: "Output" },
+    { id: "problems", label: "Problems" },
 ];
 const PAGES: AppTabItem[] = [
     { id: "home", label: "page.tsx", href: "/", icon: <Icon name="code" size={14} /> },
-    { id: "about", label: "contenu.md", href: "/a-propos", icon: <Icon name="box" size={14} />, closable: true },
-    { id: "projects", label: "data.json", href: "/projets", icon: <Icon name="box" size={14} />, closable: true },
+    { id: "about", label: "content.md", href: "/about", icon: <Icon name="box" size={14} />, closable: true },
+    { id: "projects", label: "data.json", href: "/projects", icon: <Icon name="box" size={14} />, closable: true },
 ];
 
 function PanelDemo() {
     const [active, setActive] = useState("terminal");
-    return <Tabs ariaLabel="Panneaux" items={PANELS} activeId={active} onSelect={setActive} />;
+    return <Tabs ariaLabel="Panels" items={PANELS} activeId={active} onSelect={setActive} />;
 }
 
 function ClosableDemo() {
     const [items, setItems] = useState(PAGES);
     return (
         <Tabs
-            ariaLabel="Fichiers ouverts"
+            ariaLabel="Open files"
             items={items}
             activeId="about"
             onClose={(id) => setItems((list) => list.filter((t) => t.id !== id))}
-            closeLabel={(label) => `Fermer ${label}`}
+            closeLabel={(label) => `Close ${label}`}
         />
     );
 }
@@ -42,11 +42,11 @@ const meta = {
         docs: {
             description: {
                 component:
-                    "Bande d'onglets défilante (neutre, sans MUI). Avec `href` : vrais liens dans un `<nav>` avec `aria-current=page` (l'URL fait foi : lien direct, rechargement et précédent/suivant tombent sur le bon onglet). Sans `href` : boutons `aria-pressed` qui appellent `onSelect` (bascule de panneau). Libellés longs tronqués (titre complet au survol), onglet actif ramené dans la vue, bouton de fermeture optionnel avec libellé accessible.",
+                    "Scrollable tab strip (neutral, no MUI). With `href`: real links inside a `<nav>` with `aria-current=page` (the URL is authoritative: direct link, reload and back/forward land on the right tab). Without `href`: `aria-pressed` buttons that call `onSelect` (panel switch). Long labels truncated (full title on hover), active tab scrolled into view, optional close button with an accessible label.",
             },
         },
     },
-    args: { items: PANELS, activeId: "terminal", ariaLabel: "Panneaux" },
+    args: { items: PANELS, activeId: "terminal", ariaLabel: "Panels" },
 } satisfies Meta<typeof Tabs>;
 
 export default meta;
@@ -58,11 +58,11 @@ export const Overflow: Story = {
     render: () => (
         <div style={{ maxWidth: 320 }}>
             <Tabs
-                ariaLabel="Fichiers ouverts"
+                ariaLabel="Open files"
                 activeId="f6"
                 items={Array.from({ length: 8 }, (_, i) => ({
                     id: `f${i}`,
-                    label: `un-nom-de-fichier-tres-long-${i}.tsx`,
+                    label: `a-very-long-file-name-${i}.tsx`,
                 }))}
                 onSelect={() => {}}
             />

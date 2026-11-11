@@ -15,11 +15,11 @@ const noop = () => {};
  * `useTranslations("showcase")`, stays self-contained in the verification environment.
  */
 const fallbackMessages = {
-    showcase: { dialogClose: "Fermer la fenêtre" },
+    showcase: { dialogClose: "Close" },
 } as unknown as ComponentProps<typeof NextIntlClientProvider>["messages"];
 
 const withTranslations = (Story: ComponentType) => (
-    <NextIntlClientProvider locale="fr" messages={fallbackMessages}>
+    <NextIntlClientProvider locale="en" messages={fallbackMessages}>
         <Story />
     </NextIntlClientProvider>
 );
@@ -42,7 +42,7 @@ function StatefulDialog({ open: initiallyOpen = false, onClose = noop, ...props 
         <>
             {!open && (
                 <Button variant="secondary" onClick={() => setOpen(true)}>
-                    Ouvrir la boîte de dialogue
+                    Open the dialog
                 </Button>
             )}
             <Dialog {...props} open={open} onClose={handleClose} />
@@ -59,43 +59,43 @@ const meta = {
         docs: {
             description: {
                 component:
-                    "Boîte de dialogue neutre du projet. Chaque story s'ouvre au clic (bouton `Button`) afin d'éviter la superposition des portails sur la page Docs ; le contenu de chaque variante reste vérifiable isolément. Couvre l'état ouvert/fermé, la présence ou l'absence de titre et de footer, le contenu long et les actions de confirmation. La croix de fermeture est animée via le CSS material (`.dialog-close`) et porte un aria-label fourni par next-intl.",
+                    "The project's neutral dialog. Each story opens on click (`Button`) to avoid stacked portals on the Docs page; each variant's content stays verifiable on its own. Covers the open/closed state, with or without title and footer, long content and confirmation actions. The close cross is animated via the material CSS (`.dialog-close`) and carries an aria-label provided by next-intl.",
             },
         },
     },
     argTypes: {
         open: {
             control: "boolean",
-            description: "État d'ouverture initial. À `false` par défaut pour préserver la page Docs.",
+            description: "Initial open state. `false` by default to preserve the Docs page.",
         },
         title: {
             control: "text",
-            description: "Titre optionnel de la boîte de dialogue.",
+            description: "Optional dialog title.",
         },
         children: {
             table: { disable: true },
-            description: "Contenu principal de la boîte de dialogue.",
+            description: "Main dialog content.",
         },
         footer: {
             table: { disable: true },
-            description: "Zone d'actions optionnelle, généralement composée de boutons neutres.",
+            description: "Optional actions area, usually made of neutral buttons.",
         },
         onClose: {
             table: { disable: true },
-            description: "Callback appelé lors de la fermeture par la croix, le backdrop ou l'échap.",
+            description: "Callback called on close via the cross, the backdrop or Escape.",
         },
     },
     args: {
         open: false,
         onClose: noop,
-        title: "Confirmer l'action",
-        children: "Voulez-vous vraiment appliquer cette modification ?",
+        title: "Confirm the action",
+        children: "Do you really want to apply this change?",
         footer: (
             <>
                 <Button variant="ghost" onClick={noop}>
-                    Annuler
+                    Cancel
                 </Button>
-                <Button onClick={noop}>Confirmer</Button>
+                <Button onClick={noop}>Confirm</Button>
             </>
         ),
     },
@@ -111,28 +111,26 @@ export const WithoutTitle: Story = {
     args: {
         title: undefined,
         children:
-            "Cette boîte de dialogue n'a pas de titre. Le contenu reste accessible, mais un titre explicite est recommandé pour les cas réels.",
+            "This dialog has no title. The content stays accessible, but an explicit title is recommended for real cases.",
     },
 };
 
 export const WithoutFooter: Story = {
     args: {
         footer: undefined,
-        children:
-            "Aucune action de footer n'est fournie. La fermeture se fait via la croix, le backdrop ou la touche Échap.",
+        children: "No footer action is provided. Closing happens via the cross, the backdrop or the Escape key.",
     },
 };
 
 export const LongContent: Story = {
     args: {
-        title: "Conditions d'utilisation",
+        title: "Terms of use",
         children: (
             <div style={{ display: "grid", gap: "1rem" }}>
                 {Array.from({ length: 12 }, (_, index) => (
                     <p key={index}>
-                        Ceci est un paragraphe de démonstration destiné à vérifier le comportement de défilement du
-                        contenu dans une boîte de dialogue. Le bloc de contenu doit rester lisible sans casser la mise
-                        en page, même lorsque le texte est volumineux.
+                        This is a demo paragraph meant to check how content scrolls inside a dialog. The content block
+                        must stay readable without breaking the layout, even when the text is long.
                     </p>
                 ))}
             </div>
@@ -142,15 +140,15 @@ export const LongContent: Story = {
 
 export const DestructiveAction: Story = {
     args: {
-        title: "Supprimer l'élément",
-        children: "Cette action est irréversible. L'élément sélectionné sera définitivement supprimé.",
+        title: "Delete the item",
+        children: "This action cannot be undone. The selected item will be permanently deleted.",
         footer: (
             <>
                 <Button variant="ghost" onClick={noop}>
-                    Annuler
+                    Cancel
                 </Button>
                 <Button variant="primary" onClick={noop}>
-                    Supprimer
+                    Delete
                 </Button>
             </>
         ),
@@ -159,18 +157,17 @@ export const DestructiveAction: Story = {
 
 export const CustomFooter: Story = {
     args: {
-        title: "Sélection multiple",
-        children:
-            "Le footer peut contenir plusieurs actions neutres, y compris des boutons secondaires, fantômes ou principaux.",
+        title: "Multiple selection",
+        children: "The footer can hold several neutral actions, including secondary, ghost or primary buttons.",
         footer: (
             <>
                 <Button variant="ghost" onClick={noop}>
-                    Réinitialiser
+                    Reset
                 </Button>
                 <Button variant="secondary" onClick={noop}>
-                    Annuler
+                    Cancel
                 </Button>
-                <Button onClick={noop}>Appliquer</Button>
+                <Button onClick={noop}>Apply</Button>
             </>
         ),
     },

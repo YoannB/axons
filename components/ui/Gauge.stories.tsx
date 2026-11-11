@@ -10,32 +10,31 @@ const meta = {
         docs: {
             description: {
                 component:
-                    "Jauge circulaire SVG neutre (hors material). L'arc coloré suit `value`/`max` (stroke-dashoffset animé) ; une étincelle balaie en continu l'arc (classe .gauge__sheen, CSS neutre globals.css, principe btnSheen du Button). Le <svg> porte role=\"img\" + aria-label (libellé fourni ou pourcentage calculé) → accessible sans texte visible. Le survol renforce le halo (CSS, sans changement de géométrie). Couvre les bornes 0/100, les paliers intermédiaires, les tailles et le ratio personnalisé via max.",
+                    'Neutral circular SVG gauge (outside material). The colored arc follows `value`/`max` (animated stroke-dashoffset); a sparkle continuously sweeps the arc (.gauge__sheen class, neutral CSS in globals.css, same principle as the Button\'s btnSheen). The <svg> carries role="img" + aria-label (given label or computed percentage) → accessible without visible text. Hover strengthens the glow (CSS, no geometry change). Covers the 0/100 bounds, intermediate steps, sizes and a custom ratio via max.',
             },
         },
     },
     argTypes: {
         value: {
             control: { type: "range", min: 0, max: 100, step: 1 },
-            description: "Valeur courante (bornée à [0, max]).",
+            description: "Current value (clamped to [0, max]).",
         },
         max: {
             control: { type: "number", min: 1 },
-            description: "Valeur maximale (défaut 100).",
+            description: "Maximum value (default 100).",
         },
         label: {
             control: "text",
-            description: "Libellé accessible (aria-label) ; à défaut, le pourcentage calculé.",
+            description: "Accessible label (aria-label); otherwise, the computed percentage.",
         },
         size: {
             control: { type: "number", min: 48, max: 200, step: 8 },
-            description: "Diamètre en pixels (défaut 96).",
+            description: "Diameter in pixels (default 96).",
         },
         tone: {
             control: "select",
             options: ["default", "success", "info", "warning", "error"],
-            description:
-                "Couleur de l'arc : `default` garde le dégradé d'accent, les autres une couleur d'état (paliers d'un score).",
+            description: "Arc color: `default` keeps the accent gradient, the others a status color (score steps).",
         },
     },
     args: { value: 78, max: 100, size: 96 },
@@ -45,19 +44,19 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
-    args: { label: "Progression" },
+    args: { label: "Progress" },
 };
 
 export const Empty: Story = {
-    args: { value: 0, label: "Vide" },
+    args: { value: 0, label: "Empty" },
 };
 
 export const Full: Story = {
-    args: { value: 100, label: "Complet" },
+    args: { value: 100, label: "Complete" },
 };
 
 export const CustomRatio: Story = {
-    args: { value: 3, max: 10, label: "3 sur 10" },
+    args: { value: 3, max: 10, label: "3 out of 10" },
 };
 
 export const Values: Story = {

@@ -36,7 +36,7 @@ function StatefulToast({ onDismiss = noop, ...props }: ComponentProps<typeof Toa
                         setVisible(true);
                     }}
                 >
-                    Afficher le toast
+                    Show the toast
                 </Button>
             )}
             {visible && (
@@ -61,44 +61,44 @@ const meta = {
         docs: {
             description: {
                 component:
-                    "Notification temporaire neutre du projet. Chaque story s'affiche au clic (bouton `Button`) pour éviter l'empilement des portails sur la page Docs ; les sévérités se vérifient donc story par story, la façade ancrant le toast dans un portail unique et éphémère (une grille multi‑toasts n'est pas pertinente). Couvre les sévérités publiques, les durées courtes et longues, les messages volumineux, la fermeture manuelle et la barre de décompte opt‑in (`showProgress`, synchronisée sur `duration`). Ancrage en bas‑gauche pour ne pas chevaucher la vidéo sticky en bas‑droite ; l'offset anti‑badge Netlify est posé en CSS material.",
+                    "The project's neutral temporary notification. Each story shows on click (`Button`) to avoid stacked portals on the Docs page; severities are therefore checked story by story, since the facade anchors the toast in a single, ephemeral portal (a multi-toast grid is not relevant). Covers the public severities, short and long durations, long messages, manual dismissal and the opt-in countdown bar (`showProgress`, synced to `duration`). Anchored bottom-left so it does not overlap the sticky video at bottom-right; the Netlify anti-badge offset is set in the material CSS.",
             },
         },
     },
     argTypes: {
         id: {
             control: "text",
-            description: "Identifiant du toast, transmis au callback onDismiss lors de la fermeture.",
+            description: "Toast id, passed to the onDismiss callback on close.",
         },
         severity: {
             control: "select",
             options: ["info", "success", "warning", "error"],
-            description: "Sévérité visuelle et sémantique du message.",
+            description: "Visual and semantic severity of the message.",
         },
         message: {
             control: "text",
-            description: "Contenu textuel affiché dans le toast.",
+            description: "Text content shown in the toast.",
         },
         duration: {
             control: { type: "number", min: 1000, step: 500 },
             description:
-                "Durée d'affichage automatique en millisecondes. Par défaut, la façade utilise 4000 ms. Sert aussi de durée à la barre de décompte quand showProgress est actif.",
+                "Auto-hide duration in milliseconds. By default, the facade uses 4000 ms. Also used as the countdown bar duration when showProgress is on.",
         },
         showProgress: {
             control: "boolean",
             description:
-                "Affiche une barre de décompte linéaire sur la durée d'affichage (alignée sur autoHideDuration). Opt‑in : défaut false, rendu historique inchangé. Le remontage par `key` rejoue la barre à chaque ouverture.",
+                "Shows a linear countdown bar over the display duration (aligned with autoHideDuration). Opt-in: default false, historical rendering unchanged. Remounting via `key` replays the bar on every opening.",
         },
         onDismiss: {
             table: { disable: true },
             description:
-                "Callback appelé lorsque le toast est fermé manuellement ou automatiquement. Désactivé dans les contrôles Storybook car les stories utilisent un état local de démonstration.",
+                "Callback called when the toast is closed manually or automatically. Disabled in the Storybook controls because the stories use a local demo state.",
         },
     },
     args: {
         id: "toast-example",
         severity: "info",
-        message: "Modification enregistrée.",
+        message: "Change saved.",
         duration: 4000,
         showProgress: false,
         onDismiss: noop,
@@ -110,34 +110,34 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Info: Story = {
-    args: { severity: "info", message: "Une information est disponible." },
+    args: { severity: "info", message: "Some information is available." },
 };
 
 export const Success: Story = {
     args: {
         severity: "success",
-        message: "L'action a été effectuée avec succès.",
+        message: "The action completed successfully.",
     },
 };
 
 export const Warning: Story = {
     args: {
         severity: "warning",
-        message: "Certains champs méritent votre attention.",
+        message: "Some fields need your attention.",
     },
 };
 
 export const Error: Story = {
     args: {
         severity: "error",
-        message: "Le service est momentanément indisponible.",
+        message: "The service is temporarily unavailable.",
     },
 };
 
 export const ShortDuration: Story = {
     args: {
         severity: "info",
-        message: "Ce toast disparaît rapidement.",
+        message: "This toast disappears quickly.",
         duration: 1500,
     },
 };
@@ -145,7 +145,7 @@ export const ShortDuration: Story = {
 export const LongDuration: Story = {
     args: {
         severity: "success",
-        message: "Ce toast reste visible plus longtemps.",
+        message: "This toast stays visible longer.",
         duration: 10000,
     },
 };
@@ -154,7 +154,7 @@ export const LongMessage: Story = {
     args: {
         severity: "warning",
         message:
-            "Ceci est un message volontairement long afin de vérifier la lisibilité, l'ancrage en bas-gauche et le comportement du toast lorsque le texte dépasse une ligne.",
+            "This is a deliberately long message to check readability, bottom-left anchoring and the toast's behavior when the text spans more than one line.",
         duration: 8000,
     },
 };
@@ -163,7 +163,7 @@ export const ManualDismissal: Story = {
     args: {
         severity: "error",
         message:
-            "Fermeture manuelle possible via la croix du toast. La durée est allongée pour faciliter la vérification.",
+            "Manual dismissal is possible via the toast's cross. The duration is extended to make checking easier.",
         duration: 60000,
     },
 };
@@ -179,7 +179,7 @@ export const ManualDismissal: Story = {
 export const WithProgress: Story = {
     args: {
         severity: "info",
-        message: "Barre de décompte visible sur toute la durée d'affichage.",
+        message: "Countdown bar visible for the whole display duration.",
         duration: 8000,
         showProgress: true,
     },

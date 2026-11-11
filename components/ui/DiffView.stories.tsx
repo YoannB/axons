@@ -3,9 +3,9 @@ import { diffWords } from "@/lib/text/diff";
 import type { Meta, StoryObj } from "@storybook/react";
 import { DiffLegend, DiffView } from "./DiffView";
 
-const LABELS = { insert: "Ajout", replace: "Correction", delete: "Suppression" };
-const BEFORE = "Merci pour vos retour, je vous envoi le document corigé demain matin";
-const AFTER = "Merci pour vos retours, je vous envoie le document corrigé demain matin.";
+const LABELS = { insert: "Added", replace: "Fixed", delete: "Removed" };
+const BEFORE = "Thank you for you feedback, I will send the corected document tomorow morning";
+const AFTER = "Thank you for your feedback, I will send the corrected document tomorrow morning.";
 
 const meta = {
     title: "UI/DiffView",
@@ -15,20 +15,20 @@ const meta = {
         docs: {
             description: {
                 component:
-                    "Rendu en lecture seule d'un diff mot à mot (`lib/text/diff`). Chaque op devient un nœud texte React dans `<ins>` / `<del>` / `<mark>` : jamais d'innerHTML, une réponse de modèle ne peut donc pas injecter de balises. Hauteur fixe dérivée de `rows` (même boîte que le Textarea), défilement au-delà. Région focusable (`role=region` + `aria-label`). Le titre d'un remplacement affiche l'ancien texte.",
+                    "Read-only rendering of a word-level diff (`lib/text/diff`). Each op becomes a React text node inside `<ins>` / `<del>` / `<mark>`: never innerHTML, so a model reply cannot inject markup. Fixed height derived from `rows` (same box as the Textarea), scrolling beyond. Focusable region (`role=region` + `aria-label`). A replacement's title shows the old text.",
             },
         },
     },
     argTypes: {
-        ops: { control: false, description: "Ops issues de `diffWords(before, after)`." },
-        ariaLabel: { control: "text", description: "Nom accessible de la région." },
-        placeholder: { control: "text", description: "Affiché quand `ops` est vide." },
-        hideDeletions: { control: "boolean", description: "Masque le texte supprimé (texte « après » seul)." },
-        rows: { control: { type: "number", min: 2, max: 12 }, description: "Lignes visibles (hauteur fixe)." },
+        ops: { control: false, description: "Ops produced by `diffWords(before, after)`." },
+        ariaLabel: { control: "text", description: "Accessible name of the region." },
+        placeholder: { control: "text", description: "Shown when `ops` is empty." },
+        hideDeletions: { control: "boolean", description: 'Hides the deleted text ("after" text only).' },
+        rows: { control: { type: "number", min: 2, max: 12 }, description: "Visible lines (fixed height)." },
     },
     args: {
         ops: diffWords(BEFORE, AFTER),
-        ariaLabel: "Texte corrigé",
+        ariaLabel: "Corrected text",
         labels: LABELS,
         rows: 4,
     },
@@ -46,7 +46,7 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {};
 export const HideDeletions: Story = { args: { hideDeletions: true } };
 export const Empty: Story = {
-    args: { ops: [], placeholder: "Lancez l'outil pour voir le résultat ici." },
+    args: { ops: [], placeholder: "Run the tool to see the result here." },
 };
 export const Identical: Story = { args: { ops: diffWords(AFTER, AFTER) } };
 export const Overflow: Story = {
@@ -56,10 +56,10 @@ export const Overflow: Story = {
     },
 };
 export const InjectedMarkupStaysText: Story = {
-    args: { ops: diffWords("Bonjour", 'Bonjour <img src=x onerror="alert(1)">') },
+    args: { ops: diffWords("Hello", 'Hello <img src=x onerror="alert(1)">') },
     parameters: {
         docs: {
-            description: { story: "Le balisage renvoyé par un modèle s'affiche comme du texte, jamais comme du HTML." },
+            description: { story: "Markup returned by a model is displayed as text, never as HTML." },
         },
     },
 };
