@@ -8,7 +8,7 @@ import { ADS_ENABLED } from "@/constants/site";
 // (no textAlign, display, margin or justifyContent).
 // It ONLY provides the size (width/height), intrinsic to the ad format.
 // All centering (frame in the rail + text in the frame) is handled by the
-// .ad-slot / .page-shell__rail CSS classes in globals.css. An inline alignment
+// .ad-slot / .page-shell__rail CSS classes in styles/layout/. An inline alignment
 // here would override the CSS (inline specificity > class): that is exactly what
 // prevented flex from applying and stuck the text to the top left.
 export interface AdSlotProps {

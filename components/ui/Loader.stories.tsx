@@ -23,7 +23,7 @@ const withTranslations = (Story: ComponentType) => (
 );
 
 /**
- * Rebuilds the server #app-splash container (full-screen fixed, see globals.css)
+ * Rebuilds the server #app-splash container (full-screen fixed, see styles/ui/loader.css)
  * to demonstrate the "full-page splash screen" loader and the dismissal mechanics.
  * The .splash-logo (breathing) belongs to the SERVER markup not provided here: the Logo
  * rendered by <Loader> carries .logo (static), not .splash-logo; the full-screen

@@ -1,0 +1,77 @@
+/* ===== Tabs (components/ui/Tabs) ===== */
+.tabs {
+    min-width: 0;
+    border-bottom: 1px solid var(--border-1);
+}
+.tabs__list {
+    display: flex;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    overflow-x: auto;
+    scrollbar-width: thin;
+}
+.tabs__tab {
+    display: flex;
+    align-items: center;
+    flex: 0 0 auto;
+    max-width: 220px;
+    border-right: 1px solid var(--border-1);
+    border-top: 2px solid transparent;
+    color: var(--text-2);
+}
+.tabs__tab.is-active {
+    border-top-color: var(--accent-2);
+    background: var(--surface-2);
+    color: var(--text-1);
+}
+.tabs__trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-width: 0;
+    padding: 8px 12px;
+    border: 0;
+    background: none;
+    color: inherit;
+    font: inherit;
+    font-size: 0.86rem;
+    text-decoration: none;
+    cursor: pointer;
+}
+.tabs__trigger:focus-visible,
+.tabs__close:focus-visible {
+    outline: 2px solid var(--accent-2);
+    outline-offset: -2px;
+}
+.tabs__label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.tabs__icon {
+    display: inline-flex;
+    flex-shrink: 0;
+}
+.tabs__close {
+    display: inline-grid;
+    place-items: center;
+    width: 22px;
+    height: 22px;
+    margin-right: 6px;
+    padding: 0;
+    border: 0;
+    border-radius: 4px;
+    background: none;
+    color: var(--muted);
+    cursor: pointer;
+}
+.tabs__close svg {
+    stroke: currentColor;
+    stroke-width: 1.6;
+    fill: none;
+}
+.tabs__close:hover {
+    background: var(--surface-2);
+    color: var(--text-1);
+}

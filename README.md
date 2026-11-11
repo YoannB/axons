@@ -429,7 +429,8 @@ Start with these files:
 | Change navigation           | `constants/site.ts` and `messages/*.json`                  |
 | Change hero copy            | `messages/*.json`                                          |
 | Change SEO resources        | `constants/site.ts` and `messages/*.json`                  |
-| Change theme tokens         | `app/globals.css`                                          |
+| Change theme tokens         | `styles/tokens.css`                                        |
+| Change global (non-MUI) CSS | `styles/**` (map: `docs/styles.md`)                        |
 | Change MUI adapter behavior | `components/ui/material/`                                  |
 | Add an AI agent             | `capabilities/agents/<id>.md`                              |
 | Add an AI skill             | `capabilities/skills/<id>/SKILL.md`                        |
@@ -719,7 +720,7 @@ If a reference cannot be implemented without violating the architecture, explain
 Important:
 
 - Mockups are references, not permission to break the architecture.
-- Visual changes should go through `app/globals.css`, `components/ui/material/index.css`, and the adapter components.
+- Visual changes should go through `styles/**` (ordered by `app/globals.css`), `components/ui/material/index.css`, and the adapter components.
 - Business components should not depend on MUI-generated class names.
 
 ## Testing and quality gates

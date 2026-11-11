@@ -1,0 +1,38 @@
+/* ===== Value props (centered CTA) ===== */
+.valueprops h3 {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 0 12px;
+}
+.valueprops__list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.valueprops__list li {
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+    color: var(--text-2);
+}
+.valueprops__list li svg {
+    color: var(--ok);
+    margin-top: 2px;
+    flex: none;
+}
+.valueprops__cta {
+    border-top: 1px solid var(--border-1);
+    padding-top: 16px;
+}
+.valueprops__cta h4 {
+    margin: 0 0 4px;
+}
+.valueprops__cta-actions {
+    display: flex;
+    justify-content: center;
+    margin-top: 14px;
+}

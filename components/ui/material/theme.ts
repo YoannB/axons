@@ -3,7 +3,7 @@ import { createTheme, type Theme, type ThemeOptions } from "@mui/material/styles
 // The mode IS PASSED AS A PARAMETER (no more hard-coded 'dark'): otherwise CssBaseline paints the
 // <body> #121212 and field texts stay light => light mode breaks.
 //
-// background.default/paper = 'transparent' so that globals.css (--* tokens) keeps
+// background.default/paper = 'transparent' so that styles/tokens.css (--* tokens) keeps
 // control over backgrounds, with no cascade war against the Emotion-injected styles.
 export function buildTheme(mode: "light" | "dark"): Theme {
     return createTheme({
@@ -17,7 +17,7 @@ export function buildTheme(mode: "light" | "dark"): Theme {
                 paper: "transparent",
                 // MUI v9 cannot derive a channel from 'transparent' (not parsable): the token is
                 // explicitly removed to silence the warning, the background being controlled
-                // by globals.css (CssBaseline must paint nothing).
+                // by styles/base.css (CssBaseline must paint nothing).
                 defaultChannel: undefined,
                 paperChannel: undefined,
             },

@@ -15,7 +15,7 @@ const ITEMS: {
 ];
 
 // feature-strip is NO LONGER a .container (it is already inside PageShell's Container): the
-// double constraint squashed the 5 items. The fixed-tier grid (see globals.css) spreads
+// double constraint squashed the 5 items. The fixed-tier grid (see styles/home/feature-strip.css) spreads
 // them on one line when there is room, otherwise wraps cleanly.
 // ICONS: no 'animated' loop here. At rest the sketch (ghost) is shown, and hovering
 // the container (.feature-strip__ico) draws the solid stroke via drawOnce (global CSS),

@@ -1,0 +1,27 @@
+/* ===== Ad slots ===== */
+.ad-slot {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.78rem;
+    border: 1px dashed var(--border-2);
+    border-radius: var(--radius-md);
+    background: color-mix(in oklab, var(--surface-1) 60%, transparent);
+    margin-inline: auto;
+    max-width: 100%;
+}
+.ad-slot__label {
+    display: block;
+}
+.ad-slot__size {
+    display: block;
+    opacity: 0.8;
+}
+.ad-slot--real {
+    border: 0;
+    background: none;
+}

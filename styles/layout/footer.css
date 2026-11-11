@@ -1,0 +1,64 @@
+/* ===== Footer ===== */
+.site-footer {
+    border-top: 1px solid var(--border-1);
+    margin-top: 40px;
+    padding: 28px 0;
+    background: var(--bg-1);
+}
+.site-footer__grid {
+    display: grid;
+    grid-template-columns: 1.4fr minmax(0, 1fr) minmax(0, 1fr);
+    gap: 24px;
+}
+.site-footer__nav {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 0;
+}
+.site-footer__nav a {
+    color: var(--text-2);
+    font-size: 0.9rem;
+    transition: color 0.2s ease;
+}
+.site-footer__nav a:hover {
+    color: var(--accent-2);
+}
+/* Footer meta links (GitHub) and the "Manage cookies" <button> (it acts, it does not
+   navigate) share the footer nav link style: same color, size and hover. */
+.site-footer__meta a,
+.site-footer__link-btn {
+    color: var(--text-2);
+    font-size: 0.9rem;
+    transition: color 0.2s ease;
+}
+.site-footer__link-btn {
+    padding: 0;
+    border: 0;
+    background: none;
+    font-family: inherit;
+    line-height: inherit;
+    cursor: pointer;
+}
+.site-footer__meta a:hover,
+.site-footer__link-btn:hover,
+.site-footer__link-btn:focus-visible {
+    color: var(--accent-2);
+}
+.site-footer__meta {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: flex-end;
+    text-align: right;
+    min-width: 0;
+}
+@media (max-width: 760px) {
+    .site-footer__grid {
+        grid-template-columns: 1fr;
+    }
+    .site-footer__meta {
+        align-items: flex-start;
+        text-align: left;
+    }
+}

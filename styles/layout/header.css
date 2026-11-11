@@ -1,0 +1,187 @@
+/* ===== Responsive header / nav + burger on the left ===== */
+.site-header {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    backdrop-filter: blur(10px);
+    background: color-mix(in oklab, var(--bg-0) 78%, transparent);
+    border-bottom: 1px solid var(--border-1);
+}
+.site-header__inner {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    height: 64px;
+    min-width: 0;
+}
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 800;
+    letter-spacing: 0.2px;
+    min-width: 0;
+}
+.brand b {
+    color: var(--accent-2);
+    font-weight: 800;
+}
+.site-nav {
+    display: flex;
+    gap: 14px;
+    margin-left: 8px;
+    flex: 1;
+    min-width: 0;
+}
+.site-nav__link {
+    color: var(--text-2);
+    font-size: 0.92rem;
+    padding: 6px 2px;
+    border-bottom: 2px solid transparent;
+    white-space: nowrap;
+    transition:
+        color 0.2s ease,
+        border-color 0.2s ease;
+}
+.site-nav__link:hover,
+.site-nav__link.is-active {
+    color: var(--text-1);
+    border-color: var(--accent-1);
+}
+.site-header__tools {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-left: auto;
+    min-width: 0;
+}
+.gh-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.85rem;
+    color: var(--text-2);
+    border: 1px solid var(--border-1);
+    padding: 6px 10px;
+    border-radius: 999px;
+    white-space: nowrap;
+    transition:
+        color 0.2s ease,
+        border-color 0.2s ease;
+}
+.gh-link:hover {
+    color: var(--text-1);
+    border-color: var(--border-2);
+}
+.menu-toggle {
+    display: none;
+    width: 40px;
+    height: 40px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    background: var(--surface-2);
+    border: 1px solid var(--border-1);
+    border-radius: 10px;
+    cursor: pointer;
+    flex: none;
+}
+.menu-toggle span {
+    display: block;
+    width: 18px;
+    height: 2px;
+    background: var(--text-1);
+    border-radius: 2px;
+    transition:
+        transform 0.25s ease,
+        opacity 0.2s ease;
+}
+.menu-toggle.is-open span:nth-child(1) {
+    transform: translateY(7px) rotate(45deg);
+}
+.menu-toggle.is-open span:nth-child(2) {
+    opacity: 0;
+}
+.menu-toggle.is-open span:nth-child(3) {
+    transform: translateY(-7px) rotate(-45deg);
+}
+@media (max-width: 900px) {
+    .site-nav {
+        position: absolute;
+        top: 64px;
+        left: 0;
+        right: 0;
+        flex-direction: column;
+        gap: 0;
+        margin: 0;
+        background: var(--surface-1);
+        border-bottom: 1px solid var(--border-1);
+        padding: 8px 20px;
+        display: none;
+        max-height: calc(100vh - 64px);
+        max-height: calc(100dvh - 64px);
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    .site-nav.is-open {
+        display: flex;
+    }
+    .site-nav__link {
+        padding: 12px 0;
+        border-bottom: 1px solid var(--border-1);
+    }
+    .menu-toggle {
+        display: flex;
+    }
+    .gh-link {
+        display: none;
+    }
+    /* Defensive squeeze: reduced gaps to free up width. */
+    .site-header__inner {
+        gap: 8px;
+    }
+    .site-header__tools {
+        gap: 6px;
+    }
+}
+@media (max-width: 600px) {
+    .limit-badge--header {
+        display: none;
+    }
+    /* Mobile squeeze: compact controls + language switcher text
+     hidden (font-size:0 inherited by the current text node, restored on the indicator
+     and the chevron) => the active language stays readable from the indicator alone,
+     without depending on Header.tsx's internal DOM. The brand word itself is not
+     hidden. */
+    .site-header__inner {
+        gap: 6px;
+        padding-inline: 12px;
+    }
+    .site-header__tools {
+        gap: 4px;
+    }
+    .brand {
+        gap: 6px;
+    }
+    .menu-toggle {
+        width: 36px;
+        height: 36px;
+    }
+    .theme-toggle {
+        width: 34px;
+        height: 34px;
+    }
+    .lang__btn {
+        font-size: 0;
+        padding: 6px 8px;
+        gap: 4px;
+    }
+    .lang__btn .lang__flag {
+        font-size: 1rem;
+    }
+    .lang__btn .lang__caret {
+        font-size: 0.7rem;
+    }
+}

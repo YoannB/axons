@@ -26,6 +26,7 @@ editing, open the ONE doc matching your task from the index below; cross-refs ar
 | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------- |
 | repo structure, root vs segment layout, where a file goes, boot-script placement, security headers/framing, the i18n/middleware/proxy divergence                 | `docs/architecture.md`    |
 | React state/effects, external store, hydration, theme persistence & single source, keeping public pages static                                                   | `docs/react-effects.md`   |
+| global (non-MUI) CSS: which `styles/**` file owns a selector, the `app/globals.css` import manifest & cascade order | `docs/styles.md` |
 | anything under `components/ui/material/`, MUI theme build, light mode, disabled-button contrast, chips, toasts, global-vs-MUI CSS, MUI-control animations        | `docs/ui-material.md`     |
 | AI: on/off switch, agents, skills, `/api/run`, `lib/ai`, prompt language, deploy/tracing, rate limit, quota day/time zone                                        | `docs/ai-capabilities.md` |
 | `messages/*.json`, served locales (`NEXT_PUBLIC_LOCALES`), localized URLs, `timeZone`, locale navigation                                                         | `docs/i18n.md`            |

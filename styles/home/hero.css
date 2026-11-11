@@ -1,0 +1,129 @@
+/* ===== Hero ===== */
+.hero {
+    padding: 72px 0 44px;
+}
+.hero__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 44px;
+    align-items: start;
+}
+.hero__copy {
+    max-width: none;
+}
+/* Full container width, like every other home section (no narrower cap). */
+.hero__demo {
+    width: 100%;
+}
+.pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.82rem;
+    color: var(--accent-2);
+    border: 1px solid color-mix(in oklab, var(--accent-2) 40%, transparent);
+    padding: 6px 12px;
+    border-radius: 999px;
+    background: color-mix(in oklab, var(--accent-2) 10%, transparent);
+}
+.hero__title {
+    font-size: clamp(2rem, 4.4vw, 3.4rem);
+    line-height: 1.18;
+    margin: 26px 0 18px;
+    font-weight: 800;
+    overflow-wrap: anywhere;
+}
+.hero__sub {
+    color: var(--text-2);
+    max-width: none;
+    margin: 0 0 6px;
+}
+.hero__tech {
+    list-style: none;
+    padding: 0;
+    margin: 30px 0;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px;
+}
+.hero__tech li {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    min-width: 0;
+}
+.hero__tech li > span {
+    min-width: 0;
+}
+.hero__tech-ico {
+    width: 34px;
+    height: 34px;
+    display: grid;
+    place-items: center;
+    border-radius: 10px;
+    background: var(--surface-2);
+    border: 1px solid var(--border-1);
+    color: var(--accent-1);
+    flex: none;
+    transition: border-color 0.25s ease;
+}
+.hero__tech b {
+    display: block;
+    font-size: 0.9rem;
+}
+.hero__tech em {
+    display: block;
+    font-style: normal;
+    color: var(--muted);
+    font-size: 0.78rem;
+}
+.hero__cta {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 18px;
+    justify-content: center;
+}
+@media (max-width: 900px) {
+    .hero__tech {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        justify-items: center;
+    }
+    .hero__tech li {
+        justify-content: center;
+        text-align: center;
+    }
+}
+@media (max-width: 560px) {
+    .hero__tech {
+        grid-template-columns: 1fr;
+    }
+    .hero__title {
+        font-size: clamp(1.25rem, 6.5vw, 2rem);
+    }
+}
+
+.scroll-cue {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin-top: 30px;
+    background: none;
+    border: 0;
+    color: var(--accent-2);
+    cursor: pointer;
+}
+.scroll-cue svg {
+    animation: cueBounce 1.8s ease-in-out infinite;
+}
+@keyframes cueBounce {
+    0%,
+    100% {
+        transform: translateY(0);
+        opacity: 0.7;
+    }
+    50% {
+        transform: translateY(6px);
+        opacity: 1;
+    }
+}

@@ -1,0 +1,74 @@
+/* ===== Container chain: shrinkable + bounded to the viewport ===== */
+.container,
+.page-shell,
+.section,
+.hero,
+.hero__grid,
+.hero__copy,
+.hero__demo,
+.showcase,
+.card,
+.seo,
+.seo__video-block,
+.seo__articles,
+.seo__articles-grid,
+.valueprops,
+.faq,
+.feature-strip,
+.static-page {
+    min-width: 0;
+}
+.container {
+    width: 100%;
+    max-width: min(1280px, 100%);
+    margin-inline: auto;
+    padding-inline: 20px;
+}
+.page-shell {
+    display: grid;
+    grid-template-columns: 160px minmax(0, 1fr) 160px;
+    gap: 24px;
+    align-items: start;
+    width: 100%;
+    max-width: min(1280px, 100%);
+    margin-inline: auto;
+}
+.page-shell__rail {
+    position: sticky;
+    top: 88px;
+    display: block;
+    min-width: 0;
+}
+@media (max-width: 1280px) {
+    .page-shell {
+        grid-template-columns: minmax(0, 1fr);
+    }
+    .page-shell__rail {
+        display: none;
+    }
+}
+.section {
+    padding: 56px 0;
+}
+.section__title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.4rem;
+    margin: 0 0 22px;
+}
+.card {
+    background: linear-gradient(180deg, var(--surface-1), var(--surface-2));
+    border: 1px solid var(--border-1);
+    border-radius: var(--radius-lg);
+    padding: 18px;
+    box-shadow: var(--shadow-1);
+    transition:
+        box-shadow 0.3s ease,
+        border-color 0.3s ease,
+        background 0.3s ease;
+}
+.card:hover {
+    box-shadow: var(--shadow-2);
+    border-color: color-mix(in oklab, var(--accent-1) 45%, var(--border-2));
+}

@@ -1,0 +1,25 @@
+/* ===== Static pages ===== */
+.static-page {
+    padding: 32px 20px 60px;
+}
+.static-page__card {
+    margin-top: 14px;
+}
+.static-page__title {
+    margin: 0 0 8px;
+    font-size: 1.6rem;
+}
+.static-page__body {
+    color: var(--text-2);
+}
+.static-page__section {
+    margin-top: 22px;
+}
+.static-page__section h2 {
+    font-size: 1.1rem;
+    margin: 0 0 8px;
+    color: var(--text-1);
+}
+.static-page__section p {
+    margin: 0 0 8px;
+}

@@ -1,0 +1,26 @@
+/* ===== Misc ===== */
+.bc-link {
+    color: var(--text-2);
+    transition: color 0.2s ease;
+}
+.bc-link:hover {
+    color: var(--accent-2);
+}
+.toast-region {
+    position: fixed;
+}
+:focus-visible {
+    outline: 2px solid var(--accent-2);
+    outline-offset: 2px;
+    border-radius: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+    }
+}

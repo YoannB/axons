@@ -1,0 +1,55 @@
+/* ===== Reset / base + STICKY FOOTER ===== */
+* {
+    box-sizing: border-box;
+}
+html,
+body {
+    margin: 0;
+    padding: 0;
+}
+/* clip (not hidden): cuts horizontal overflow WITHOUT creating a scroll
+   container, so the sticky header and the fixed video stay relative to the viewport. */
+html {
+    overflow-x: clip;
+}
+body {
+    overflow-x: clip;
+    display: flex;
+    flex-direction: column;
+    min-height: 100dvh;
+    background:
+        radial-gradient(
+            1200px 600px at 80% -10%,
+            color-mix(in oklab, var(--accent-1) var(--glow), transparent),
+            transparent 60%
+        ),
+        var(--bg-0);
+    color: var(--text-1);
+    font-family: var(--font-sans);
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+}
+main {
+    flex: 1 0 auto;
+}
+.site-header,
+.site-footer {
+    flex-shrink: 0;
+}
+a {
+    color: inherit;
+    text-decoration: none;
+}
+img {
+    max-width: 100%;
+    display: block;
+}
+.muted {
+    color: var(--muted);
+}
+.prose p {
+    margin: 0.6em 0;
+}
+html.has-consent .cookie-banner {
+    display: none !important;
+}

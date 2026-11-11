@@ -1,0 +1,23 @@
+/* ===== Logo ===== */
+.logo {
+    display: block;
+}
+.logo__orbit {
+    fill: none;
+    stroke: color-mix(in oklab, var(--accent-2) 50%, transparent);
+    stroke-width: 1.2;
+    opacity: 0.6;
+}
+.logo__axon {
+    fill: none;
+    stroke: var(--accent-2);
+    stroke-width: 1.4;
+    opacity: 0.5;
+}
+.logo__pulse {
+    fill: var(--accent-2);
+    filter: drop-shadow(0 0 6px var(--accent-2));
+}
+.logo__core {
+    filter: drop-shadow(0 0 10px color-mix(in oklab, var(--accent-1) 60%, transparent));
+}
