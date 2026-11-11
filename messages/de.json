@@ -358,5 +358,11 @@
     "notFound": {
         "text": "Wir haben das gesamte Multiversum durchsucht: Diese Seite existiert in keiner bekannten Realität.",
         "home": "Zurück zur Startseite"
+    },
+    "meta": {
+        "home": {
+            "title": "Axons — das Next.js-Boilerplate für deine KI-Agenten",
+            "description": "Eine moderne, schnelle und SEO-fähige Next.js-16-Basis für mehrsprachige KI-Web-Apps, auf Netlify deploybar."
+        }
     }
 }

@@ -358,5 +358,11 @@
     "notFound": {
         "text": "We searched the entire multiverse: this page exists in no known reality.",
         "home": "Back to home"
+    },
+    "meta": {
+        "home": {
+            "title": "Axons — the Next.js boilerplate for your AI agents",
+            "description": "A modern, fast, SEO-ready Next.js 16 foundation for multilingual AI web apps, deployable on Netlify."
+        }
     }
 }
