@@ -26,7 +26,7 @@ Load only the file(s) for the selector you touch. Selector prefixes are BEM bloc
 
 | File (`styles/…`)          | Owns                                                                                                                                                     |
 | -------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `tokens.css`               | `:root` design tokens (dark by default) and the `[data-theme="light"]` overrides                                                                         |
+| `tokens.css`               | `:root` design tokens (dark by default, incl. `--code-*` highlighting) and the `[data-theme="light"]` overrides                                          |
 | `base.css`                 | reset, `html`/`body` (incl. `overflow-x: clip`), sticky-footer skeleton, `.prose`, `.muted`                                                              |
 | `layout/containers.css`    | `.container` chain, `.page-shell` + rails, `.section`, `.card`, and the max-width/padding of page blocks (`.hero`, `.showcase`, `.faq`, …)               |
 | `layout/ad-slots.css`      | `.ad-slot`                                                                                                                                               |
@@ -49,7 +49,7 @@ Load only the file(s) for the selector you touch. Selector prefixes are BEM bloc
 | `pages/cookie-banner.css`  | `.cookie-banner`                                                                                                                                         |
 | `pages/static.css`         | `.static-page` (legal, privacy, cookies, sitemap)                                                                                                        |
 | `pages/not-found.css`      | `.not-found`, `.empty-universe` (404)                                                                                                                    |
-| `articles.css`             | `.article`, `.article-body`, `.article-feed`, `.article-teaser`, `.latest-articles`                                                                      |
+| `articles.css`             | `.article`, `.article-body` (incl. `hljs-*` code tokens), `.article-feed`, `.article-teaser`, `.latest-articles`                                         |
 | `a11y.css`                 | `:focus-visible`, the global `prefers-reduced-motion` kill-switch, `.bc-link`, `.toast-region`                                                           |
 | `text-tools.css`           | `.diff*`, `.diff-legend`, `.editor-pair`, `.ai-notice`, `.choice-chips`                                                                                  |
 | `ui/tabs.css`              | `.tabs`                                                                                                                                                  |
