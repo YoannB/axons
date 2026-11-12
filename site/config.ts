@@ -58,6 +58,10 @@ export const SITE = {
     // Example: [{ href: "/about", key: "nav.about" }, { href: "/services", key: "nav.services", header: false }]
     // (labels go in site/messages/<locale>.json under "nav").
     nav: [],
+    // Example: [{ id: "reminders", enabled: true, href: "/reminders", itemHref: "/reminders/[slug]",
+    // namespace: "pages.reminders", schemaType: "TechArticle" }] + content/reminders/ + both routes
+    // in `pathnames` + two page files (docs/articles.md → Collections).
+    collections: [],
     // Example: ["meta.home", "hero"] lets site/messages replace Axons' home metadata and hero copy.
     messageOverrides: [],
 } as const satisfies SiteConfig<typeof pathnames>;

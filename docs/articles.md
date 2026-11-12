@@ -1,4 +1,4 @@
-# Articles (Markdown content, localized URLs)
+# Articles & Markdown collections (content, localized URLs)
 
 ## Storage & front matter
 
@@ -29,18 +29,29 @@ same locale throws with the file path. Never "fix" a failing build by catching t
 
 ## Code map
 
+Axons' articles are the DEFAULT Markdown collection; everything below applies to every
+collection (a derived site's "reminders", …), with `content/<collection>/` in place of
+`content/articles/`. See _Collections_ for declaring one.
+
 - `lib/articles/parse.ts` — PURE (no fs, no next-intl), 100% branch-covered by
   `tests/unit/articles-parse.test.ts`: front-matter split, validation, catalog (grouping, sort
   newest first by latest translation date then id), fallback resolution, listing, slug lookup.
-- `lib/articles/source.ts` — `server-only` IO: reads `content/articles` via `process.cwd()`,
-  cached per render (`React.cache`), feeds `routing.locales` / `routing.defaultLocale`.
-- `app/[locale]/articles/page.tsx` (listing) and `app/[locale]/articles/[slug]/page.tsx`
-  (article: `generateStaticParams` per locale, `notFound()` for any other slug).
+- `lib/articles/source.ts` — `server-only` IO: reads `content/<collection>/` via `process.cwd()`,
+  cached per render and collection (`React.cache`), feeds `routing.locales` /
+  `routing.defaultLocale`. `getCollectionCatalog` / `getEntries` / `getEntry` take the collection
+  id; `getCatalog` / `getArticles` / `getArticle` are the articles shortcuts.
+- `components/content/CollectionPages.tsx` — page FACTORIES `collectionListing(id)` and
+  `collectionEntry(id)` (metadata + page, `notFound()` when the collection is off or the slug is
+  unknown). `app/[locale]/articles/page.tsx` and `app/[locale]/articles/[slug]/page.tsx` only
+  delegate to them.
+- `constants/site.ts` — `ARTICLES_COLLECTION`, `COLLECTIONS` (articles + `SITE.collections`,
+  validated by `validateCollections` in `lib/site-extension.ts`), `getCollection`, `HIDDEN_HREFS`.
 - `components/content/ArticleTeaser.tsx` (server-compatible card), `ArticleFeed.tsx` (server:
   date formatting + fallback badge), `ArticleBody.tsx` (Markdown renderer + server-side code highlighting);
   `components/home/LatestArticles.tsx` (3 most recent, renders nothing without articles).
-- `lib/seo.ts` — `articleMetadata` / `articleJsonLd` / `articlePath`; `app/sitemap.ts` adds one
-  entry per served translation.
+- `lib/seo.ts` — `articleMetadata` / `articleJsonLd` (optional `itemHref` / `schemaType`) /
+  `articlePath` / `entryPath`; `app/sitemap.ts` adds one entry per served translation of every
+  ENABLED collection.
 
 ## Code highlighting
 
@@ -78,9 +89,15 @@ locale has no translation.
 
 Routes under `[locale]` render on demand (the root layout resolves the locale per request), so
 the Markdown files must ship with the server function. The literal
-`path.join(process.cwd(), "content", "articles")` is picked up by the file tracer (verify with
-`.next/server/app/[locale]/articles/[slug]/page.js.nft.json`); keep that literal form, never
-build the root from a variable. An unknown slug renders the 404 page as a SOFT 404 (HTTP 200 +
+`path.join(process.cwd(), "content")` in `lib/articles/source.ts` is picked up by the file tracer,
+which then ships the WHOLE `content/` folder (every collection) with each function importing it;
+the collection folder is joined at run time. Verify in
+`.next/server/app/[locale]/<route>/[slug]/page.js.nft.json` (every `content/**/*.md` listed). Keep
+that literal form, never build the content root from a variable.
+
+Collection entry routes have NO `generateStaticParams`, on purpose: nothing under `[locale]` is
+prerendered anyway, and when a served locale had no entry at all Next classified the route as
+SSG, so every entry page failed in production (500, `DYNAMIC_SERVER_USAGE`). Do not add it back. An unknown slug renders the 404 page as a SOFT 404 (HTTP 200 +
 `robots: noindex`): `app/[locale]/loading.tsx` starts streaming before `notFound()` runs, the
 same as every other page under `[locale]`.
 
@@ -88,10 +105,35 @@ same as every other page under `[locale]`.
 
 `ARTICLES_ENABLED` (`site/config.ts` `articlesEnabled`, re-exported by `constants/site.ts`) is the single switch. `false` removes every article
 surface at once: the `/articles` nav entry (header, footer, HTML sitemap page), the home
-"latest articles" block, the `sitemap.xml` entries, and both routes (`notFound()`, no
-`generateStaticParams` output). `content/articles/` is left untouched (the files are simply not
+"latest articles" block, the `sitemap.xml` entries, and both routes (`notFound()`). `content/articles/` is left untouched (the files are simply not
 published) and `tests/e2e/articles.spec.ts` skips itself. Do not delete the routes or the
 `pathnames` entries to turn the section off: flipping the constant back must be enough.
+
+## Collections (a derived site's own Markdown sections)
+
+A collection = one entry in `SITE.collections` (`site/config.ts`) + its folder + its routes:
+
+1. `content/<id>/<entry>/<locale>.md`, same front matter and rules as articles (`<id>` kebab-case).
+2. Both routes in `SITE.pathnames`: the listing (e.g. `"/reminders"`) and the entry, ending with
+   `/[slug]` (e.g. `"/reminders/[slug]"`, translated per locale like any pathname).
+3. `{ id, enabled, href, itemHref, namespace, schemaType }` in `SITE.collections`: `enabled` is its
+   on/off switch, `namespace` its messages (`title`, `intro`, `empty`, `publishedOn`, `onlyIn`, in
+   every locale, in `site/messages/<locale>.json`), `schemaType` its JSON-LD type (`BlogPosting`,
+   `TechArticle`, `Article`).
+4. Two page files that only delegate:
+   `app/[locale]/<route>/page.tsx` → `const page = collectionListing("<id>")`, exporting
+   `generateMetadata = page.generateMetadata` and `default page.Page`;
+   `app/[locale]/<route>/[slug]/page.tsx` → same with `collectionEntry("<id>")`.
+5. Optionally a nav entry `{ href: "<listing href>", key: "nav.<id>" }` in `SITE.nav` (header,
+   footer, HTML sitemap page).
+
+Validation fails the build on a non kebab-case or duplicate id, a dynamic listing `href`, an
+`itemHref` not ending with `/[slug]`, or a page file naming an unknown collection. A disabled
+collection behaves like `ARTICLES_ENABLED = false`: both routes answer 404, its nav entry and its
+`sitemap.xml` entries disappear (`HIDDEN_HREFS`). Fallback language, hreflang, canonical and
+the slug-aware language switch work as for articles (the switcher reads the page's alternates).
+The home "latest" block stays articles-only (`LatestArticles`); a site home can render
+`<ArticleFeed items={getEntries("<id>", locale, 3)} namespace=… itemHref=… />`.
 
 ## Adding an article (one article = one PR)
 

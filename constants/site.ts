@@ -1,7 +1,15 @@
 import { LOCALES as SERVED_LOCALES } from "@/i18n/locales";
 import { resolveTimeZone } from "@/lib/day";
 import { isAiEnabled, isConsentRequired } from "@/lib/flags";
-import { buildNav, headerNav, type SeoResource } from "@/lib/site-extension";
+import {
+    buildNav,
+    findCollection,
+    headerNav,
+    hiddenHrefs,
+    validateCollections,
+    type CollectionConfig,
+    type SeoResource,
+} from "@/lib/site-extension";
 import { SITE } from "@/site/config";
 
 export type { SeoResource } from "@/lib/site-extension";
@@ -67,8 +75,24 @@ const AXONS_NAV = [
     { href: "/privacy", key: "nav.privacy" },
     { href: "/cookies", key: "nav.cookies" },
 ] as const;
+// Markdown collections: Axons' articles (the default collection, switched by ARTICLES_ENABLED) +
+// the site's own (site/config.ts). See docs/articles.md → Collections.
+export const ARTICLES_COLLECTION = {
+    id: "articles",
+    enabled: ARTICLES_ENABLED,
+    href: "/articles",
+    itemHref: "/articles/[slug]",
+    namespace: "pages.articles",
+    schemaType: "BlogPosting",
+} as const satisfies CollectionConfig;
+export const COLLECTIONS = validateCollections([ARTICLES_COLLECTION, ...SITE.collections]);
+export type Collection = (typeof COLLECTIONS)[number];
+export const getCollection = (id: string): Collection => findCollection(COLLECTIONS, id);
+/** Routes of the disabled collections (nav and sitemap.xml skip them). */
+export const HIDDEN_HREFS: readonly string[] = hiddenHrefs(COLLECTIONS);
+
 // Footer + HTML sitemap: every entry (site entries after Home). Header: HEADER_NAV.
-export const NAV = buildNav(AXONS_NAV, SITE.nav, ARTICLES_ENABLED);
+export const NAV = buildNav(AXONS_NAV, SITE.nav, HIDDEN_HREFS);
 export const HEADER_NAV = headerNav(NAV);
 
 export const SEO_RESOURCES: readonly SeoResource[] = SITE.seoResources;

@@ -1,5 +1,5 @@
-// PURE module (no fs, no next-intl): parsing and indexing of the Markdown articles stored as
-// content/articles/<id>/<locale>.md. The IO side lives in lib/articles/source.ts.
+// PURE module (no fs, no next-intl): parsing and indexing of the Markdown entries of a collection
+// stored as content/<collection>/<id>/<locale>.md (Axons' articles: content/articles/). The IO side lives in lib/articles/source.ts.
 // Fail-fast: an invalid file throws at BUILD time with its path, never a silently missing page.
 import { parse as parseYaml } from "yaml";
 
@@ -26,6 +26,8 @@ export interface ArticleFile {
     id: string;
     locale: string;
     raw: string;
+    // Collection folder (e.g. "articles"), only used to name the file in errors.
+    collection?: string;
 }
 
 // A listed article in a given locale: `isFallback` = shown in another language because the
@@ -70,8 +72,8 @@ function isValidIsoDate(value: string): boolean {
     return !Number.isNaN(date.getTime()) && date.toISOString().slice(0, 10) === value;
 }
 
-export function parseArticleFile({ id, locale, raw }: ArticleFile): Article {
-    const file = `${id}/${locale}.md`;
+export function parseArticleFile({ id, locale, raw, collection }: ArticleFile): Article {
+    const file = collection ? `${collection}/${id}/${locale}.md` : `${id}/${locale}.md`;
     if (!SLUG.test(id)) fail(file, `invalid folder id (expected: ${SLUG.source}).`);
     const { data, body } = splitFrontMatter(raw, file);
     if (!data || typeof data !== "object" || Array.isArray(data))
@@ -116,7 +118,11 @@ export function buildCatalog(files: ArticleFile[], served: readonly string[]): A
         const key = `${article.locale}:${article.slug}`;
         const owner = slugOwners.get(key);
         if (owner) {
-            fail(`${article.id}/${article.locale}.md`, `slug "${article.slug}" already used by "${owner}".`);
+            const where = `${article.id}/${article.locale}.md`;
+            fail(
+                file.collection ? `${file.collection}/${where}` : where,
+                `slug "${article.slug}" already used by "${owner}".`,
+            );
         }
         slugOwners.set(key, article.id);
         const entry = byId.get(article.id) ?? { id: article.id, translations: {} };
