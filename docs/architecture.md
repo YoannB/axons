@@ -65,7 +65,8 @@ move these under `app/`, and do not delete `middleware.ts` to silence the warnin
 ## Middleware matcher (root `middleware.ts`)
 
 The interception matcher must EXCLUDE technical and API routes (`api`, `_next`, `_vercel`,
-`trpc`, and any path containing a dot), and must be ADAPTED if the app ever gains a dynamic
+`trpc`, the extension-less `/icon` favicon route of `app/icon.tsx` (`icon$`), and any path
+containing a dot), and must be ADAPTED if the app ever gains a dynamic
 route or a route whose path contains a dot — a too-wide matcher intercepts `/api/*` and
 breaks the AI handlers, a too-narrow one leaks unlocalized traffic. This is the live
 `middleware.ts` (kept active for Netlify, see the divergence note above); the parked
@@ -76,12 +77,15 @@ breaks the AI handlers, a too-narrow one leaks unlocalized traffic. This is the 
 A derived site (a repo that merges Axons tags from an `upstream` remote) must not edit Axons
 files, or every upstream merge conflicts. It owns ONE folder, `site/`, and replaces its files:
 
-| File                           | Holds                                                                                                                                                                                                                    |
-| ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `site/config.ts`               | `SITE` (`satisfies SiteConfig`): name, root title/description fallbacks, GitHub URL, brand accent, chrome switches, `articlesEnabled`, SEO resources + hero video, `pathnames`, `nav`, `collections`, `messageOverrides` |
-| `content/<collection>/`        | a site's own Markdown collections (declared in `SITE.collections`; docs/articles.md → Collections)                                                                                                                       |
-| `site/messages/<locale>.json`  | the site's own copy, one file per SUPPORTED locale (`{}` = nothing to add)                                                                                                                                               |
-| `app/[locale]/<page>/page.tsx` | the site's own pages (new files: no conflict)                                                                                                                                                                            |
+| File                           | Holds                                                                                                                                                                                                                                              |
+| ------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `site/config.ts`               | `SITE` (`satisfies SiteConfig`): name, root title/description fallbacks, GitHub URL, brand accent, chrome switches, `articlesEnabled`, SEO resources + hero video, `pathnames`, `nav`, `collections`, `messageOverrides`, MUI `palette` (per mode) |
+| `content/<collection>/`        | a site's own Markdown collections (declared in `SITE.collections`; docs/articles.md → Collections)                                                                                                                                                 |
+| `site/theme.css`               | the site's CSS, imported LAST by `app/globals.css` (token overrides such as `--accent-1`, `--bg-0`, `--btn-fg`); empty in Axons                                                                                                                    |
+| `site/logo.tsx`                | the logo DRAWING (`LOGO_VIEWBOX` + `LogoMark`); `components/ui/Logo.tsx` keeps the frame and `aria-label={SITE_NAME}`                                                                                                                              |
+| `site/icon.svg`                | the favicon, served by `app/icon.tsx` (SVG, generated at build)                                                                                                                                                                                    |
+| `site/messages/<locale>.json`  | the site's own copy, one file per SUPPORTED locale (`{}` = nothing to add)                                                                                                                                                                         |
+| `app/[locale]/<page>/page.tsx` | the site's own pages (new files: no conflict)                                                                                                                                                                                                      |
 
 The contract (`SiteConfig`) and the merges are PURE code in `lib/site-extension.ts`
 (100%-branch unit tests in `tests/unit/site-extension.test.ts`); Axons-owned files only consume

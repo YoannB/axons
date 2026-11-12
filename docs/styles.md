@@ -15,7 +15,9 @@ import into a single CSS bundle, so there is no extra request.
   which is why it is not grouped by folder (`styles/ui/*` sits between `home/showcase` and
   `home/seo-resources`). Never reorder lines to tidy them: an equal-specificity rule moved
   earlier silently loses.
-- New file: add its `@import` at the position where its rules must win (usually the end).
+- New file: add its `@import` at the position where its rules must win (usually the end, but
+  ALWAYS before the last line, `@import "../site/theme.css"`: the derived site's CSS wins over
+  every Axons file at equal specificity).
   `@import` rules must stay first in `globals.css`, before any rule.
 - Do not import a `styles/` file from a component: CSS order would then follow the module
   graph instead of the manifest.
@@ -26,7 +28,7 @@ Load only the file(s) for the selector you touch. Selector prefixes are BEM bloc
 
 | File (`styles/…`)          | Owns                                                                                                                                                     |
 | -------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `tokens.css`               | `:root` design tokens (dark by default, incl. `--code-*` highlighting) and the `[data-theme="light"]` overrides                                          |
+| `tokens.css`               | `:root` design tokens (dark by default, incl. `--code-*` highlighting, `--btn-fg` primary label) and the `[data-theme="light"]` overrides                |
 | `base.css`                 | reset, `html`/`body` (incl. `overflow-x: clip`), sticky-footer skeleton, `.prose`, `.muted`                                                              |
 | `layout/containers.css`    | `.container` chain, `.page-shell` + rails, `.section`, `.card`, and the max-width/padding of page blocks (`.hero`, `.showcase`, `.faq`, …)               |
 | `layout/ad-slots.css`      | `.ad-slot`                                                                                                                                               |

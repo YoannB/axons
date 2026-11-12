@@ -14,6 +14,8 @@
     --danger: #ff5470;
     --ok: #27d39a;
     --warn: #f59e0b;
+    /* Label of the primary (gradient) button; same in both themes unless a site overrides it. */
+    --btn-fg: #fff;
     --radius-sm: 8px;
     --radius-md: 12px;
     --radius-lg: 18px;

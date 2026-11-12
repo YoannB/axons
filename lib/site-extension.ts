@@ -50,6 +50,13 @@ export interface CollectionConfig<Href extends string = string> {
     readonly schemaType: CollectionSchemaType;
 }
 
+/** MUI colours of one theme mode (hex): primary/secondary main and the text drawn ON the primary. */
+export interface SitePaletteMode {
+    readonly primary: string;
+    readonly secondary: string;
+    readonly contrastText: string;
+}
+
 /** Everything that makes a site itself rather than Axons. Implemented by `site/config.ts`. */
 export interface SiteConfig<P extends SitePathnames = SitePathnames> {
     readonly name: string;
@@ -65,7 +72,10 @@ export interface SiteConfig<P extends SitePathnames = SitePathnames> {
     /** Markdown articles section (see docs/articles.md). */
     readonly articlesEnabled: boolean;
     readonly seoResources: readonly SeoResource[];
+    /** Hero video of the SEO block; "" (with no seoResources either) removes the whole block. */
     readonly heroVideoId: string;
+    /** MUI palette per mode, read by buildTheme (the CSS tokens are overridden in site/theme.css). */
+    readonly palette: { readonly dark: SitePaletteMode; readonly light: SitePaletteMode };
     /** The site's OWN localized routes, merged into i18n/routing.ts (a duplicate Axons key throws). */
     readonly pathnames: P;
     /** The site's nav entries, inserted after "Home" in header, footer and HTML sitemap. */

@@ -54,6 +54,12 @@ export const SITE = {
         },
     ],
     heroVideoId: "jzdTBDmCAKE",
+    // MUI palette per mode (buttons, chips, focus rings…). CSS tokens (--accent-1, --bg-0, --btn-fg…)
+    // are overridden in site/theme.css; keep both in step when rebranding.
+    palette: {
+        dark: { primary: "#7c5cff", secondary: "#22d3ee", contrastText: "#fff" },
+        light: { primary: "#7c5cff", secondary: "#22d3ee", contrastText: "#fff" },
+    },
     pathnames,
     // Example: [{ href: "/about", key: "nav.about" }, { href: "/services", key: "nav.services", header: false }]
     // (labels go in site/messages/<locale>.json under "nav").

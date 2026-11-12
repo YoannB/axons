@@ -22,18 +22,12 @@ import { useTranslations } from "next-intl";
 // re-pinned on scroll. This masking changes no geometry => no
 // oscillation; placeholder and video share the same 16/9 height => no jump when
 // closing. The use-detach-on-scroll hook is therefore UNCHANGED.
+// EMPTY STATE: no hero video (HERO_VIDEO_ID "") => no player block at all (no black frame, no
+// poster request); no SEO_RESOURCES => no cards grid; both empty => the section is not rendered.
+// The detach-on-scroll hooks live in SeoVideo, rendered only when there is a video.
 export function SeoResources() {
     const t = useTranslations("seo");
-    const tc = useTranslations("common"); // existing 'close' key => no messages edit needed
-    const { sentinelRef, mode } = useDetachOnScroll();
-    const store = useStore();
-    const { videoDismissed } = useAppState();
-    const pinned = mode === "fixed" && !videoDismissed;
-    // The pinned player rises above the footer instead of covering its links (bottom-right).
-    useFooterClearance(pinned);
-    const articles = SEO_RESOURCES;
-    // A short (9:16) hero video gets the portrait slot geometry (seo-video-slot--short).
-    const short = SEO_RESOURCES.find((r) => r.kind === "video" && r.videoId === HERO_VIDEO_ID)?.short ?? false;
+    if (!HERO_VIDEO_ID && SEO_RESOURCES.length === 0) return null;
     return (
         <Section
             id="seo"
@@ -44,39 +38,57 @@ export function SeoResources() {
             }
             className="seo"
         >
-            <div className="seo__video-block">
-                <span ref={sentinelRef} className="seo-sentinel" aria-hidden="true" />
-                <div className={cn("seo-video-slot", short && "seo-video-slot--short", pinned && "is-pinned")}>
-                    <div className="seo-video-placeholder" aria-hidden="true" />
-                    <div className="seo-video">
-                        {/* Close button: always rendered, but display:none while the slot is not
-                is-pinned (see CSS .seo-video-slot .seo-video-close / .is-pinned ...).
-                onClick => dismissVideo() => pinned=false => is-pinned removed => the player
-                goes back into the flow (its place) and the button disappears by itself. */}
-                        <button
-                            type="button"
-                            className="seo-video-close"
-                            aria-label={tc("close")}
-                            onClick={() => store.dismissVideo()}
-                        >
-                            <svg viewBox="0 0 24 24" aria-hidden="true">
-                                <path d="M6 6l12 12M18 6L6 18" />
-                            </svg>
-                        </button>
-                        <VideoEmbed videoId={HERO_VIDEO_ID} short={short} caption={t("videoCaption")} />
+            {HERO_VIDEO_ID ? <SeoVideo videoId={HERO_VIDEO_ID} /> : null}
+            {SEO_RESOURCES.length ? (
+                <div className="seo__articles">
+                    <AdSlot {...AD_SIZES.horizontal} label="seo-top" />
+                    <div className="seo__articles-grid">
+                        {SEO_RESOURCES.map((r) => (
+                            <ArticleCard key={r.id} r={r} />
+                        ))}
                     </div>
+                    <AdSlot {...AD_SIZES.horizontal} label="seo-bottom" />
                 </div>
-                <p className="seo-video-caption muted">{t("videoCaption")}</p>
-            </div>
-            <div className="seo__articles">
-                <AdSlot {...AD_SIZES.horizontal} label="seo-top" />
-                <div className="seo__articles-grid">
-                    {articles.map((r) => (
-                        <ArticleCard key={r.id} r={r} />
-                    ))}
-                </div>
-                <AdSlot {...AD_SIZES.horizontal} label="seo-bottom" />
-            </div>
+            ) : null}
         </Section>
+    );
+}
+
+function SeoVideo({ videoId }: { videoId: string }) {
+    const t = useTranslations("seo");
+    const tc = useTranslations("common"); // existing 'close' key => no messages edit needed
+    const { sentinelRef, mode } = useDetachOnScroll();
+    const store = useStore();
+    const { videoDismissed } = useAppState();
+    const pinned = mode === "fixed" && !videoDismissed;
+    // The pinned player rises above the footer instead of covering its links (bottom-right).
+    useFooterClearance(pinned);
+    // A short (9:16) hero video gets the portrait slot geometry (seo-video-slot--short).
+    const short = SEO_RESOURCES.find((r) => r.kind === "video" && r.videoId === videoId)?.short ?? false;
+    return (
+        <div className="seo__video-block">
+            <span ref={sentinelRef} className="seo-sentinel" aria-hidden="true" />
+            <div className={cn("seo-video-slot", short && "seo-video-slot--short", pinned && "is-pinned")}>
+                <div className="seo-video-placeholder" aria-hidden="true" />
+                <div className="seo-video">
+                    {/* Close button: always rendered, but display:none while the slot is not
+            is-pinned (see CSS .seo-video-slot .seo-video-close / .is-pinned ...).
+            onClick => dismissVideo() => pinned=false => is-pinned removed => the player
+            goes back into the flow (its place) and the button disappears by itself. */}
+                    <button
+                        type="button"
+                        className="seo-video-close"
+                        aria-label={tc("close")}
+                        onClick={() => store.dismissVideo()}
+                    >
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M6 6l12 12M18 6L6 18" />
+                        </svg>
+                    </button>
+                    <VideoEmbed videoId={videoId} short={short} caption={t("videoCaption")} />
+                </div>
+            </div>
+            <p className="seo-video-caption muted">{t("videoCaption")}</p>
+        </div>
     );
 }

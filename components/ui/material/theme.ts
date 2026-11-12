@@ -1,3 +1,5 @@
+import type { SitePaletteMode } from "@/lib/site-extension";
+import { SITE } from "@/site/config";
 import { createTheme, type Theme, type ThemeOptions } from "@mui/material/styles";
 
 // The mode IS PASSED AS A PARAMETER (no more hard-coded 'dark'): otherwise CssBaseline paints the
@@ -5,13 +7,16 @@ import { createTheme, type Theme, type ThemeOptions } from "@mui/material/styles
 //
 // background.default/paper = 'transparent' so that styles/tokens.css (--* tokens) keeps
 // control over backgrounds, with no cascade war against the Emotion-injected styles.
-export function buildTheme(mode: "light" | "dark"): Theme {
+//
+// Colours come from the SITE (site/config.ts `palette`, one entry per mode): a derived site
+// rebrands MUI without touching this adapter.
+export function buildTheme(mode: "light" | "dark", palette: SitePaletteMode = SITE.palette[mode]): Theme {
     return createTheme({
         cssVariables: true,
         palette: {
             mode,
-            primary: { main: "#7c5cff" },
-            secondary: { main: "#22d3ee" },
+            primary: { main: palette.primary, contrastText: palette.contrastText },
+            secondary: { main: palette.secondary },
             background: {
                 default: "transparent",
                 paper: "transparent",
@@ -35,9 +40,13 @@ export function buildTheme(mode: "light" | "dark"): Theme {
                     },
                 },
             },
+            // CssBaseline injects `body { background-color: var(--mui-palette-background-default);
+            // color: var(--mui-palette-text-primary) }` AFTER styles/base.css (Emotion): the transparent
+            // background erased --bg-0, and a palette built for the other mode (Storybook) painted the
+            // text white on light. Re-point both at the tokens so styles/tokens.css stays authoritative.
             MuiCssBaseline: {
                 styleOverrides: {
-                    root: "html,body{margin:0}",
+                    root: "html,body{margin:0}body{background-color:var(--bg-0);color:var(--text-1)}",
                 },
             },
         },
