@@ -85,6 +85,68 @@
     padding: 0;
     border: 0;
     background: none;
+    color: var(--text-1);
+}
+/* Syntax highlighting: `hljs-*` classes emitted at render by rehype-highlight (ArticleBody).
+   Colours are tokens (styles/tokens.css, AA on --bg-0 in both themes); unlisted classes keep
+   the code colour. */
+.article-body .hljs-keyword,
+.article-body .hljs-built_in,
+.article-body .hljs-type,
+.article-body .hljs-literal,
+.article-body .hljs-selector-tag,
+.article-body .hljs-operator {
+    color: var(--code-keyword);
+}
+.article-body .hljs-string,
+.article-body .hljs-regexp,
+.article-body .hljs-addition,
+.article-body .hljs-char {
+    color: var(--code-string);
+}
+.article-body .hljs-comment,
+.article-body .hljs-quote,
+.article-body .hljs-doctag {
+    color: var(--code-comment);
+    font-style: italic;
+}
+.article-body .hljs-number,
+.article-body .hljs-symbol,
+.article-body .hljs-bullet {
+    color: var(--code-number);
+}
+.article-body .hljs-title,
+.article-body .hljs-section,
+.article-body .hljs-selector-class,
+.article-body .hljs-selector-id {
+    color: var(--code-title);
+}
+.article-body .hljs-attr,
+.article-body .hljs-attribute,
+.article-body .hljs-property,
+.article-body .hljs-variable,
+.article-body .hljs-template-variable,
+.article-body .hljs-params {
+    color: var(--code-attr);
+}
+.article-body .hljs-name,
+.article-body .hljs-tag,
+.article-body .hljs-selector-pseudo,
+.article-body .hljs-selector-attr {
+    color: var(--code-tag);
+}
+.article-body .hljs-meta,
+.article-body .hljs-subst {
+    color: var(--code-meta);
+}
+.article-body .hljs-deletion {
+    color: var(--code-deletion);
+}
+.article-body .hljs-emphasis {
+    font-style: italic;
+}
+.article-body .hljs-strong {
+    font-weight: 700;
 }
 /* Wide tables scroll inside their own box: no page-level horizontal overflow on mobile. */
 .article-body table {

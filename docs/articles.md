@@ -16,7 +16,9 @@ image: /articles/<id>/cover.png # optional, site-absolute, file in public/articl
 ---
 ```
 
-The body is GitHub-flavored Markdown. Do not repeat the title as `# Heading` (a body `h1` is
+The body is GitHub-flavored Markdown. Fenced code blocks name their language
+(` ```js `, `ts`, `bash`/`sh`, `html`/`xml`, `css`, `scss`, `stylus`, `json`, `yaml`,
+`markdown`, … — lowlight's `common` set + `stylus`); see _Code highlighting_ below. Do not repeat the title as `# Heading` (a body `h1` is
 demoted to `h2`; the page title is the `h1`). Raw HTML in the body is NOT interpreted
 (`react-markdown`, no `dangerouslySetInnerHTML`). For social cards prefer PNG/JPG covers: most
 networks ignore SVG `og:image`.
@@ -35,10 +37,26 @@ same locale throws with the file path. Never "fix" a failing build by catching t
 - `app/[locale]/articles/page.tsx` (listing) and `app/[locale]/articles/[slug]/page.tsx`
   (article: `generateStaticParams` per locale, `notFound()` for any other slug).
 - `components/content/ArticleTeaser.tsx` (server-compatible card), `ArticleFeed.tsx` (server:
-  date formatting + fallback badge), `ArticleBody.tsx` (Markdown renderer);
+  date formatting + fallback badge), `ArticleBody.tsx` (Markdown renderer + server-side code highlighting);
   `components/home/LatestArticles.tsx` (3 most recent, renders nothing without articles).
 - `lib/seo.ts` — `articleMetadata` / `articleJsonLd` / `articlePath`; `app/sitemap.ts` adds one
   entry per served translation.
+
+## Code highlighting
+
+`ArticleBody` runs `rehype-highlight` (highlight.js grammars through lowlight) INSIDE the
+Markdown render, so tokens are `<span class="hljs-…">` in the server HTML: no client JS, the
+article stays a static Server Component. Colours are the `--code-*` tokens (`styles/tokens.css`,
+dark + light overrides, every token >= 6:1 on `--bg-0`, i.e. AA) applied by `styles/articles.css`.
+Auto-detection is OFF: a block without language, or with an unregistered one, stays plain text
+(rehype-highlight records a vfile message, nothing throws). To support another language, import
+its grammar from `highlight.js/lib/languages/<name>` and add it to `HIGHLIGHT_OPTIONS` in
+`components/content/ArticleBody.tsx` (+ a case in `tests/unit/article-body.test.tsx`).
+Chosen over Shiki: synchronous (fits `<Markdown>`, no `MarkdownAsync`), class-based (themeable
+with tokens, no inline colours), ~6 MB installed vs ~11 MB (TextMate grammars + WASM engine).
+`highlight.js` is a direct dependency only for the extra grammars: keep its range equal to the
+one `lowlight` declares (`~11.11.0` today), or npm installs a second copy (`npm ls highlight.js`
+must show `deduped`).
 
 ## Locales, fallback, SEO
 
