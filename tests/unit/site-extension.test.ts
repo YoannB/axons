@@ -1,6 +1,16 @@
 // @vitest-environment node
 import { NAV } from "@/constants/site";
-import { buildNav, headerNav, mergeMessages, mergePathnames, staticHrefs } from "@/lib/site-extension";
+import {
+    buildNav,
+    findCollection,
+    headerNav,
+    hiddenHrefs,
+    mergeMessages,
+    mergePathnames,
+    staticHrefs,
+    validateCollections,
+    type CollectionConfig,
+} from "@/lib/site-extension";
 import { SITE } from "@/site/config";
 import { describe, expect, it } from "vitest";
 
@@ -16,7 +26,7 @@ const SITE_NAV = [
 
 describe("buildNav", () => {
     it("inserts the site entries right after Home", () => {
-        expect(buildNav(AXONS_NAV, SITE_NAV, true).map((n) => n.href)).toEqual([
+        expect(buildNav(AXONS_NAV, SITE_NAV, []).map((n) => n.href)).toEqual([
             "/",
             "/about",
             "/contact",
@@ -26,11 +36,25 @@ describe("buildNav", () => {
     });
 
     it("drops /articles when the section is off", () => {
-        expect(buildNav(AXONS_NAV, SITE_NAV, false).map((n) => n.href)).toEqual(["/", "/about", "/contact", "/legal"]);
+        expect(buildNav(AXONS_NAV, SITE_NAV, ["/articles", "/articles/[slug]"]).map((n) => n.href)).toEqual([
+            "/",
+            "/about",
+            "/contact",
+            "/legal",
+        ]);
+    });
+
+    it("drops a site entry whose collection is off", () => {
+        expect(buildNav(AXONS_NAV, SITE_NAV, ["/contact"]).map((n) => n.href)).toEqual([
+            "/",
+            "/about",
+            "/articles",
+            "/legal",
+        ]);
     });
 
     it("keeps the Axons nav unchanged without site entries", () => {
-        expect(buildNav(AXONS_NAV, [], true)).toEqual(AXONS_NAV);
+        expect(buildNav(AXONS_NAV, [], [])).toEqual(AXONS_NAV);
     });
 });
 
@@ -38,6 +62,66 @@ describe("headerNav", () => {
     it("keeps entries without a header flag or with header: true, drops header: false", () => {
         const nav = [...AXONS_NAV, ...SITE_NAV, { href: "/x", key: "nav.x", header: true }];
         expect(headerNav(nav).map((n) => n.href)).toEqual(["/", "/articles", "/legal", "/about", "/x"]);
+    });
+});
+
+const collection = (o: Partial<CollectionConfig> = {}): CollectionConfig => ({
+    id: "reminders",
+    enabled: true,
+    href: "/reminders",
+    itemHref: "/reminders/[slug]",
+    namespace: "pages.reminders",
+    schemaType: "TechArticle",
+    ...o,
+});
+
+describe("validateCollections", () => {
+    it("returns valid collections unchanged", () => {
+        const list = [collection({ id: "articles", href: "/articles", itemHref: "/articles/[slug]" }), collection()];
+        expect(validateCollections(list)).toBe(list);
+    });
+
+    it("rejects a non kebab-case id", () => {
+        expect(() => validateCollections([collection({ id: "Reminders" })])).toThrow(
+            'Invalid collection "Reminders": id must be kebab-case',
+        );
+    });
+
+    it("rejects a duplicate id", () => {
+        expect(() => validateCollections([collection(), collection()])).toThrow('Duplicate collection "reminders"');
+    });
+
+    it("rejects a dynamic listing href", () => {
+        expect(() => validateCollections([collection({ href: "/reminders/[slug]" })])).toThrow(
+            "must be a static route",
+        );
+    });
+
+    it("rejects an entry href that does not end with /[slug]", () => {
+        expect(() => validateCollections([collection({ itemHref: "/reminders/[id]" })])).toThrow(
+            'itemHref "/reminders/[id]" must end with "/[slug]"',
+        );
+    });
+});
+
+describe("hiddenHrefs", () => {
+    it("lists both routes of every disabled collection only", () => {
+        expect(
+            hiddenHrefs([collection({ id: "a", href: "/a", itemHref: "/a/[slug]", enabled: false }), collection()]),
+        ).toEqual(["/a", "/a/[slug]"]);
+    });
+});
+
+describe("findCollection", () => {
+    it("returns the collection with that id", () => {
+        const list = [collection({ id: "a" }), collection()];
+        expect(findCollection(list, "reminders")).toBe(list[1]);
+    });
+
+    it("throws on an unknown id, naming the known ones", () => {
+        expect(() => findCollection([collection()], "remiders")).toThrow(
+            'Unknown collection "remiders" (known: reminders)',
+        );
     });
 });
 

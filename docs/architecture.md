@@ -76,11 +76,12 @@ breaks the AI handlers, a too-narrow one leaks unlocalized traffic. This is the 
 A derived site (a repo that merges Axons tags from an `upstream` remote) must not edit Axons
 files, or every upstream merge conflicts. It owns ONE folder, `site/`, and replaces its files:
 
-| File                           | Holds                                                                                                                                                                                                     |
-| ------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `site/config.ts`               | `SITE` (`satisfies SiteConfig`): name, root title/description fallbacks, GitHub URL, brand accent, chrome switches, `articlesEnabled`, SEO resources + hero video, `pathnames`, `nav`, `messageOverrides` |
-| `site/messages/<locale>.json`  | the site's own copy, one file per SUPPORTED locale (`{}` = nothing to add)                                                                                                                                |
-| `app/[locale]/<page>/page.tsx` | the site's own pages (new files: no conflict)                                                                                                                                                             |
+| File                           | Holds                                                                                                                                                                                                                    |
+| ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `site/config.ts`               | `SITE` (`satisfies SiteConfig`): name, root title/description fallbacks, GitHub URL, brand accent, chrome switches, `articlesEnabled`, SEO resources + hero video, `pathnames`, `nav`, `collections`, `messageOverrides` |
+| `content/<collection>/`        | a site's own Markdown collections (declared in `SITE.collections`; docs/articles.md → Collections)                                                                                                                       |
+| `site/messages/<locale>.json`  | the site's own copy, one file per SUPPORTED locale (`{}` = nothing to add)                                                                                                                                               |
+| `app/[locale]/<page>/page.tsx` | the site's own pages (new files: no conflict)                                                                                                                                                                            |
 
 The contract (`SiteConfig`) and the merges are PURE code in `lib/site-extension.ts`
 (100%-branch unit tests in `tests/unit/site-extension.test.ts`); Axons-owned files only consume
@@ -98,7 +99,7 @@ them, so a new `SiteConfig` field shows up in a derived site as a TYPE ERROR in 
   collection) must add its own entries.
 - Nav: `SITE.nav` entries `{ href, key: "nav.<id>", header? }` (`href` typed against
   `SITE.pathnames`) are inserted after Home in the footer and the HTML sitemap page, and in the
-  header unless `header: false`. `ARTICLES_ENABLED` still drops `/articles`. Labels live in
+  header unless `header: false`. A disabled collection (`ARTICLES_ENABLED`, a site collection's `enabled`) drops its entry. Labels live in
   `site/messages/<locale>.json` under `nav`.
 - Messages: `i18n/request.ts` deep-merges `site/messages/<locale>.json` INTO
   `messages/<locale>.json` (`mergeMessages`). New keys are added; a key present on both sides
@@ -106,7 +107,7 @@ them, so a new `SiteConfig` field shows up in a derived site as a TYPE ERROR in 
   `SITE.messageOverrides` (e.g. `"meta.home"`, `"hero"`): replacing Axons copy is always an
   explicit, greppable choice. The legal `{placeholders}` are interpolated after the merge.
 
-Axons ITSELF keeps `pathnames: {}`, `nav: []`, `messageOverrides: []` and empty
+Axons ITSELF keeps `pathnames: {}`, `nav: []`, `collections: []`, `messageOverrides: []` and empty
 `site/messages/*.json`, so its behavior is unchanged. Do not put Axons features in `site/`.
 In the derived repo, mark the folder as "ours" so upstream edits to Axons' defaults never
 conflict: `.gitattributes` → `site/** merge=ours`, plus `git config merge.ours.driver true`.

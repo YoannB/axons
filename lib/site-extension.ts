@@ -28,6 +28,28 @@ export interface SeoResource {
     durationKey: string;
 }
 
+/** schema.org type emitted as JSON-LD on an entry page. */
+export type CollectionSchemaType = "BlogPosting" | "TechArticle" | "Article";
+
+/**
+ * A Markdown collection: `content/<id>/<entry>/<locale>.md`, a listing route and an entry route.
+ * Axons' own articles are the default collection (`id: "articles"`); a site declares more in
+ * `SITE.collections` and adds two delegating page files (docs/articles.md → Collections).
+ */
+export interface CollectionConfig<Href extends string = string> {
+    /** Folder under content/ (kebab-case), also the collection key used by the page factories. */
+    readonly id: string;
+    /** false => listing and entries answer 404, and the nav / sitemap entries disappear. */
+    readonly enabled: boolean;
+    /** Logical key of the listing route (static), e.g. "/reminders". */
+    readonly href: string extends Href ? string : Exclude<Href, `${string}[${string}`>;
+    /** Logical key of the entry route, ending with "/[slug]", e.g. "/reminders/[slug]". */
+    readonly itemHref: string extends Href ? string : Extract<Href, `${string}/[slug]`>;
+    /** Messages namespace: title, intro, empty, publishedOn, onlyIn (+ latestTitle, viewAll). */
+    readonly namespace: string;
+    readonly schemaType: CollectionSchemaType;
+}
+
 /** Everything that makes a site itself rather than Axons. Implemented by `site/config.ts`. */
 export interface SiteConfig<P extends SitePathnames = SitePathnames> {
     readonly name: string;
@@ -48,6 +70,8 @@ export interface SiteConfig<P extends SitePathnames = SitePathnames> {
     readonly pathnames: P;
     /** The site's nav entries, inserted after "Home" in header, footer and HTML sitemap. */
     readonly nav: readonly SiteNavEntry<Extract<keyof P, string>>[];
+    /** The site's own Markdown collections (routes declared in `pathnames`), next to Axons' articles. */
+    readonly collections: readonly CollectionConfig<Extract<keyof P, string>>[];
     /**
      * Message paths (dotted, e.g. "meta.home") whose Axons value the site messages may REPLACE.
      * Any other collision between site/messages and messages/ throws at build time.
@@ -63,15 +87,47 @@ export interface NavEntry {
 
 /**
  * Axons nav + site nav: site entries go right after the first Axons entry (Home), so Axons'
- * utility pages (articles, sitemap, legal…) stay last. "/articles" is dropped when the section is off.
+ * utility pages (articles, sitemap, legal…) stay last. `hidden` = routes of disabled collections
+ * (see hiddenHrefs): their entries are dropped from both lists.
  */
 export function buildNav<A extends NavEntry, S extends NavEntry>(
     axons: readonly A[],
     site: readonly S[],
-    articlesEnabled: boolean,
+    hidden: readonly string[],
 ): (A | S)[] {
-    const base = axons.filter((n) => articlesEnabled || n.href !== "/articles");
-    return [...base.slice(0, 1), ...site, ...base.slice(1)];
+    const shown = <E extends NavEntry>(n: E) => !hidden.includes(n.href);
+    const base = axons.filter(shown);
+    return [...base.slice(0, 1), ...site.filter(shown), ...base.slice(1)];
+}
+
+const COLLECTION_ID = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+
+/** Checks the collections (ids, uniqueness, route shapes) and returns them unchanged. */
+export function validateCollections<C extends CollectionConfig>(collections: readonly C[]): readonly C[] {
+    const seen = new Set<string>();
+    for (const c of collections) {
+        const where = `collection "${c.id}"`;
+        if (!COLLECTION_ID.test(c.id)) throw new Error(`Invalid ${where}: id must be kebab-case (content/<id>/).`);
+        if (seen.has(c.id)) throw new Error(`Duplicate ${where} (ids must be unique).`);
+        seen.add(c.id);
+        if (c.href.includes("[")) throw new Error(`Invalid ${where}: href "${c.href}" must be a static route.`);
+        if (!c.itemHref.endsWith("/[slug]")) {
+            throw new Error(`Invalid ${where}: itemHref "${c.itemHref}" must end with "/[slug]".`);
+        }
+    }
+    return collections;
+}
+
+/** Routes (listing + entry) of the DISABLED collections: hidden from nav and sitemap.xml. */
+export function hiddenHrefs(collections: readonly CollectionConfig[]): string[] {
+    return collections.filter((c) => !c.enabled).flatMap((c) => [c.href, c.itemHref]);
+}
+
+/** The collection `id`, or an error naming the known ids (a typo in a page file fails the build). */
+export function findCollection<C extends CollectionConfig>(collections: readonly C[], id: string): C {
+    const found = collections.find((c) => c.id === id);
+    if (!found) throw new Error(`Unknown collection "${id}" (known: ${collections.map((c) => c.id).join(", ")}).`);
+    return found;
 }
 
 /** Entries shown in the header (an entry is in the header unless it says `header: false`). */

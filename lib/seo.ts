@@ -1,7 +1,7 @@
 import { SITE_URL } from "@/constants/site";
 import { getPathname, routing } from "@/i18n/routing";
 import type { ArticleEntry } from "@/lib/articles/parse";
-import type { StaticHref } from "@/lib/site-extension";
+import type { CollectionSchemaType, StaticHref } from "@/lib/site-extension";
 import type { Metadata } from "next";
 
 // Logical key of a STATIC route (Axons + site pathnames, i18n/routing.ts); dynamic `[param]` routes excluded.
@@ -9,9 +9,18 @@ export type LogicalHref = StaticHref<typeof routing.pathnames>;
 
 const absolute = (pathname: string) => new URL(pathname, SITE_URL).toString();
 
-// Localized path of an article translation (its slug differs per locale).
+// Logical key of a collection ENTRY route ("/articles/[slug]", a site's "/reminders/[slug]"…).
+export type EntryHref = Extract<keyof typeof routing.pathnames, `${string}/[slug]`>;
+
+// Localized path of an entry translation of a collection (its slug differs per locale).
+export function entryPath(itemHref: EntryHref, locale: string, slug: string): string {
+    // The union of entry keys is narrowed to one key for the typed overloads of getPathname.
+    return getPathname({ locale, href: { pathname: itemHref as "/articles/[slug]", params: { slug } } });
+}
+
+// Localized path of an article translation (Axons' default collection).
 export function articlePath(locale: string, slug: string): string {
-    return getPathname({ locale, href: { pathname: "/articles/[slug]", params: { slug } } });
+    return entryPath("/articles/[slug]", locale, slug);
 }
 
 // Shared core: `urls` = absolute URL of the SAME resource in every locale where it exists.
@@ -52,12 +61,16 @@ export function pageMetadata(opts: {
     return localizedMetadata({ ...opts, urls });
 }
 
-// Article metadata: hreflang lists ONLY the locales that really have a translation.
-export function articleMetadata(entry: ArticleEntry, locale: string): Metadata {
+// Article (collection entry) metadata: hreflang lists ONLY the locales that really have a translation.
+export function articleMetadata(
+    entry: ArticleEntry,
+    locale: string,
+    itemHref: EntryHref = "/articles/[slug]",
+): Metadata {
     const article = entry.translations[locale];
     const urls: Record<string, string> = {};
     for (const [l, translation] of Object.entries(entry.translations))
-        urls[l] = absolute(articlePath(l, translation.slug));
+        urls[l] = absolute(entryPath(itemHref, l, translation.slug));
     const base = localizedMetadata({ title: article.title, description: article.description, locale, urls });
     return {
         ...base,
@@ -70,13 +83,22 @@ export function articleMetadata(entry: ArticleEntry, locale: string): Metadata {
     };
 }
 
-// schema.org BlogPosting, serialized into a <script type="application/ld+json">.
-export function articleJsonLd(entry: ArticleEntry, locale: string, siteName: string): string {
+// schema.org entry (BlogPosting for articles; a collection picks its type), serialized into a
+// <script type="application/ld+json">.
+export function articleJsonLd(
+    entry: ArticleEntry,
+    locale: string,
+    siteName: string,
+    {
+        itemHref = "/articles/[slug]",
+        schemaType = "BlogPosting",
+    }: { itemHref?: EntryHref; schemaType?: CollectionSchemaType } = {},
+): string {
     const article = entry.translations[locale];
-    const url = absolute(articlePath(locale, article.slug));
+    const url = absolute(entryPath(itemHref, locale, article.slug));
     const data = {
         "@context": "https://schema.org",
-        "@type": "BlogPosting",
+        "@type": schemaType,
         headline: article.title,
         description: article.description,
         datePublished: article.date,

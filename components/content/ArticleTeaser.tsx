@@ -1,11 +1,14 @@
 import { Card } from "@/components/ui";
 import type { AppLocale } from "@/i18n/locales";
 import { Link } from "@/i18n/routing";
+import type { EntryHref } from "@/lib/seo";
 
 export interface ArticleTeaserProps {
     title: string;
     description: string;
     slug: string;
+    // Entry route of the collection (default: Axons' articles).
+    itemHref?: EntryHref;
     // Locale of the translation shown: the link goes to THAT translation's own URL.
     locale: AppLocale;
     date: string;
@@ -22,6 +25,7 @@ export function ArticleTeaser({
     title,
     description,
     slug,
+    itemHref = "/articles/[slug]",
     locale,
     date,
     dateLabel,
@@ -29,7 +33,8 @@ export function ArticleTeaser({
     fallback,
     headingLevel: Heading = "h2",
 }: ArticleTeaserProps) {
-    const href = { pathname: "/articles/[slug]", params: { slug } } as const;
+    // The union of entry keys is narrowed to one key for the typed Link overloads.
+    const href = { pathname: itemHref as "/articles/[slug]", params: { slug } };
     return (
         <Card as="article" className="article-card article-teaser">
             <Link href={href} locale={locale} className="article-card__thumb" tabIndex={-1} aria-hidden="true">
