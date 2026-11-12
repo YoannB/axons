@@ -14,7 +14,7 @@ tsconfig.tsbuildinfo
 package-lock.json
 deno.lock
 
-# Worktrees des sessions Claude Code (déjà dans .gitignore ; explicite si ce dernier change)
+# Claude Code session worktrees (already in .gitignore; explicit in case that file changes)
 .claude/
 
 # Bloc réécrit par `next dev` : ne pas le reformater
