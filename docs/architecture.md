@@ -70,3 +70,43 @@ route or a route whose path contains a dot — a too-wide matcher intercepts `/a
 breaks the AI handlers, a too-narrow one leaks unlocalized traffic. This is the live
 `middleware.ts` (kept active for Netlify, see the divergence note above); the parked
 `proxy.ts.disabled` carries the same matcher for the day the adapter supports `proxy`.
+
+## Deriving a site (extension points)
+
+A derived site (a repo that merges Axons tags from an `upstream` remote) must not edit Axons
+files, or every upstream merge conflicts. It owns ONE folder, `site/`, and replaces its files:
+
+| File                           | Holds                                                                                                                                                                                                     |
+| ------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `site/config.ts`               | `SITE` (`satisfies SiteConfig`): name, root title/description fallbacks, GitHub URL, brand accent, chrome switches, `articlesEnabled`, SEO resources + hero video, `pathnames`, `nav`, `messageOverrides` |
+| `site/messages/<locale>.json`  | the site's own copy, one file per SUPPORTED locale (`{}` = nothing to add)                                                                                                                                |
+| `app/[locale]/<page>/page.tsx` | the site's own pages (new files: no conflict)                                                                                                                                                             |
+
+The contract (`SiteConfig`) and the merges are PURE code in `lib/site-extension.ts`
+(100%-branch unit tests in `tests/unit/site-extension.test.ts`); Axons-owned files only consume
+them, so a new `SiteConfig` field shows up in a derived site as a TYPE ERROR in `site/config.ts`
+(explicit), never as a silent default or a merge conflict elsewhere.
+
+- Identity/chrome: `constants/site.ts` keeps the logic (env, flags, `LOCALES`, ad sizes) and
+  re-exports `SITE` under the historical names (`SITE_NAME`, `GITHUB_URL`, `BRAND_ACCENT_FROM`,
+  `HEADER_NAV_ENABLED`, `GITHUB_LINK_ENABLED`, `ARTICLES_ENABLED`, `SEO_RESOURCES`,
+  `HERO_VIDEO_ID`): import from `@/constants/site`, not from `@/site/config`.
+- Routes: `SITE.pathnames` (same shape as next-intl `pathnames`, declared `as const`) is merged
+  into `i18n/routing.ts` by `mergePathnames`; a key that redefines an Axons route THROWS at
+  build. Typed `Link`/`getPathname`/`pageMetadata` accept the site keys. `sitemap.xml` lists
+  every STATIC route (no `[param]`) of the merged map; a dynamic site route (a second Markdown
+  collection) must add its own entries.
+- Nav: `SITE.nav` entries `{ href, key: "nav.<id>", header? }` (`href` typed against
+  `SITE.pathnames`) are inserted after Home in the footer and the HTML sitemap page, and in the
+  header unless `header: false`. `ARTICLES_ENABLED` still drops `/articles`. Labels live in
+  `site/messages/<locale>.json` under `nav`.
+- Messages: `i18n/request.ts` deep-merges `site/messages/<locale>.json` INTO
+  `messages/<locale>.json` (`mergeMessages`). New keys are added; a key present on both sides
+  THROWS (build fails, path named) unless that path or a parent is listed in
+  `SITE.messageOverrides` (e.g. `"meta.home"`, `"hero"`): replacing Axons copy is always an
+  explicit, greppable choice. The legal `{placeholders}` are interpolated after the merge.
+
+Axons ITSELF keeps `pathnames: {}`, `nav: []`, `messageOverrides: []` and empty
+`site/messages/*.json`, so its behavior is unchanged. Do not put Axons features in `site/`.
+In the derived repo, mark the folder as "ours" so upstream edits to Axons' defaults never
+conflict: `.gitattributes` → `site/** merge=ours`, plus `git config merge.ours.driver true`.

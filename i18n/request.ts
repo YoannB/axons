@@ -1,5 +1,7 @@
 import { hasLocale } from "next-intl";
 import { getRequestConfig } from "next-intl/server";
+import { mergeMessages, type Messages } from "@/lib/site-extension";
+import { SITE } from "@/site/config";
 import { routing } from "./routing";
 
 function escapeIcuText(value: string): string {
@@ -84,7 +86,11 @@ export default getRequestConfig(async ({ requestLocale }) => {
 
     const locale = hasLocale(routing.locales, requested) ? requested : routing.defaultLocale;
 
-    const rawMessages = (await import(`../messages/${locale}.json`)).default;
+    // Axons messages + the derived site's own (site/messages/<locale>.json, `{}` by default). A
+    // site key that collides with an Axons key throws unless listed in SITE.messageOverrides.
+    const axonsMessages = (await import(`../messages/${locale}.json`)).default;
+    const siteMessages: Messages = (await import(`../site/messages/${locale}.json`)).default;
+    const rawMessages = mergeMessages(axonsMessages, siteMessages, SITE.messageOverrides) as typeof axonsMessages;
 
     const messages = interpolate(rawMessages, legalVariables(locale)) as typeof rawMessages;
 

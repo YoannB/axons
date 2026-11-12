@@ -1,4 +1,5 @@
 import { SITE_NAME, SITE_URL } from "@/constants/site";
+import { SITE } from "@/site/config";
 import { LOCALES } from "@/i18n/locales";
 import { getLocale } from "next-intl/server";
 import Script from "next/script";
@@ -13,10 +14,10 @@ import "./globals.css";
 export const metadata = {
     metadataBase: new URL(SITE_URL),
     title: {
-        default: `${SITE_NAME} — Next.js AI/SEO boilerplate`,
+        default: SITE.defaultTitle,
         template: `%s · ${SITE_NAME}`,
     },
-    description: "Next.js 16 boilerplate for SEO and AI (OpenRouter), deployable on Netlify.",
+    description: SITE.defaultDescription,
     openGraph: { siteName: SITE_NAME, type: "website", url: SITE_URL },
 };
 

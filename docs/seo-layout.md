@@ -56,7 +56,7 @@ grid that leaves an orphan gap); horizontal leaderboards are centered (`margin-i
 
 ## Site chrome switches
 
-`constants/site.ts`: `HEADER_NAV_ENABLED` (false = no header nav and no burger; the footer and the
+`site/config.ts` (re-exported by `constants/site.ts`): `HEADER_NAV_ENABLED` (false = no header nav and no burger; the footer and the
 HTML sitemap page still list every page), `GITHUB_LINK_ENABLED` (header and footer GitHub links),
 `BRAND_ACCENT_FROM` (the brand word is `SITE_NAME[0..n)` plain + the rest in `<b>`, header AND
 footer). Optional messages: `nav.tagline` (+ `nav.taglineSub`) render a two-line tagline after

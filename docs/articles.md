@@ -68,7 +68,7 @@ same as every other page under `[locale]`.
 
 ## Turning the section off
 
-`ARTICLES_ENABLED` in `constants/site.ts` is the single switch. `false` removes every article
+`ARTICLES_ENABLED` (`site/config.ts` `articlesEnabled`, re-exported by `constants/site.ts`) is the single switch. `false` removes every article
 surface at once: the `/articles` nav entry (header, footer, HTML sitemap page), the home
 "latest articles" block, the `sitemap.xml` entries, and both routes (`notFound()`, no
 `generateStaticParams` output). `content/articles/` is left untouched (the files are simply not

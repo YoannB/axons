@@ -425,10 +425,10 @@ Start with these files:
 
 | Goal                        | File                                                       |
 | --------------------------- | ---------------------------------------------------------- |
-| Rename the app              | `constants/site.ts`                                        |
-| Change navigation           | `constants/site.ts` and `messages/*.json`                  |
+| Rename the app              | `site/config.ts`                                           |
+| Change navigation           | `site/config.ts` and `site/messages/*.json`                |
 | Change hero copy            | `messages/*.json`                                          |
-| Change SEO resources        | `constants/site.ts` and `messages/*.json`                  |
+| Change SEO resources        | `site/config.ts` and `messages/*.json`                     |
 | Change theme tokens         | `styles/tokens.css`                                        |
 | Change global (non-MUI) CSS | `styles/**` (map: `docs/styles.md`)                        |
 | Change MUI adapter behavior | `components/ui/material/`                                  |
@@ -873,15 +873,15 @@ When transforming Axons into a new app, update at least:
 
 ### Branding
 
-- `SITE_NAME` in `constants/site.ts`
+- `name` (and the rest of the identity) in `site/config.ts` — a derived site edits only `site/`, see `docs/architecture.md` → Deriving a site
 - logo/mark in `components/ui/Logo.tsx` or equivalent
 - favicon and social image in `public/`
 
 ### Localization
 
 - active locales in `i18n/locales.ts` (and the language switcher list in `constants/site.ts`)
-- localized pathnames in `i18n/routing.ts`
-- user-facing copy in `messages/*.json`
+- the site's own localized pathnames in `site/config.ts` (`pathnames`, merged into `i18n/routing.ts`)
+- the site's own copy in `site/messages/*.json` (replacing Axons copy needs `messageOverrides`)
 - legal pages in `messages/*.json`
 
 ### Legal / publisher information
@@ -897,7 +897,7 @@ When transforming Axons into a new app, update at least:
 - feature strip
 - FAQ
 - SEO resources
-- articles in `content/articles/` (the two demo articles, and `tests/e2e/articles.spec.ts` which relies on them), or `ARTICLES_ENABLED = false` in `constants/site.ts` to turn the section off
+- articles in `content/articles/` (the two demo articles, and `tests/e2e/articles.spec.ts` which relies on them), or `articlesEnabled: false` in `site/config.ts` to turn the section off
 - footer links
 - sitemap page
 
