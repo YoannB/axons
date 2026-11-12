@@ -13,7 +13,8 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 Axons = Next.js 16 (App Router, Turbopack) + React 19 + TS boilerplate for SEO AI apps;
 Material UI 9 isolated behind a neutral API; `next-intl` 4; OpenRouter via one unified
 Route Handler; Vitest + Playwright + Storybook 10; Node 24; Netlify (OpenNext adapter).
-Name `SITE_NAME` is declared once in `constants/site.ts` — rename there only.
+Site identity (`SITE_NAME`, nav, own routes/copy) lives in `site/` (`site/config.ts`, re-exported by
+`constants/site.ts`) — a derived site edits only `site/`.
 
 **This file is the ONLY always-loaded instruction. Do NOT preload `docs/*`.** Before
 editing, open the ONE doc matching your task from the index below; cross-refs are
@@ -24,7 +25,7 @@ editing, open the ONE doc matching your task from the index below; cross-refs ar
 
 | Your task touches                                                                                                                                                | Load                      |
 | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------- |
-| repo structure, root vs segment layout, where a file goes, boot-script placement, security headers/framing, the i18n/middleware/proxy divergence                 | `docs/architecture.md`    |
+| repo structure, root vs segment layout, where a file goes, boot-script placement, security headers/framing, the i18n/middleware/proxy divergence, deriving a site (`site/` extension points) | `docs/architecture.md`    |
 | React state/effects, external store, hydration, theme persistence & single source, keeping public pages static                                                   | `docs/react-effects.md`   |
 | global (non-MUI) CSS: which `styles/**` file owns a selector, the `app/globals.css` import manifest & cascade order | `docs/styles.md` |
 | anything under `components/ui/material/`, MUI theme build, light mode, disabled-button contrast, chips, toasts, global-vs-MUI CSS, MUI-control animations        | `docs/ui-material.md`     |

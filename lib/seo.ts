@@ -1,9 +1,11 @@
 import { SITE_URL } from "@/constants/site";
 import { getPathname, routing } from "@/i18n/routing";
 import type { ArticleEntry } from "@/lib/articles/parse";
+import type { StaticHref } from "@/lib/site-extension";
 import type { Metadata } from "next";
 
-export type LogicalHref = "/" | "/sitemap" | "/legal" | "/privacy" | "/cookies" | "/articles";
+// Logical key of a STATIC route (Axons + site pathnames, i18n/routing.ts); dynamic `[param]` routes excluded.
+export type LogicalHref = StaticHref<typeof routing.pathnames>;
 
 const absolute = (pathname: string) => new URL(pathname, SITE_URL).toString();
 

@@ -1,8 +1,14 @@
 import { LOCALES as SERVED_LOCALES } from "@/i18n/locales";
 import { resolveTimeZone } from "@/lib/day";
 import { isAiEnabled, isConsentRequired } from "@/lib/flags";
+import { buildNav, headerNav, type SeoResource } from "@/lib/site-extension";
+import { SITE } from "@/site/config";
 
-export const SITE_NAME = "Axons";
+export type { SeoResource } from "@/lib/site-extension";
+
+// Site identity and chrome come from site/config.ts (owned by a derived site); the names below are
+// kept as re-exports so imports do not change. See docs/architecture.md → Deriving a site.
+export const SITE_NAME: string = SITE.name;
 export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 export const AI_DAILY_LIMIT = Number(process.env.NEXT_PUBLIC_AI_DAILY_LIMIT ?? 0) || 0;
 // AI feature switch. NEXT_PUBLIC_AI_ENABLED is computed by next.config.ts at build time from the
@@ -16,14 +22,14 @@ export const GTM_ID = process.env.NEXT_PUBLIC_GTM_ID ?? "";
 // The cookie banner exists only when a tracker that needs consent is configured (CNIL: no
 // banner theatre when the site sets no such tracker; functional storage needs none).
 export const CONSENT_REQUIRED = isConsentRequired({ gtmId: GTM_ID, adsEnabled: ADS_ENABLED });
-export const GITHUB_URL = "https://github.com/YoannB/axons";
+export const GITHUB_URL: string = SITE.githubUrl;
 
 // Site chrome switches (Axons defaults: true / true / 1). A one-page tool can drop the header
 // nav (the footer and the HTML sitemap still list every page) and the GitHub links.
-export const HEADER_NAV_ENABLED: boolean = true;
-export const GITHUB_LINK_ENABLED: boolean = true;
+export const HEADER_NAV_ENABLED: boolean = SITE.headerNavEnabled;
+export const GITHUB_LINK_ENABLED: boolean = SITE.githubLinkEnabled;
 /** Brand word: SITE_NAME[0..BRAND_ACCENT_FROM) plain, the rest accented ("A" + "xons"). */
-export const BRAND_ACCENT_FROM: number = 1;
+export const BRAND_ACCENT_FROM: number = SITE.brandAccentFrom;
 
 export type LocaleCode = "fr" | "en" | "es" | "de" | "it" | "pt";
 export interface LocaleMeta {
@@ -51,9 +57,9 @@ export const LOCALES: LocaleMeta[] = LOCALE_META.map((l) => ({
 // Markdown articles section (listing, article pages, home "latest articles" block, nav entry and
 // sitemap entries). false => every article surface disappears and /articles answers 404; the
 // files in content/articles/ stay in the repo but are not published. See docs/articles.md.
-export const ARTICLES_ENABLED: boolean = true;
+export const ARTICLES_ENABLED: boolean = SITE.articlesEnabled;
 
-const ALL_NAV = [
+const AXONS_NAV = [
     { href: "/", key: "nav.home" },
     { href: "/articles", key: "nav.articles" },
     { href: "/sitemap", key: "nav.sitemap" },
@@ -61,55 +67,12 @@ const ALL_NAV = [
     { href: "/privacy", key: "nav.privacy" },
     { href: "/cookies", key: "nav.cookies" },
 ] as const;
-export const NAV = ALL_NAV.filter((n) => ARTICLES_ENABLED || n.href !== "/articles");
+// Footer + HTML sitemap: every entry (site entries after Home). Header: HEADER_NAV.
+export const NAV = buildNav(AXONS_NAV, SITE.nav, ARTICLES_ENABLED);
+export const HEADER_NAV = headerNav(NAV);
 
-export interface SeoResource {
-    id: string;
-    kind: "video" | "article";
-    url: string;
-    videoId?: string;
-    short?: boolean;
-    mark: string;
-    titleKey: string;
-    summaryKey: string;
-    sourceKey: string;
-    durationKey: string;
-}
-export const SEO_RESOURCES: SeoResource[] = [
-    {
-        id: "yt",
-        kind: "video",
-        url: "https://www.youtube.com/watch?v=jzdTBDmCAKE",
-        videoId: "jzdTBDmCAKE",
-        short: false,
-        mark: "YT",
-        titleKey: "seo.a1.title",
-        summaryKey: "seo.a1.summary",
-        sourceKey: "seo.a1.source",
-        durationKey: "seo.a1.duration",
-    },
-    {
-        id: "oc",
-        kind: "article",
-        url: "https://openclassrooms.com/fr/courses/8710351-creez-une-application-react-avec-next-js/8856186-demarrez-un-projet-next-js",
-        mark: "OC",
-        titleKey: "seo.a2.title",
-        summaryKey: "seo.a2.summary",
-        sourceKey: "seo.a2.source",
-        durationKey: "seo.a2.duration",
-    },
-    {
-        id: "ti",
-        kind: "article",
-        url: "https://tech-insider.org/fr/nextjs-16-tutoriel-app-full-stack-13-etapes-2026/",
-        mark: "TI",
-        titleKey: "seo.a3.title",
-        summaryKey: "seo.a3.summary",
-        sourceKey: "seo.a3.source",
-        durationKey: "seo.a3.duration",
-    },
-];
-export const HERO_VIDEO_ID = "jzdTBDmCAKE";
+export const SEO_RESOURCES: readonly SeoResource[] = SITE.seoResources;
+export const HERO_VIDEO_ID: string = SITE.heroVideoId;
 
 // SYMMETRIC, THIN vertical rails (160x600): symmetry kept (the 160/300
 // asymmetry looked bad) AND breathing room in the center (~912px on a 1280 container) => the

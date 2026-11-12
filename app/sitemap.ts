@@ -2,11 +2,11 @@ import { ARTICLES_ENABLED, SITE_URL } from "@/constants/site";
 import { getPathname, routing } from "@/i18n/routing";
 import { getCatalog } from "@/lib/articles/source";
 import { articlePath, type LogicalHref } from "@/lib/seo";
+import { staticHrefs } from "@/lib/site-extension";
 import type { MetadataRoute } from "next";
 
-const HREFS: LogicalHref[] = (["/", "/articles", "/sitemap", "/legal", "/privacy", "/cookies"] as const).filter(
-    (href) => ARTICLES_ENABLED || href !== "/articles",
-);
+// Every STATIC route of routing.pathnames: Axons' pages + the derived site's (site/config.ts).
+const HREFS: LogicalHref[] = staticHrefs(routing.pathnames).filter((href) => ARTICLES_ENABLED || href !== "/articles");
 
 export default function sitemap(): MetadataRoute.Sitemap {
     const now = new Date();
