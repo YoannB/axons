@@ -1,6 +1,6 @@
 import { expect, test, type Page } from "@playwright/test";
-import { acceptCookiesButton, cookieBanner } from "./support/home";
 import { LS_THEME_MODE } from "../../lib/storage";
+import { acceptCookiesButton, cookieBanner } from "./support/home";
 
 // v0.3.0 site configuration: consent can be re-opened from the footer, the scripted terminal
 // demo runs without any network call, and the security headers keep same-origin framing.
