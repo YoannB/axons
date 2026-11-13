@@ -1,9 +1,11 @@
 import { expect, test } from "@playwright/test";
 import { acceptCookiesButton, cookieBanner, languageButton, languageOption, themeToggle } from "./support/home";
 import { lpRe } from "./support/locale-path";
+import { AXONS_HOME, AXONS_HOME_SKIP } from "./support/site-slots";
 
 test.describe("Home — structural smoke", () => {
     test("shows the hero, the component library, the SEO section and the FAQ", async ({ page }) => {
+        test.skip(!AXONS_HOME, AXONS_HOME_SKIP);
         await page.goto("/");
 
         await expect(page.locator("h1")).toBeVisible();

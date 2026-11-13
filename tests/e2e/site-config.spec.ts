@@ -1,5 +1,6 @@
 import { expect, test, type Page } from "@playwright/test";
 import { acceptCookiesButton, cookieBanner } from "./support/home";
+import { AXONS_HOME, AXONS_HOME_SKIP } from "./support/site-slots";
 
 // v0.3.0 site configuration: consent can be re-opened from the footer, the scripted terminal
 // demo runs without any network call, and the security headers keep same-origin framing.
@@ -58,6 +59,7 @@ test.describe("Site configuration", () => {
     });
 
     test("the terminal demo plays the scripted sequence without network requests", async ({ page }) => {
+        test.skip(!AXONS_HOME, AXONS_HOME_SKIP);
         await page.goto("/fr");
         await hydrated(page);
         const calls: string[] = [];
@@ -75,6 +77,7 @@ test.describe("Site configuration", () => {
     });
 
     test("with prefers-reduced-motion, the sequence shows at once", async ({ page }) => {
+        test.skip(!AXONS_HOME, AXONS_HOME_SKIP);
         await page.emulateMedia({ reducedMotion: "reduce" });
         await page.goto("/fr");
         await hydrated(page);
@@ -86,6 +89,7 @@ test.describe("Site configuration", () => {
     });
 
     test("tabs switch panels", async ({ page }) => {
+        test.skip(!AXONS_HOME, AXONS_HOME_SKIP);
         await page.goto("/fr");
         await hydrated(page);
         const showcase = page.locator("#showcase");
