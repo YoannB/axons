@@ -1,7 +1,7 @@
 import { Card } from "@/components/ui";
 import type { AppLocale } from "@/i18n/locales";
-import { Link } from "@/i18n/routing";
-import type { EntryHref } from "@/lib/seo";
+import { entryPath, type EntryHref } from "@/lib/seo";
+import Link from "next/link";
 
 export interface ArticleTeaserProps {
     title: string;
@@ -33,11 +33,14 @@ export function ArticleTeaser({
     fallback,
     headingLevel: Heading = "h2",
 }: ArticleTeaserProps) {
-    // The union of entry keys is narrowed to one key for the typed Link overloads.
-    const href = { pathname: itemHref as "/articles/[slug]", params: { slug } };
+    // The translation's OWN URL, built like the sitemap/hreflang (entryPath → getPathname, which
+    // honours localePrefix "as-needed"): no prefix for the default locale. next-intl's <Link> with
+    // an explicit `locale` always prefixes (`/fr/articles/…` when fr is the default → 307 on every
+    // click). The link only leaves the visited locale for a fallback entry (another language).
+    const href = entryPath(itemHref, locale, slug);
     return (
         <Card as="article" className="article-card article-teaser">
-            <Link href={href} locale={locale} className="article-card__thumb" tabIndex={-1} aria-hidden="true">
+            <Link href={href} className="article-card__thumb" tabIndex={-1} aria-hidden="true">
                 {image ? (
                     // eslint-disable-next-line @next/next/no-img-element -- static public asset of unknown size
                     <img src={image} alt="" className="article-card__img" loading="lazy" />
@@ -53,7 +56,7 @@ export function ArticleTeaser({
             <div className="article-card__body">
                 {/* lang/hrefLang only on a fallback: the title and summary are in another language. */}
                 <Heading className="article-teaser__title" lang={fallback ? locale : undefined}>
-                    <Link href={href} locale={locale} hrefLang={fallback ? locale : undefined}>
+                    <Link href={href} hrefLang={fallback ? locale : undefined}>
                         {title}
                     </Link>
                 </Heading>
