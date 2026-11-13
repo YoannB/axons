@@ -23,16 +23,18 @@ vi.mock("@/i18n/routing", () => ({
 
 // The two component slots of site/ (docs/architecture.md → Deriving a site). Axons ships them as
 // re-exports of its own frame and home, so its behaviour is unchanged; a derived site replaces them.
+// SITE-AGNOSTIC: the slot checks hold whatever site/shell.tsx and site/home.tsx export (a derived
+// site runs this file too); Axons' defaults are checked on their own modules.
 // The elements are inspected WITHOUT rendering (Header/Footer need the next-intl providers; the
 // rendered result is covered by the e2e specs).
 type El = ReactElement<{ children?: ReactNode; locale?: string }>;
 
-describe("site/shell.tsx — page frame slot", () => {
-    it("is Axons' DefaultShell by default", () => {
-        expect(SiteShell).toBe(DefaultShell);
+describe("site/shell.tsx — page frame slot, and Axons' DefaultShell", () => {
+    it("exports a SiteShell component (Axons: a re-export of DefaultShell)", () => {
+        expect(typeof SiteShell).toBe("function");
     });
 
-    it("renders header, the <main> landmark around the page, then footer", () => {
+    it("DefaultShell renders header, the <main> landmark around the page, then footer", () => {
         const page = <p>page</p>;
         const frame = DefaultShell({ children: page, locale: "en" }) as El;
         const parts = (frame.props.children as El[]).filter(isValidElement) as El[];
@@ -41,12 +43,12 @@ describe("site/shell.tsx — page frame slot", () => {
     });
 });
 
-describe("site/home.tsx — home body slot", () => {
-    it("is Axons' AxonsHome by default", () => {
-        expect(SiteHome).toBe(AxonsHome);
+describe("site/home.tsx — home body slot, and Axons' AxonsHome", () => {
+    it("exports a SiteHome component (Axons: a re-export of AxonsHome)", () => {
+        expect(typeof SiteHome).toBe("function");
     });
 
-    it("wraps the home sections in PageShell and passes the locale to the latest articles", () => {
+    it("AxonsHome wraps the home sections in PageShell and passes the locale to the latest articles", () => {
         const home = AxonsHome({ locale: "fr" }) as El;
         expect(home.type).toBe(PageShell);
         const sections = home.props.children as El[];
