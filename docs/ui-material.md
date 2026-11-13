@@ -12,10 +12,16 @@ prop-leak — that is on you).
 
 ## MUI theme build & light mode
 
-`buildTheme(mode)` takes the RESOLVED light/dark value (never a hardcoded `'dark'`);
-`palette.background.default` and `paper` are `transparent` so `CssBaseline` does not paint
-`<body>` and `styles/tokens.css` tokens stay authoritative (a hardcoded dark + opaque CssBaseline
-background is what previously broke light mode). Light mode = a TINTED background (`--bg-0`
+`buildTheme(mode, palette = SITE.palette[mode])` takes the RESOLVED light/dark value (never a
+hardcoded `'dark'`) and the SITE's colours (`site/config.ts` `palette`: `primary`, `secondary`,
+`contrastText` = text on the primary; Axons: `#7c5cff` / `#22d3ee` / `#fff`, what MUI computed
+before). `palette.background.default` and `paper` are `transparent` (a hardcoded dark + opaque
+CssBaseline background is what previously broke light mode), AND the `MuiCssBaseline`
+`styleOverrides` re-point `body` at `background-color: var(--bg-0); color: var(--text-1)`:
+CssBaseline's own `body` rule (`--mui-palette-background-default` = transparent,
+`--mui-palette-text-primary`) is injected AFTER `styles/base.css` and used to erase `--bg-0` and,
+with a palette of the other mode (Storybook), paint the text white on light. Tokens stay
+authoritative. The primary (gradient) button label is the `--btn-fg` token, not the palette. Light mode = a TINTED background (`--bg-0`
 soft blue-grey, not white) with white shadowed cards; accent glow reduced via `--glow`.
 Tokens in `:root` / `[data-theme="light"]` are the single source of truth for colors.
 `defaultChannel`/`paperChannel` are explicitly `undefined` (MUI v9 cannot derive a channel

@@ -54,6 +54,13 @@ symmetric and THIN (160px wide). Never 300+300 (that steals 600px from the conte
 the feature strip). Three SEO resources are listed full-width in a single column (no auto-fill
 grid that leaves an orphan gap); horizontal leaderboards are centered (`margin-inline:auto`).
 
+## SEO block empty state
+
+`SeoResources` follows the site's data: `HERO_VIDEO_ID` empty => no player block at all (no black
+frame, no poster request to `i.ytimg.com`); `SEO_RESOURCES` empty => no cards grid (nor its ad
+slots); both empty => the `#seo` section is not rendered. The detach-on-scroll hooks live in the
+`SeoVideo` sub-component, mounted only when there is a video (hooks stay unconditional).
+
 ## Site chrome switches
 
 `site/config.ts` (re-exported by `constants/site.ts`): `HEADER_NAV_ENABLED` (false = no header nav and no burger; the footer and the

@@ -74,6 +74,8 @@ export function Button({
                 overflow: "hidden",
                 textTransform: "none",
                 fontWeight: 700,
+                // Label on the gradient: a token (styles/tokens.css), overridable per theme by a site.
+                color: isPrimary ? "var(--btn-fg)" : undefined,
                 backgroundImage: isPrimary
                     ? "linear-gradient(120deg,var(--accent-1),var(--accent-2),var(--accent-1))"
                     : undefined,

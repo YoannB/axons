@@ -874,8 +874,8 @@ When transforming Axons into a new app, update at least:
 ### Branding
 
 - `name` (and the rest of the identity) in `site/config.ts` — a derived site edits only `site/`, see `docs/architecture.md` → Deriving a site
-- logo/mark in `components/ui/Logo.tsx` or equivalent
-- favicon and social image in `public/`
+- logo drawing in `site/logo.tsx`, favicon in `site/icon.svg`, MUI colours in `site/config.ts` (`palette`) and CSS tokens in `site/theme.css`
+- social image in `public/`
 
 ### Localization
 

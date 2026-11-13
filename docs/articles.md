@@ -16,7 +16,9 @@ image: /articles/<id>/cover.png # optional, site-absolute, file in public/articl
 ---
 ```
 
-The body is GitHub-flavored Markdown. Fenced code blocks name their language
+The body is GitHub-flavored Markdown. Prettier formats the prose but NOT the code inside
+fenced blocks (`.prettierrc.json` override: `embeddedLanguageFormatting: "off"` for
+`content/**/*.md`), so article snippets stay as written. Fenced code blocks name their language
 (` ```js `, `ts`, `bash`/`sh`, `html`/`xml`, `css`, `scss`, `stylus`, `json`, `yaml`,
 `markdown`, … — lowlight's `common` set + `stylus`); see _Code highlighting_ below. Do not repeat the title as `# Heading` (a body `h1` is
 demoted to `h2`; the page title is the `h1`). Raw HTML in the body is NOT interpreted

@@ -1,0 +1,8 @@
+/* =====================================================================
+   site/theme.css — the SITE's own CSS, owned by a derived site (Axons ships it empty).
+   Imported LAST by app/globals.css, so a rule here wins over every Axons stylesheet at equal
+   specificity. Typical use: rebrand the tokens of styles/tokens.css, e.g.
+     :root { --accent-1: #0ea5e9; --accent-2: #f97316; --btn-fg: #0b1020; }
+     [data-theme="light"] { --bg-0: #eef2f7; }
+   Keep MUI in step through site/config.ts `palette`. See docs/styles.md.
+   ===================================================================== */

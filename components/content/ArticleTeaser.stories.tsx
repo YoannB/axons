@@ -34,7 +34,7 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const WithCover: Story = { args: { image: "/articles/writing-articles/cover.svg" } };
+export const WithCover: Story = { args: { image: "/storybook-assets/story-cover.svg" } };
 export const WithoutCover: Story = {};
 export const LanguageFallback: Story = {
     args: {
@@ -46,4 +46,4 @@ export const LanguageFallback: Story = {
         fallback: { flag: "🇫🇷", label: "Français", title: "Only available in Français" },
     },
 };
-export const InHomeBlock: Story = { args: { headingLevel: "h3", image: "/articles/writing-articles/cover.svg" } };
+export const InHomeBlock: Story = { args: { headingLevel: "h3", image: "/storybook-assets/story-cover.svg" } };
