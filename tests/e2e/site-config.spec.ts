@@ -1,4 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
+import { LS_THEME_MODE } from "../../lib/storage";
 import { acceptCookiesButton, cookieBanner } from "./support/home";
 
 // v0.3.0 site configuration: consent can be re-opened from the footer, the scripted terminal
@@ -106,7 +107,8 @@ test.describe("Site configuration", () => {
     test("the body keeps the --bg-0 token over MUI CssBaseline, in both themes", async ({ page }) => {
         // Regression: CssBaseline injected body { background-color: transparent } after base.css.
         for (const mode of ["dark", "light"]) {
-            await page.addInitScript((m) => localStorage.setItem("axons-theme-mode", m), mode);
+            // Stored as writeLS stores it (JSON): the boot script and hydrateClient decode it.
+            await page.addInitScript(([k, v]) => localStorage.setItem(k, v), [LS_THEME_MODE, JSON.stringify(mode)]);
             await page.goto("/");
             await hydrated(page);
             const [bg, token] = await page.evaluate(() => {

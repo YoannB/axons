@@ -42,8 +42,9 @@ The anti-FOUC / anti-banner-flash inline script MUST use `next/script` with
 `strategy="beforeInteractive"` AND live in the TRUE ROOT `app/layout.tsx`. Next only hoists
 `beforeInteractive` out of the hydratable tree at the root; in a segment layout (or under
 Turbopack dev at the wrong level) the `<script>` stays in the React tree and throws
-"Encountered a script tag while rendering React component". It reads localStorage then the
-theme cookie, resolves `system` via matchMedia, sets `documentElement.dataset.theme`, adds
+"Encountered a script tag while rendering React component". Its source is built by
+`lib/boot-script.ts` (unit-tested by running the string in jsdom). It reads localStorage
+(JSON-decoded, as `writeLS` stores it) then the theme cookie, resolves `system` via matchMedia, sets `documentElement.dataset.theme`, adds
 `has-consent` when the consent cookie exists, and sets `lang` from the pathname for every
 SERVED locale (the list is serialized from `i18n/locales.ts` at build).
 
