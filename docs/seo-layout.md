@@ -119,7 +119,9 @@ and made the home page jump to the showcase on load (guarded in `site-config.spe
 `aria-hidden`, theme tokens, CSS float/twinkle disabled under `prefers-reduced-motion`), the
 404 code, a `notFound.text` line and a "back to home" button. Reuse `EmptyUniverse` for any
 "nothing here" state rather than drawing a new illustration.
-`components/ui/Terminal.tsx`: plain-text lines (never innerHTML) in a `role="log"` live region.
+`components/ui/Terminal.tsx`: plain-text lines (never innerHTML) in a `role="log"` live region;
+`live={false}` (static content: a sample, a listing) renders a named `role="region"` with no
+`aria-live`, so nothing is announced.
 `hooks/use-scripted-sequence.ts` reveals lines on an interval (setState in the interval
 callback only) and shows everything at once under `prefers-reduced-motion`. A scripted demo is
 a SIMULATION: it must not call `/api/*` nor show AI quota/error states (see the
