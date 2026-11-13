@@ -81,3 +81,20 @@ upgrade; do not impose a compiler major (e.g. TS) on the whole chain without che
 reaching for `--force` / `--legacy-peer-deps` (they mask an incompatibility rather than
 solve it). Patch-version pins live in `package.json`/`package-lock.json` — do NOT duplicate
 them into these docs (single source of truth).
+
+## Tool scope: never scan `.claude/**`
+
+Claude Code keeps session worktrees in `.claude/worktrees/*`: full checkouts with their own
+`.next`, `storybook-static` and sources. Every Definition-of-done tool must skip them, and must
+say so EXPLICITLY rather than rely on an implicit default:
+
+- ESLint: `".claude/**"` in the global ignores of `eslint.config.mjs` (flat config does NOT read
+  `.gitignore`; without it a checkout with worktrees reported ~1.9k errors).
+- Prettier: `.claude/` in `.prettierignore` (Prettier also reads `.gitignore`, which lists it).
+- TypeScript: `.claude` in `tsconfig.json` `exclude` (TS wildcards already skip dot-folders).
+- Vitest: `.claude/**` in `test.exclude` (`include` is anchored anyway).
+- Playwright needs nothing (`testDir: tests/e2e`); Storybook neither (`../components/**`).
+
+`tests/unit/tooling-ignores.test.ts` ASKS ESLint (`isPathIgnored`) and Prettier (`getFileInfo`)
+and checks the TS / Vitest configs; it fails if one of the ignores is dropped. Add the same
+entry to any new tool that walks the repository.

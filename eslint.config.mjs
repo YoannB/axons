@@ -26,6 +26,9 @@ const config = [
             "playwright-report/**",
             "test-results/**",
             "next-env.d.ts",
+            // Claude Code session worktrees (.claude/worktrees/*: full checkouts with their own
+            // .next, storybook-static, node_modules…). Flat config does not read .gitignore.
+            ".claude/**",
         ],
     },
 
