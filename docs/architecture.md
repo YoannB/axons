@@ -16,9 +16,12 @@
   import, the pre-hydration splash node, and the `beforeInteractive` boot script. Resolves
   localized `lang` via `getLocale()`.
 - `app/[locale]/layout.tsx` = SEGMENT: validates locale, `getMessages({ locale })`, mounts
-  providers + chrome (Header/Footer/CookieBanner/GtmScript/SplashLoader). MUST NOT contain
-  `<html>`/`<body>` nor import `globals.css`. Exposes `generateStaticParams`.
-- `app/[locale]/page.tsx` + legal/sitemap pages = static Server Components (`params:{locale}`).
+  providers + chrome: the page FRAME `SiteShell` (`site/shell.tsx`; Axons' `DefaultShell` =
+  Header + `<main>` + Footer), then CookieBanner/GtmScript/SplashLoader OUTSIDE the frame. MUST
+  NOT contain `<html>`/`<body>` nor import `globals.css`. Exposes `generateStaticParams`.
+- `app/[locale]/page.tsx` = home metadata (`meta.home`) + the site's `SiteHome` body
+  (`site/home.tsx`; Axons' `components/home/AxonsHome.tsx`).
+- Legal/sitemap pages = static Server Components (`params:{locale}`).
 - `app/[locale]/[...rest]/page.tsx` = catch-all calling `notFound()`: unknown paths under a
   locale render `app/[locale]/not-found.tsx` INSIDE the segment layout. Without it Next renders
   its default 404 outside the layout (no providers, no SplashLoader) and the splash never
@@ -84,6 +87,8 @@ files, or every upstream merge conflicts. It owns ONE folder, `site/`, and repla
 | `site/theme.css`               | the site's CSS, imported LAST by `app/globals.css` (token overrides such as `--accent-1`, `--bg-0`, `--btn-fg`); empty in Axons                                                                                                                    |
 | `site/logo.tsx`                | the logo DRAWING (`LOGO_VIEWBOX` + `LogoMark`); `components/ui/Logo.tsx` keeps the frame and `aria-label={SITE_NAME}`                                                                                                                              |
 | `site/icon.svg`                | the favicon, served by `app/icon.tsx` (SVG, generated at build)                                                                                                                                                                                    |
+| `site/shell.tsx`               | `SiteShell`: the page FRAME around every page (header, `<main>`, footer); Axons re-exports `DefaultShell`. Props `SiteShellProps`                                                                                                                  |
+| `site/home.tsx`                | `SiteHome`: the home BODY (metadata stays `meta.home`); Axons re-exports `AxonsHome`. Props `SiteHomeProps`                                                                                                                                        |
 | `site/messages/<locale>.json`  | the site's own copy, one file per SUPPORTED locale (`{}` = nothing to add)                                                                                                                                                                         |
 | `app/[locale]/<page>/page.tsx` | the site's own pages (new files: no conflict)                                                                                                                                                                                                      |
 
@@ -105,6 +110,15 @@ them, so a new `SiteConfig` field shows up in a derived site as a TYPE ERROR in 
   `SITE.pathnames`) are inserted after Home in the footer and the HTML sitemap page, and in the
   header unless `header: false`. A disabled collection (`ARTICLES_ENABLED`, a site collection's `enabled`) drops its entry. Labels live in
   `site/messages/<locale>.json` under `nav`.
+- Frame & home: `site/shell.tsx` exports `SiteShell` (`SiteShellProps`: `children`, `locale`),
+  rendered by `app/[locale]/layout.tsx` inside the providers. It owns the `<main>` landmark and
+  the header/footer; the cookie banner, GTM and the splash loader stay in the layout, outside it.
+  `site/home.tsx` exports `SiteHome` (`SiteHomeProps`: `locale`), the body of `app/[locale]/page.tsx`.
+  Axons' defaults are re-exports (`components/layout/DefaultShell.tsx`,
+  `components/home/AxonsHome.tsx`), so Axons' own frame/home evolve upstream for a site that
+  keeps them. A site replacing the frame also replaces what Header/Footer provided (nav, language
+  and theme switches, footer links incl. "Manage cookies" when `CONSENT_REQUIRED`): e2e specs
+  scoped to `getByRole('banner')`/`contentinfo` then need the site's equivalents.
 - Messages: `i18n/request.ts` deep-merges `site/messages/<locale>.json` INTO
   `messages/<locale>.json` (`mergeMessages`). New keys are added; a key present on both sides
   THROWS (build fails, path named) unless that path or a parent is listed in

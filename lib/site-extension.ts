@@ -2,6 +2,7 @@
 // site, plus the merges that plug the site's declarations into Axons. A derived site owns the
 // `site/` folder (config.ts + messages/<locale>.json) and edits no Axons file; see
 // docs/architecture.md → Deriving a site.
+import type { ReactNode } from "react";
 
 /** A localized pathname: one path for every locale, or one path per locale. */
 export type SitePathname = string | Readonly<Record<string, string>>;
@@ -87,6 +88,22 @@ export interface SiteConfig<P extends SitePathnames = SitePathnames> {
      * Any other collision between site/messages and messages/ throws at build time.
      */
     readonly messageOverrides: readonly string[];
+}
+
+/**
+ * Props of the page FRAME a site renders around every page under `app/[locale]/` (`site/shell.tsx`
+ * exports `SiteShell`). The frame owns the `<main>` landmark and the header/footer chrome; the
+ * segment layout keeps the providers, the cookie banner, GTM and the splash loader outside it.
+ */
+export interface SiteShellProps {
+    readonly children: ReactNode;
+    /** The validated locale of the segment (handy for a Server Component frame reading content). */
+    readonly locale: string;
+}
+
+/** Props of the home page body (`site/home.tsx` exports `SiteHome`); metadata stays `meta.home`. */
+export interface SiteHomeProps {
+    readonly locale: string;
 }
 
 export interface NavEntry {
