@@ -14,6 +14,11 @@ fail-fast, so a missing tail delimiter throws at MODULE IMPORT (before any `it` 
 "0 test / Failed Suites" while other files still pass. Inline fixtures in
 `agent-parser.test.ts`/`skill-parser.test.ts` already close correctly; keep it that way.
 
+SITE-AGNOSTIC: Axons' tests check the extension MECHANISMS (a value of `site/` reaches its
+consumer: `SITE.palette` → `buildTheme`, `LogoMark` → `Logo`, …), never the VALUES of `site/`
+(colours, drawing, name, routes): a derived site replaces `site/`, and a test pinning Axons'
+values would fail there (see `tests/unit/site-identity.test.tsx`).
+
 ## IO & network — covered by E2E, not unit
 
 `loadSkill` (`lib/ai/skill-io.ts`), `run` (`lib/ai/agent.ts`), `runPrompt` (`lib/ai/agent.ts`),
