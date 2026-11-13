@@ -102,7 +102,7 @@ them, so a new `SiteConfig` field shows up in a derived site as a TYPE ERROR in 
   `HEADER_NAV_ENABLED`, `GITHUB_LINK_ENABLED`, `ARTICLES_ENABLED`, `SEO_RESOURCES`,
   `HERO_VIDEO_ID`): import from `@/constants/site`, not from `@/site/config`.
 - Routes: `SITE.pathnames` (same shape as next-intl `pathnames`, declared `as const`) is merged
-  into `i18n/routing.ts` by `mergePathnames`; a key that redefines an Axons route THROWS at
+  into `i18n/pathnames.ts` (`PATHNAMES`, used by `i18n/routing.ts`) by `mergePathnames`; a key that redefines an Axons route THROWS at
   build. Typed `Link`/`getPathname`/`pageMetadata` accept the site keys. `sitemap.xml` lists
   every STATIC route (no `[param]`) of the merged map; a dynamic site route (a second Markdown
   collection) must add its own entries.

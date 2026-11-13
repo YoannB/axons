@@ -76,12 +76,14 @@ must show `deduped`).
 Only SERVED locales count (`NEXT_PUBLIC_LOCALES`): files of other locales stay in the repo but
 are not published; an article with no served translation is dropped. When the visited locale
 has no translation, the listing shows the article in its fallback language (default locale,
-else the first served one that has it) with a language badge, linking to the ORIGINAL's own URL:
+else the first served one that has it) with a language badge, linking to the ORIGINAL's own URL (teaser hrefs are built by `entryPath`,
+like the sitemap: no prefix for the default locale; next-intl `<Link locale>` would force one and
+cost a 307 per click):
 no duplicate page is ever generated. hreflang lists only the translations that exist; canonical
 is the page's own locale URL; x-default is the default-locale version, else the page itself.
 The article page also emits a schema.org `BlogPosting` (JSON-LD, `<` escaped).
 
-Localized URL segments live in `i18n/routing.ts` (`/articles`, `/articles/[slug]`); the slug is
+Localized URL segments live in `i18n/pathnames.ts` (`/articles`, `/articles/[slug]`); the slug is
 the per-locale front-matter `slug`. The language switcher cannot translate a slug by itself: on
 a dynamic route it reads the page's own `<link rel="alternate" hreflang>` at click time
 (`lib/locale-switch.ts`, pure) and falls back to the parent route (the listing) when the target
