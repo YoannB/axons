@@ -1,8 +1,10 @@
 import { expect, test } from "@playwright/test";
 import { aiButton, firstToast, mockHello, mockHelloSequence, mockHelloWithCounter, toastByText } from "./support/ai";
+import { AXONS_HOME, AXONS_HOME_SKIP } from "./support/site-slots";
 import { usageCount } from "./support/storage";
 
 test.describe("Home — AI call (client boundary)", () => {
+    test.skip(!AXONS_HOME, AXONS_HOME_SKIP);
     test("useful reply: pending guard, success toast, credit consumed", async ({ page }) => {
         const counter = await mockHelloWithCounter(page, {
             delayMs: 400,
