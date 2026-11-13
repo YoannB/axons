@@ -173,6 +173,28 @@ export function mergePathnames<A extends SitePathnames, S extends SitePathnames>
     return { ...axons, ...site };
 }
 
+/** localStorage keys by NAME (`{ ideTabs: "mysite-ide-tabs" }`): declared by Axons and by `site/storage.ts`. */
+export type SiteStorageKeys = Readonly<Record<string, string>>;
+
+/**
+ * Axons localStorage keys + the site's. A site NAME that redefines an Axons one, a site KEY already
+ * used by Axons or declared twice by the site, or an empty key throws: two features sharing one
+ * key read each other's data.
+ */
+export function mergeStorageKeys<A extends SiteStorageKeys, S extends SiteStorageKeys>(axons: A, site: S): A & S {
+    const problems: string[] = [];
+    const names = Object.keys(site).filter((name) => Object.hasOwn(axons, name));
+    if (names.length > 0) problems.push(`names already declared by Axons: ${names.join(", ")}`);
+    const seen = new Set(Object.values(axons));
+    for (const [name, key] of Object.entries(site)) {
+        if (key.trim() === "") problems.push(`empty key for "${name}"`);
+        else if (seen.has(key)) problems.push(`key "${key}" ("${name}") is already used`);
+        seen.add(key);
+    }
+    if (problems.length > 0) throw new Error(`site/storage.ts SITE_STORAGE_KEYS: ${problems.join("; ")}.`);
+    return { ...axons, ...site };
+}
+
 /** Logical key of a STATIC route of `P` (no dynamic `[param]` segment). */
 export type StaticHref<P> = Exclude<Extract<keyof P, string>, `${string}[${string}`>;
 

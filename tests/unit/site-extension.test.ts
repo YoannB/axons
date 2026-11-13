@@ -1,6 +1,7 @@
 // @vitest-environment node
 import { NAV } from "@/constants/site";
 import {
+    mergeStorageKeys,
     buildNav,
     findCollection,
     headerNav,
@@ -208,5 +209,34 @@ describe("shipped site layer", () => {
     it("every site nav entry targets a site pathname", () => {
         const keys: string[] = Object.keys(SITE.pathnames);
         for (const entry of SITE.nav as readonly { href: string }[]) expect(keys).toContain(entry.href);
+    });
+});
+
+describe("mergeStorageKeys", () => {
+    const AXONS = { usage: "axons-usage", themeMode: "axons-theme-mode" } as const;
+
+    it("adds the site keys to Axons' (empty site = Axons unchanged)", () => {
+        expect(mergeStorageKeys(AXONS, {})).toEqual(AXONS);
+        expect(mergeStorageKeys(AXONS, { ideTabs: "site-ide-tabs" })).toEqual({ ...AXONS, ideTabs: "site-ide-tabs" });
+    });
+
+    it("throws when a site name redefines an Axons name", () => {
+        expect(() => mergeStorageKeys(AXONS, { usage: "site-usage" })).toThrow(
+            /names already declared by Axons: usage/,
+        );
+    });
+
+    it("throws when a site key is already used by Axons", () => {
+        expect(() => mergeStorageKeys(AXONS, { mine: "axons-theme-mode" })).toThrow(
+            /key "axons-theme-mode" \("mine"\)/,
+        );
+    });
+
+    it("throws when the site declares the same key twice", () => {
+        expect(() => mergeStorageKeys(AXONS, { a: "site-x", b: "site-x" })).toThrow(/key "site-x" \("b"\)/);
+    });
+
+    it("throws on an empty key", () => {
+        expect(() => mergeStorageKeys(AXONS, { blank: " " })).toThrow(/empty key for "blank"/);
     });
 });

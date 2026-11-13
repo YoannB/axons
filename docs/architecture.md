@@ -90,6 +90,7 @@ files, or every upstream merge conflicts. It owns ONE folder, `site/`, and repla
 | `site/shell.tsx`               | `SiteShell`: the page FRAME around every page (header, `<main>`, footer); Axons re-exports `DefaultShell`. Props `SiteShellProps`                                                                                                                  |
 | `site/home.tsx`                | `SiteHome`: the home BODY (metadata stays `meta.home`); Axons re-exports `AxonsHome`. Props `SiteHomeProps`                                                                                                                                        |
 | `site/messages/<locale>.json`  | the site's own copy, one file per SUPPORTED locale (`{}` = nothing to add)                                                                                                                                                                         |
+| `site/storage.ts`              | `SITE_STORAGE_KEYS`: the site's own localStorage keys by name (`{}` in Axons), merged into `STORAGE_KEYS`                                                                                                                                          |
 | `app/[locale]/<page>/page.tsx` | the site's own pages (new files: no conflict)                                                                                                                                                                                                      |
 
 The contract (`SiteConfig`) and the merges are PURE code in `lib/site-extension.ts`
@@ -110,6 +111,11 @@ them, so a new `SiteConfig` field shows up in a derived site as a TYPE ERROR in 
   `SITE.pathnames`) are inserted after Home in the footer and the HTML sitemap page, and in the
   header unless `header: false`. A disabled collection (`ARTICLES_ENABLED`, a site collection's `enabled`) drops its entry. Labels live in
   `site/messages/<locale>.json` under `nav`.
+- Storage: `site/storage.ts` declares `SITE_STORAGE_KEYS` (`{ ideTabs: "mysite-ide-tabs" }`, keys
+  prefixed with the site name); `lib/storage.ts` merges them with Axons' (`usage`, `themeMode`)
+  into `STORAGE_KEYS` via `mergeStorageKeys`, which THROWS on a name Axons declares, a key already
+  in use (Axons' or the site's own) or an empty key. Site code reads `STORAGE_KEYS.<name>` with
+  `readLS` / `writeLS`, never a literal key.
 - Frame & home: `site/shell.tsx` exports `SiteShell` (`SiteShellProps`: `children`, `locale`),
   rendered by `app/[locale]/layout.tsx` inside the providers. It owns the `<main>` landmark and
   the header/footer; the cookie banner, GTM and the splash loader stay in the layout, outside it.
