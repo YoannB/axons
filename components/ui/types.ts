@@ -222,5 +222,10 @@ export interface AppTerminalProps {
     actions?: ReactNode;
     /** Max visible lines before the body scrolls (default 12). */
     rows?: number;
+    /**
+     * Live log (default true): role="log" + aria-live="polite", new lines are announced. Set false
+     * for STATIC content (a code sample, a file listing): a plain named, focusable region.
+     */
+    live?: boolean;
     className?: string;
 }
