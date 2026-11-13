@@ -230,7 +230,10 @@
                     "heading": "Limitazione di responsabilità",
                     "body": [
                         "Il sito è fornito a titolo informativo. L'editore non garantisce l'accuratezza, completezza o aggiornamento delle informazioni pubblicate e non sarà responsabile dei danni diretti o indiretti derivanti dall'accesso o dall'uso del sito.",
-                        "I contenuti generati dall'IA (tramite OpenRouter) sono forniti come assistenza e non impegnano la responsabilità dell'editore; spetta all'utente verificarne l'accuratezza."
+                        {
+                            "text": "I contenuti generati dall'IA (tramite OpenRouter) sono forniti come assistenza e non impegnano la responsabilità dell'editore; spetta all'utente verificarne l'accuratezza.",
+                            "when": ["ai"]
+                        }
                     ]
                 },
                 {
@@ -255,30 +258,81 @@
                 {
                     "heading": "Dati raccolti",
                     "body": [
-                        "Questo sito non raccoglie deliberatamente dati personali identificativi lato server, eccetto le informazioni che invii liberamente per ottenere una risposta IA.",
-                        "Le chiamate IA passano tramite un Route Handler che inoltra una richiesta di testo a OpenRouter; la chiave API resta lato server e non viene mai esposta al browser.",
-                        "Le preferenze del tema, il consenso ai cookie e il contatore giornaliero delle chiamate sono archiviati localmente nel tuo browser (cookie + localStorage) e non sono trasmessi al server."
+                        {
+                            "text": "Questo sito non raccoglie deliberatamente dati personali identificativi lato server, eccetto le informazioni che invii liberamente per ottenere una risposta IA.",
+                            "when": ["ai"]
+                        },
+                        {
+                            "text": "Questo sito non raccoglie deliberatamente dati personali identificativi lato server.",
+                            "when": ["!ai"]
+                        },
+                        {
+                            "text": "Le chiamate IA passano tramite un Route Handler che inoltra una richiesta di testo a OpenRouter; la chiave API resta lato server e non viene mai esposta al browser.",
+                            "when": ["ai"]
+                        },
+                        {
+                            "text": "Le preferenze del tema, il consenso ai cookie e il contatore giornaliero delle chiamate sono archiviati localmente nel tuo browser (cookie + localStorage) e non sono trasmessi al server.",
+                            "when": ["ai"]
+                        },
+                        {
+                            "text": "Le preferenze del tema e il consenso ai cookie sono archiviati localmente nel tuo browser (cookie + localStorage) e non sono trasmessi al server.",
+                            "when": ["!ai"]
+                        }
                     ]
                 },
                 {
                     "heading": "Finalità e base giuridica",
                     "body": [
-                        "I trattamenti implementati servono a: funzionamento del sito (esecuzione del contratto / interesse legittimo), misurazione del pubblico e pubblicità (consenso), e fornitura di risposte IA alla tua richiesta (esecuzione del servizio richiesto).",
-                        "Se includi dati personali in un messaggio inviato all'IA, essi sono trattati unicamente per generare la risposta richiesta.",
+                        "I trattamenti implementati servono a:",
+                        {
+                            "list": [
+                                "funzionamento del sito (esecuzione del contratto / interesse legittimo)",
+                                {
+                                    "text": "misurazione del pubblico (consenso)",
+                                    "when": ["gtm"]
+                                },
+                                {
+                                    "text": "pubblicità (consenso)",
+                                    "when": ["ads"]
+                                },
+                                {
+                                    "text": "fornitura di risposte IA alla tua richiesta (esecuzione del servizio richiesto)",
+                                    "when": ["ai"]
+                                }
+                            ]
+                        },
+                        {
+                            "text": "Se includi dati personali in un messaggio inviato all'IA, essi sono trattati unicamente per generare la risposta richiesta.",
+                            "when": ["ai"]
+                        },
                         "La base giuridica di ciascun trattamento è indicata sopra; i trattamenti basati sul consenso possono essere interrotti in qualsiasi momento."
                     ]
                 },
                 {
                     "heading": "Periodo di conservazione",
                     "body": [
-                        "I dati archiviati localmente (tema, consenso, contatore) sono conservati finché il tuo browser li conserva e fino alla cancellazione da parte tua.",
+                        {
+                            "text": "I dati archiviati localmente (tema, consenso, contatore) sono conservati finché il tuo browser li conserva e fino alla cancellazione da parte tua.",
+                            "when": ["ai"]
+                        },
+                        {
+                            "text": "I dati archiviati localmente (tema, consenso) sono conservati finché il tuo browser li conserva e fino alla cancellazione da parte tua.",
+                            "when": ["!ai"]
+                        },
                         "I log tecnici dell'hosting sono conservati per il periodo strettamente necessario al funzionamento e alla sicurezza del servizio."
                     ]
                 },
                 {
                     "heading": "Destinatari e trasferimenti",
                     "body": [
-                        "I dati non sono venduti né noleggiati. Solo l'hosting (Netlify) e, ove applicabile, il fornitore IA (OpenRouter) possono trattare i dati strettamente necessari per erogare il servizio.",
+                        {
+                            "text": "I dati non sono venduti né noleggiati. Solo l'hosting (Netlify) e, ove applicabile, il fornitore IA (OpenRouter) possono trattare i dati strettamente necessari per erogare il servizio.",
+                            "when": ["ai"]
+                        },
+                        {
+                            "text": "I dati non sono venduti né noleggiati. Solo l'hosting (Netlify) può trattare i dati strettamente necessari per erogare il servizio.",
+                            "when": ["!ai"]
+                        },
                         "Se avviene un trasferimento fuori dall'Unione Europea, è disciplinato da garanzie appropriate (clausole contrattuali standard della Commissione Europea o decisione di adeguatezza)."
                     ]
                 },
@@ -293,7 +347,10 @@
                     "heading": "Sicurezza",
                     "body": [
                         "Sono implementate misure tecniche e organizzative ragionevoli per proteggere i dati da accessi non autorizzati, alterazione, divulgazione o distruzione.",
-                        "La chiave OpenRouter è archiviata nelle variabili d'ambiente del server e non viene mai inviata al client né inclusa nelle risposte."
+                        {
+                            "text": "La chiave OpenRouter è archiviata nelle variabili d'ambiente del server e non viene mai inviata al client né inclusa nelle risposte.",
+                            "when": ["ai"]
+                        }
                     ]
                 }
             ]
@@ -312,28 +369,57 @@
                     "heading": "Cookie utilizzati",
                     "body": [
                         "Cookie funzionali (tema chiaro/scuro, consenso): strettamente necessari, non richiedono consenso preventivo e sono archiviati localmente.",
-                        "Cookie del contatore giornaliero delle chiamate IA: misura l'uso locale della quota, archiviato nel tuo browser.",
-                        "Cookie di misurazione del pubblico e pubblicitari: depositati solo dopo il tuo consenso, possono essere rifiutati senza degradare la navigazione."
+                        {
+                            "text": "Cookie del contatore giornaliero delle chiamate IA: misura l'uso locale della quota, archiviato nel tuo browser.",
+                            "when": ["ai"]
+                        },
+                        {
+                            "text": "Cookie di misurazione del pubblico e pubblicitari: depositati solo dopo il tuo consenso, possono essere rifiutati senza degradare la navigazione.",
+                            "when": ["gtm", "ads"]
+                        },
+                        {
+                            "text": "Cookie di misurazione del pubblico: depositati solo dopo il tuo consenso, possono essere rifiutati senza degradare la navigazione.",
+                            "when": ["gtm", "!ads"]
+                        },
+                        {
+                            "text": "Cookie pubblicitari: depositati solo dopo il tuo consenso, possono essere rifiutati senza degradare la navigazione.",
+                            "when": ["ads", "!gtm"]
+                        }
                     ]
                 },
                 {
                     "heading": "Consenso",
                     "body": [
-                        "Alla prima visita, un banner ti consente di accettare, rifiutare o personalizzare il deposito dei cookie non essenziali.",
-                        "Finché non presti il tuo accordo, vengono depositati solo i cookie strettamente necessari. La tua scelta è ricordata e può essere modificata in qualsiasi momento tramite il link “Cookie” nel footer."
+                        {
+                            "text": "Alla prima visita, un banner ti consente di accettare, rifiutare o personalizzare il deposito dei cookie non essenziali.",
+                            "when": ["consent"]
+                        },
+                        {
+                            "text": "Finché non presti il tuo accordo, vengono depositati solo i cookie strettamente necessari. La tua scelta è ricordata e può essere modificata in qualsiasi momento tramite il link “Cookie” nel footer.",
+                            "when": ["consent"]
+                        }
                     ]
                 },
                 {
                     "heading": "Periodo di conservazione",
                     "body": [
-                        "I cookie di consenso sono conservati per un massimo di sei (6) mesi, in linea con le raccomandazioni delle autorità di controllo, salvo le durate tecniche strettamente necessarie.",
-                        "I cookie di misurazione del pubblico sono conservati per il periodo minimo necessario alla loro finalità."
+                        {
+                            "text": "I cookie di consenso sono conservati per un massimo di sei (6) mesi, in linea con le raccomandazioni delle autorità di controllo, salvo le durate tecniche strettamente necessarie.",
+                            "when": ["consent"]
+                        },
+                        {
+                            "text": "I cookie di misurazione del pubblico sono conservati per il periodo minimo necessario alla loro finalità.",
+                            "when": ["gtm"]
+                        }
                     ]
                 },
                 {
                     "heading": "Le tue scelte",
                     "body": [
-                        "Puoi accettare o rifiutare i cookie non essenziali in qualsiasi momento tramite il banner o la pagina “Cookie”.",
+                        {
+                            "text": "Puoi accettare o rifiutare i cookie non essenziali in qualsiasi momento tramite il banner o la pagina “Cookie”.",
+                            "when": ["consent"]
+                        },
                         "Puoi anche configurare il tuo browser per bloccare o eliminare i cookie; alcune funzionalità del sito potrebbero quindi non funzionare correttamente."
                     ]
                 },
