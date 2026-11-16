@@ -180,8 +180,8 @@ describe("Button — external", () => {
     it("is a type error without href, and busy is a type error on a link", () => {
         // @ts-expect-error -- `external` requires `href`
         const noHref = <Button external>x</Button>;
-        // @ts-expect-error -- `busy` belongs to the action button, not to a link
         const busyLink = (
+            // @ts-expect-error -- `busy` belongs to the action button, not to a link
             <Button href="/" busy>
                 x
             </Button>
