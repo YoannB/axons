@@ -11,6 +11,7 @@ import {
     staticHrefs,
     validateCollections,
     type CollectionConfig,
+    type SiteNavItem,
 } from "@/lib/site-extension";
 import { SITE } from "@/site/config";
 import { describe, expect, it } from "vitest";
@@ -56,6 +57,38 @@ describe("buildNav", () => {
 
     it("keeps the Axons nav unchanged without site entries", () => {
         expect(buildNav(AXONS_NAV, [], [])).toEqual(AXONS_NAV);
+    });
+
+    it("places a referenced Axons entry among the site entries (rest of Axons stays last)", () => {
+        const nav = buildNav(AXONS_NAV, [SITE_NAV[0], { axons: "/articles" }, SITE_NAV[1]], []);
+        expect(nav.map((n) => n.href)).toEqual(["/", "/about", "/articles", "/contact", "/legal"]);
+        expect(nav[2]).toBe(AXONS_NAV[1]);
+    });
+
+    it("can move Home itself", () => {
+        expect(buildNav(AXONS_NAV, [SITE_NAV[0], { axons: "/" }], []).map((n) => n.href)).toEqual([
+            "/about",
+            "/",
+            "/articles",
+            "/legal",
+        ]);
+    });
+
+    it("keeps a referenced entry hidden when its collection is off", () => {
+        const nav = buildNav(AXONS_NAV, [SITE_NAV[0], { axons: "/articles" }, SITE_NAV[1]], ["/articles"]);
+        expect(nav.map((n) => n.href)).toEqual(["/", "/about", "/contact", "/legal"]);
+    });
+
+    it("throws on an href that is not an Axons nav entry", () => {
+        expect(() => buildNav(AXONS_NAV, [{ axons: "/blog" }], [])).toThrow(
+            'site/config.ts nav: "/blog" is not an Axons nav entry (known: /, /articles, /legal).',
+        );
+    });
+
+    it("throws on an Axons entry referenced twice", () => {
+        expect(() => buildNav(AXONS_NAV, [{ axons: "/legal" }, { axons: "/legal" }], [])).toThrow(
+            'site/config.ts nav: "/legal" is placed twice.',
+        );
     });
 });
 
@@ -206,9 +239,10 @@ describe("shipped site layer", () => {
         });
     }
 
-    it("every site nav entry targets a site pathname", () => {
+    it("every site nav entry targets a site pathname (references to Axons entries aside)", () => {
         const keys: string[] = Object.keys(SITE.pathnames);
-        for (const entry of SITE.nav as readonly { href: string }[]) expect(keys).toContain(entry.href);
+        const items: readonly SiteNavItem[] = SITE.nav;
+        for (const item of items) if ("href" in item) expect(keys).toContain(item.href);
     });
 });
 

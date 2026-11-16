@@ -112,6 +112,15 @@ them, so a new `SiteConfig` field shows up in a derived site as a TYPE ERROR in 
   `SITE.pathnames`) are inserted after Home in the footer and the HTML sitemap page, and in the
   header unless `header: false`. A disabled collection (`ARTICLES_ENABLED`, a site collection's `enabled`) drops its entry. Labels live in
   `site/messages/<locale>.json` under `nav`.
+- Nav order: Home first, then `SITE.nav` in order, then Axons' other entries (articles, sitemap,
+  legal pages). To interleave an Axons entry with the site's, put a reference `{ axons: "/articles" }`
+  where it belongs in `SITE.nav`: that entry (its own label, route and header visibility) moves
+  there and leaves the tail. One ordered list reads exactly as rendered (no `before`/`after`
+  chains to resolve); with no reference the order is Axons' default. `buildNav` THROWS (build
+  fails) on an href that is not an Axons nav entry or one referenced twice; a reference to a
+  disabled collection stays hidden. Header, footer and HTML sitemap share the order (`NAV`,
+  `HEADER_NAV`). Example — Home, About, Services, Projects, Articles, Reminders, Contact, then
+  Sitemap and legal: `nav: [about, services, projects, { axons: "/articles" }, reminders, contact]`.
 - Storage: `site/storage.ts` declares `SITE_STORAGE_KEYS` (`{ ideTabs: "mysite-ide-tabs" }`, keys
   prefixed with the site name); `lib/storage.ts` merges them with Axons' (`usage`, `themeMode`)
   into `STORAGE_KEYS` via `mergeStorageKeys`, which THROWS on a name Axons declares, a key already

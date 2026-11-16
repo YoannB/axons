@@ -16,6 +16,17 @@ export interface SiteNavEntry<Href extends string = string> {
     readonly header?: boolean;
 }
 
+/**
+ * Moves one of Axons' OWN nav entries (e.g. "/articles") to this point of `SITE.nav`. Axons keeps
+ * its label and route; an href that is not an Axons nav entry throws at build time.
+ */
+export interface AxonsNavRef {
+    readonly axons: string;
+}
+
+/** An item of `SITE.nav`: a site entry, or a reference that places an Axons entry. */
+export type SiteNavItem<Href extends string = string> = SiteNavEntry<Href> | AxonsNavRef;
+
 export interface SeoResource {
     id: string;
     kind: "video" | "article";
@@ -79,8 +90,11 @@ export interface SiteConfig<P extends SitePathnames = SitePathnames> {
     readonly palette: { readonly dark: SitePaletteMode; readonly light: SitePaletteMode };
     /** The site's OWN localized routes, merged into i18n/routing.ts (a duplicate Axons key throws). */
     readonly pathnames: P;
-    /** The site's nav entries, inserted after "Home" in header, footer and HTML sitemap. */
-    readonly nav: readonly SiteNavEntry<Extract<keyof P, string>>[];
+    /**
+     * The site's nav entries, inserted after "Home" in header, footer and HTML sitemap. An item
+     * `{ axons: "/articles" }` moves that Axons entry to its place in the list (see buildNav).
+     */
+    readonly nav: readonly SiteNavItem<Extract<keyof P, string>>[];
     /** The site's own Markdown collections (routes declared in `pathnames`), next to Axons' articles. */
     readonly collections: readonly CollectionConfig<Extract<keyof P, string>>[];
     /**
@@ -113,18 +127,34 @@ export interface NavEntry {
 }
 
 /**
- * Axons nav + site nav: site entries go right after the first Axons entry (Home), so Axons'
- * utility pages (articles, sitemap, legal…) stay last. `hidden` = routes of disabled collections
- * (see hiddenHrefs): their entries are dropped from both lists.
+ * Axons nav + site nav, in one list. The first Axons entry (Home) comes first, then `site` in its
+ * order, then the remaining Axons entries (articles, sitemap, legal…). A site item
+ * `{ axons: href }` takes that Axons entry out of the tail and places it there instead, so a site
+ * can interleave its pages with Axons' without redeclaring them. An unknown or repeated reference
+ * throws (build failure). `hidden` = routes of disabled collections (see hiddenHrefs): their
+ * entries are dropped wherever they sit, referenced or not.
  */
-export function buildNav<A extends NavEntry, S extends NavEntry>(
+export function buildNav<A extends NavEntry, I extends NavEntry | AxonsNavRef>(
     axons: readonly A[],
-    site: readonly S[],
+    site: readonly I[],
     hidden: readonly string[],
-): (A | S)[] {
-    const shown = <E extends NavEntry>(n: E) => !hidden.includes(n.href);
-    const base = axons.filter(shown);
-    return [...base.slice(0, 1), ...site.filter(shown), ...base.slice(1)];
+): (A | Exclude<I, AxonsNavRef>)[] {
+    type S = Exclude<I, AxonsNavRef>;
+    const placed = new Set<string>();
+    const items = site.map((item): A | S => {
+        if (!("axons" in item)) return item as S;
+        const entry = axons.find((n) => n.href === item.axons);
+        if (!entry) {
+            const known = axons.map((n) => n.href).join(", ");
+            throw new Error(`site/config.ts nav: "${item.axons}" is not an Axons nav entry (known: ${known}).`);
+        }
+        if (placed.has(entry.href)) throw new Error(`site/config.ts nav: "${entry.href}" is placed twice.`);
+        placed.add(entry.href);
+        return entry;
+    });
+    const unplaced = (n: A) => !placed.has(n.href);
+    const shown = (n: A | S) => !hidden.includes(n.href);
+    return [...axons.slice(0, 1).filter(unplaced), ...items, ...axons.slice(1).filter(unplaced)].filter(shown);
 }
 
 const COLLECTION_ID = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
