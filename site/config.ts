@@ -72,4 +72,7 @@ export const SITE = {
     collections: [],
     // Example: ["meta.home", "hero"] lets site/messages replace Axons' home metadata and hero copy.
     messageOverrides: [],
+    // Message paths read by the site's own Client Components (useTranslations), e.g. ["ide"]; the
+    // rest of the catalogue stays on the server (docs/i18n.md → Client messages).
+    clientMessages: [],
 } as const satisfies SiteConfig<typeof pathnames>;

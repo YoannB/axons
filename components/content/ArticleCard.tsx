@@ -5,6 +5,7 @@ import type { SeoResource } from "@/constants/site";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 
+// client-messages: seo (the keys come from SEO_RESOURCES, checked by tests/unit/client-messages.test.ts)
 // Video = YouTube thumbnail; article = gradient badge with the source's initials
 // (r.mark) => no more empty square with a lone </>.
 export function ArticleCard({ r }: { r: SeoResource }) {
