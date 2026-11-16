@@ -13,6 +13,7 @@ slug: translated-kebab-slug # last URL segment, unique per locale
 date: 2026-11-10 # publication day YYYY-MM-DD (quoted or not: YAML 1.2 keeps it a string)
 description: "One sentence: meta description, listing summary, social cards."
 image: /articles/<id>/cover.png # optional, site-absolute, file in public/articles/<id>/
+archived: true # optional boolean: Archive badge; false exempts this translation from archiveBefore
 ---
 ```
 
@@ -26,7 +27,7 @@ demoted to `h2`; the page title is the `h1`). Raw HTML in the body is NOT interp
 networks ignore SVG `og:image`.
 
 Validation is fail-fast at BUILD time (`lib/articles/parse.ts`): a missing/empty field, a bad
-slug or date, a relative image, an empty body, an unclosed header or a slug used twice in the
+slug or date, a non-boolean `archived`, a relative image, an empty body, an unclosed header or a slug used twice in the
 same locale throws with the file path. Never "fix" a failing build by catching that error.
 
 ## Code map
@@ -38,10 +39,14 @@ collection (a derived site's "reminders", …), with `content/<collection>/` in 
 - `lib/articles/parse.ts` — PURE (no fs, no next-intl), 100% branch-covered by
   `tests/unit/articles-parse.test.ts`: front-matter split, validation, catalog (grouping, sort
   newest first by latest translation date then id), fallback resolution, listing, slug lookup.
+- `lib/articles/status.ts` — PURE, 100% branch-covered by `tests/unit/articles-status.test.ts`:
+  badge rules (`validateRules`, `resolveRules`), `isArchived`, `entryStatus` (today INJECTED),
+  `pickLatest` (the "latest" block). See _New and archive badges_.
 - `lib/articles/source.ts` — `server-only` IO: reads `content/<collection>/` via `process.cwd()`,
   cached per render and collection (`React.cache`), feeds `routing.locales` /
   `routing.defaultLocale`. `getCollectionCatalog` / `getEntries` / `getEntry` take the collection
-  id; `getCatalog` / `getArticles` / `getArticle` are the articles shortcuts.
+  id; `getCatalog` / `getArticles` / `getArticle` are the articles shortcuts; `collectionToday(locale)` is
+  the request's calendar day in next-intl's `timeZone`.
 - `components/content/CollectionPages.tsx` — page FACTORIES `collectionListing(id)` and
   `collectionEntry(id)` (metadata + page, `notFound()` when the collection is off or the slug is
   unknown). `app/[locale]/articles/page.tsx` and `app/[locale]/articles/[slug]/page.tsx` only
@@ -49,11 +54,54 @@ collection (a derived site's "reminders", …), with `content/<collection>/` in 
 - `constants/site.ts` — `ARTICLES_COLLECTION`, `COLLECTIONS` (articles + `SITE.collections`,
   validated by `validateCollections` in `lib/site-extension.ts`), `getCollection`, `HIDDEN_HREFS`.
 - `components/content/ArticleTeaser.tsx` (server-compatible card), `ArticleFeed.tsx` (server:
-  date formatting + fallback badge), `ArticleBody.tsx` (Markdown renderer + server-side code highlighting);
-  `components/home/LatestArticles.tsx` (3 most recent, renders nothing without articles).
+  date formatting + fallback badge + status badges, `collection` prop), `EntryBadges.tsx` (New /
+  Archive badges through the neutral `Chip`), `ArticleBody.tsx` (Markdown renderer + server-side
+  code highlighting); `components/home/LatestArticles.tsx` (3 most recent non-archived entries of a
+  collection, `collection` prop, default articles; renders nothing without entries).
 - `lib/seo.ts` — `articleMetadata` / `articleJsonLd` (optional `itemHref` / `schemaType`) /
   `articlePath` / `entryPath`; `app/sitemap.ts` adds one entry per served translation of every
   ENABLED collection.
+
+## New and archive badges
+
+Two optional, generic statuses, shown as TEXT badges (neutral `Chip`, label in `--text-1` on a
+tinted chip: AA in both themes) on every card (`ArticleTeaser`) and next to the date on the entry
+page. Labels live in `messages/<locale>.json` → `entryStatus` (`new`, `archive`, `archiveNotice`).
+
+Rules, in `site/config.ts` (both OPTIONAL; absent = Axons' default = no badge at all):
+
+```ts
+// Every collection, Axons' articles included:
+collectionDefaults: { newForDays: 90, archiveBefore: "2018-01-01" },
+// One collection overrides it (each field separately; 0 switches New off for it):
+collections: [{ id: "reminders", /* … */ newForDays: 0, archiveBefore: "2016-01-01" }],
+```
+
+- **New**: `0 <= days(today − date) < newForDays`, days counted in CALENDAR days (a future date
+  counts as new). `0` or absent disables the badge. An archive is never new.
+- **Archive**: front matter `archived: true`, else `date < archiveBefore` (exclusive, YYYY-MM-DD).
+  `archived: false` exempts one translation from the rule. Both forms exist on purpose: the rule
+  archives a migrated back-catalogue in one line, the flag handles exceptions either way. The
+  entry page adds a short notice (`entryStatus.archiveNotice`) above the body: the content is old
+  and kept as it was.
+- Validation fails the build on a negative / non-integer `newForDays`, a malformed
+  `archiveBefore` (site defaults and each collection) or a non-boolean `archived`.
+
+**How "New" disappears.** "Today" is `collectionToday(locale)`: `getNow()` read in next-intl's
+`timeZone` (`i18n/request.ts`, the zone the site's dates are read in), turned into a calendar day
+by `lib/day.ts` `dayIn`. Every route under `[locale]` renders ON DEMAND (`ƒ` in the build output:
+the root layout resolves the locale per request), so the badge is computed per request on the
+server and disappears on the first request after the window, with no rebuild, no revalidation and
+no client code (hence no hydration mismatch). If a page under `[locale]` ever becomes static
+(prerendered), the badge would freeze at BUILD time and only change on the next build/deploy:
+re-check the build output before making such a change, and never move the computation to the
+client (server and client days differ around midnight → hydration mismatch).
+
+**The "latest" block** (`LatestArticles`, `pickLatest`): the 3 most recent NON-archived entries
+under `latestTitle`. When every entry of the collection is an archive, it shows the 3 most recent
+archives under `archivesTitle` (each with its Archive badge) instead of disappearing: a site whose
+content is all old keeps a home block, but never presents it as news. With Axons' defaults
+nothing is archived, so the block is unchanged.
 
 ## Code highlighting
 
@@ -122,8 +170,10 @@ A collection = one entry in `SITE.collections` (`site/config.ts`) + its folder +
    `/[slug]` (e.g. `"/reminders/[slug]"`, translated per locale like any pathname).
 3. `{ id, enabled, href, itemHref, namespace, schemaType }` in `SITE.collections`: `enabled` is its
    on/off switch, `namespace` its messages (`title`, `intro`, `empty`, `publishedOn`, `onlyIn`, in
-   every locale, in `site/messages/<locale>.json`), `schemaType` its JSON-LD type (`BlogPosting`,
-   `TechArticle`, `Article`).
+   every locale, in `site/messages/<locale>.json`; plus `latestTitle`, `archivesTitle`, `viewAll`
+   if a home renders its "latest" block), `schemaType` its JSON-LD type (`BlogPosting`,
+   `TechArticle`, `Article`). Optional `newForDays` / `archiveBefore` override
+   `SITE.collectionDefaults` (see _New and archive badges_).
 4. Two page files that only delegate:
    `app/[locale]/<route>/page.tsx` → `const page = collectionListing("<id>")`, exporting
    `generateMetadata = page.generateMetadata` and `default page.Page`;
@@ -136,8 +186,10 @@ Validation fails the build on a non kebab-case or duplicate id, a dynamic listin
 collection behaves like `ARTICLES_ENABLED = false`: both routes answer 404, its nav entry and its
 `sitemap.xml` entries disappear (`HIDDEN_HREFS`). Fallback language, hreflang, canonical and
 the slug-aware language switch work as for articles (the switcher reads the page's alternates).
-The home "latest" block stays articles-only (`LatestArticles`); a site home can render
-`<ArticleFeed items={getEntries("<id>", locale, 3)} namespace=… itemHref=… />`.
+A site home can render a collection's "latest" block with `<LatestArticles locale={locale}
+collection="<id>" />` (section id `latest-<id>`), or a plain list with
+`<ArticleFeed items={getEntries("<id>", locale, 3)} locale={locale} collection="<id>" />`: pass
+`collection` (not only `namespace` / `itemHref`) so the badges follow that collection's rules.
 
 ## Adding an article (one article = one PR)
 
@@ -145,4 +197,4 @@ Create `content/articles/<id>/` with one `<locale>.md` per supported locale (tra
 `slug`, keep `date` identical), put any image in `public/articles/<id>/`, run the Definition of
 done, open a PR. The article is online after the Netlify redeploy of `main` (a few minutes),
 not on a simple refresh. The E2E `tests/e2e/articles.spec.ts` relies on the two demo articles
-(`writing-articles`, `architecture-tour`): a derived site replacing them updates that spec.
+(`writing-articles`, `architecture-tour`) and the archived one (`archived-entries`, `archived: true`): a derived site replacing them updates that spec.
