@@ -194,7 +194,8 @@
     },
     "common": {
         "loading": "Caricamento…",
-        "close": "Chiudi"
+        "close": "Chiudi",
+        "newTab": "(nuova scheda)"
     },
     "pages": {
         "sitemap": {

@@ -52,6 +52,26 @@ hover, disabled rules unchanged). An internal pathname (typed `AppInternalHref`,
 `<button disabled>` (not focusable, not navigable). `type` is ignored in link mode. E2E guard:
 `tests/e2e/button-link.spec.ts` (no `a button` in the hero / 404, keyboard Tab + Enter).
 
+`external` (link mode only; a type error without `href`) opens the link in a new tab: the
+adapter adds `target="_blank"` + `rel="noopener noreferrer"` (the neutral API exposes only the
+boolean, never raw `target`/`rel`) and appends a visually hidden, localized "(new tab)"
+(`common.newTab`, a client namespace) to the content, or to `ariaLabel` when one is given. Only
+an ACTIVE external link reads next-intl, so every other `Button` still renders without an intl
+provider. No icon is added: Axons has no "open in new tab" glyph, and `iconRight` stays
+available to a caller that wants one. A disabled/loading external link is a disabled `<button>`
+like any other link (no target, no hint).
+
+## Busy button (`busy`)
+
+`busy` (action mode only; a type error with `href`) is for a long action during which the button
+must KEEP the focus (a native `disabled` button drops it, sending keyboard and screen-reader users
+back to `<body>`). It renders `loading`'s spinner and look (the `Mui-disabled` class carries MUI's
+disabled styles and the contrast rule above) with `aria-disabled="true"` + `aria-busy="true"`,
+WITHOUT the `disabled` attribute; clicks, Enter and Space are swallowed (`preventDefault`:
+`onClick` is not called, a submit button does not submit). `loading` is unchanged (native
+`disabled`, focus lost) and wins over `busy`, as does `disabled`. Unit guard:
+`tests/unit/button.test.tsx`.
+
 ## MUI-control animations (no geometry on hover)
 
 - Buttons: NEVER translate/scale on `:hover` (moving the box changes the pointer hit-area →

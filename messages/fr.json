@@ -194,7 +194,8 @@
     },
     "common": {
         "loading": "Chargement…",
-        "close": "Fermer"
+        "close": "Fermer",
+        "newTab": "(nouvel onglet)"
     },
     "pages": {
         "sitemap": {
