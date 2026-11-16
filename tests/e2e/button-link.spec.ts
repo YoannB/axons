@@ -1,5 +1,6 @@
 import { expect, test, type Page } from "@playwright/test";
 import { lp, lpRe } from "./support/locale-path";
+import { AXONS_HOME, AXONS_HOME_SKIP } from "./support/site-slots";
 
 // Button with `href` renders a REAL link styled as a button. Regression: the hero "Sitemap"
 // CTA and the 404 "Back to home" used to nest a <button> inside an <a> (invalid HTML:
@@ -15,6 +16,7 @@ async function expectNoNestedInteractive(page: Page) {
 
 test.describe("Button as a link", () => {
     test("the hero sitemap CTA is a localized link, reachable with the keyboard", async ({ page }) => {
+        test.skip(!AXONS_HOME, AXONS_HOME_SKIP);
         await page.goto("/fr"); // explicit prefix forces the locale (redirected to lp("fr") when fr is the default)
         await hydrated(page);
         await expectNoNestedInteractive(page);
