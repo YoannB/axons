@@ -230,7 +230,10 @@
                     "heading": "Limitation of liability",
                     "body": [
                         "The site is provided for informational purposes. The publisher does not warrant the accuracy, completeness or currency of the information published, and shall not be liable for any direct or indirect damages arising from access to or use of the site.",
-                        "AI-generated content (via OpenRouter) is provided as assistance and shall not engage the publisher's liability; it is the user's responsibility to verify its accuracy."
+                        {
+                            "text": "AI-generated content (via OpenRouter) is provided as assistance and shall not engage the publisher's liability; it is the user's responsibility to verify its accuracy.",
+                            "when": ["ai"]
+                        }
                     ]
                 },
                 {
@@ -255,30 +258,81 @@
                 {
                     "heading": "Data collected",
                     "body": [
-                        "This site deliberately collects no identifiable personal data server-side, except for any information you freely submit to obtain an AI response.",
-                        "AI calls go through a Route Handler that relays a text request to OpenRouter; the API key stays server-side and is never exposed to the browser.",
-                        "Theme preferences, cookie consent and the daily call counter are stored locally in your browser (cookie + localStorage) and are not transmitted to the server."
+                        {
+                            "text": "This site deliberately collects no identifiable personal data server-side, except for any information you freely submit to obtain an AI response.",
+                            "when": ["ai"]
+                        },
+                        {
+                            "text": "This site deliberately collects no identifiable personal data server-side.",
+                            "when": ["!ai"]
+                        },
+                        {
+                            "text": "AI calls go through a Route Handler that relays a text request to OpenRouter; the API key stays server-side and is never exposed to the browser.",
+                            "when": ["ai"]
+                        },
+                        {
+                            "text": "Theme preferences, cookie consent and the daily call counter are stored locally in your browser (cookie + localStorage) and are not transmitted to the server.",
+                            "when": ["ai"]
+                        },
+                        {
+                            "text": "Theme preferences and cookie consent are stored locally in your browser (cookie + localStorage) and are not transmitted to the server.",
+                            "when": ["!ai"]
+                        }
                     ]
                 },
                 {
                     "heading": "Purposes and lawful basis",
                     "body": [
-                        "The processing operations implemented serve: the functioning of the site (contract performance / legitimate interest), audience measurement and advertising (consent), and providing AI answers to your request (performance of the requested service).",
-                        "If you include personal data in a message submitted to the AI, it is processed solely to generate the requested response.",
+                        "The processing operations implemented serve:",
+                        {
+                            "list": [
+                                "the functioning of the site (contract performance / legitimate interest)",
+                                {
+                                    "text": "audience measurement (consent)",
+                                    "when": ["gtm"]
+                                },
+                                {
+                                    "text": "advertising (consent)",
+                                    "when": ["ads"]
+                                },
+                                {
+                                    "text": "providing AI answers to your request (performance of the requested service)",
+                                    "when": ["ai"]
+                                }
+                            ]
+                        },
+                        {
+                            "text": "If you include personal data in a message submitted to the AI, it is processed solely to generate the requested response.",
+                            "when": ["ai"]
+                        },
                         "The lawful basis of each processing operation is indicated above; consent-based processing can be stopped at any time."
                     ]
                 },
                 {
                     "heading": "Retention period",
                     "body": [
-                        "Locally stored data (theme, consent, counter) is kept as long as your browser retains it and until you delete it.",
+                        {
+                            "text": "Locally stored data (theme, consent, counter) is kept as long as your browser retains it and until you delete it.",
+                            "when": ["ai"]
+                        },
+                        {
+                            "text": "Locally stored data (theme, consent) is kept as long as your browser retains it and until you delete it.",
+                            "when": ["!ai"]
+                        },
                         "Host technical logs are kept for the period strictly necessary to operate and secure the service."
                     ]
                 },
                 {
                     "heading": "Recipients and transfers",
                     "body": [
-                        "Data is not sold or rented. Only the host (Netlify) and, where applicable, the AI provider (OpenRouter) may process the data strictly necessary to deliver the service.",
+                        {
+                            "text": "Data is not sold or rented. Only the host (Netlify) and, where applicable, the AI provider (OpenRouter) may process the data strictly necessary to deliver the service.",
+                            "when": ["ai"]
+                        },
+                        {
+                            "text": "Data is not sold or rented. Only the host (Netlify) may process the data strictly necessary to deliver the service.",
+                            "when": ["!ai"]
+                        },
                         "If any transfer outside the European Union occurs, it is framed by appropriate safeguards (European Commission standard contractual clauses or an adequacy decision)."
                     ]
                 },
@@ -293,7 +347,10 @@
                     "heading": "Security",
                     "body": [
                         "Reasonable technical and organizational measures are implemented to protect data against unauthorized access, alteration, disclosure or destruction.",
-                        "The OpenRouter key is stored in server environment variables and is never sent to the client nor included in responses."
+                        {
+                            "text": "The OpenRouter key is stored in server environment variables and is never sent to the client nor included in responses.",
+                            "when": ["ai"]
+                        }
                     ]
                 }
             ]
@@ -312,28 +369,57 @@
                     "heading": "Cookies used",
                     "body": [
                         "Functional cookies (light/dark theme, consent): strictly necessary, they do not require prior consent and are stored locally.",
-                        "Daily AI-call counter cookie: measures local usage of the quota, stored in your browser.",
-                        "Audience-measurement and advertising cookies: placed only after your consent, they can be refused without degrading navigation."
+                        {
+                            "text": "Daily AI-call counter cookie: measures local usage of the quota, stored in your browser.",
+                            "when": ["ai"]
+                        },
+                        {
+                            "text": "Audience-measurement and advertising cookies: placed only after your consent, they can be refused without degrading navigation.",
+                            "when": ["gtm", "ads"]
+                        },
+                        {
+                            "text": "Audience-measurement cookies: placed only after your consent, they can be refused without degrading navigation.",
+                            "when": ["gtm", "!ads"]
+                        },
+                        {
+                            "text": "Advertising cookies: placed only after your consent, they can be refused without degrading navigation.",
+                            "when": ["ads", "!gtm"]
+                        }
                     ]
                 },
                 {
                     "heading": "Consent",
                     "body": [
-                        "On your first visit, a banner lets you accept, refuse or customize the placement of non-essential cookies.",
-                        "Until you give your agreement, only strictly necessary cookies are placed. Your choice is remembered and can be changed at any time via the \"Cookies\" link in the footer."
+                        {
+                            "text": "On your first visit, a banner lets you accept, refuse or customize the placement of non-essential cookies.",
+                            "when": ["consent"]
+                        },
+                        {
+                            "text": "Until you give your agreement, only strictly necessary cookies are placed. Your choice is remembered and can be changed at any time via the \"Cookies\" link in the footer.",
+                            "when": ["consent"]
+                        }
                     ]
                 },
                 {
                     "heading": "Retention period",
                     "body": [
-                        "Consent cookies are kept for a maximum of six (6) months, in line with supervisory-authority recommendations, except for strictly necessary technical durations.",
-                        "Audience-measurement cookies are kept for the minimum period necessary for their purpose."
+                        {
+                            "text": "Consent cookies are kept for a maximum of six (6) months, in line with supervisory-authority recommendations, except for strictly necessary technical durations.",
+                            "when": ["consent"]
+                        },
+                        {
+                            "text": "Audience-measurement cookies are kept for the minimum period necessary for their purpose.",
+                            "when": ["gtm"]
+                        }
                     ]
                 },
                 {
                     "heading": "Your choices",
                     "body": [
-                        "You can accept or refuse non-essential cookies at any time via the banner or the \"Cookies\" page.",
+                        {
+                            "text": "You can accept or refuse non-essential cookies at any time via the banner or the \"Cookies\" page.",
+                            "when": ["consent"]
+                        },
                         "You can also configure your browser to block or delete cookies; some site features may then not work properly."
                     ]
                 },
