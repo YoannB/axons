@@ -134,14 +134,15 @@ export interface NavEntry {
  * throws (build failure). `hidden` = routes of disabled collections (see hiddenHrefs): their
  * entries are dropped wherever they sit, referenced or not.
  */
-export function buildNav<A extends NavEntry, S extends NavEntry>(
+export function buildNav<A extends NavEntry, I extends NavEntry | AxonsNavRef>(
     axons: readonly A[],
-    site: readonly (S | AxonsNavRef)[],
+    site: readonly I[],
     hidden: readonly string[],
-): (A | S)[] {
+): (A | Exclude<I, AxonsNavRef>)[] {
+    type S = Exclude<I, AxonsNavRef>;
     const placed = new Set<string>();
     const items = site.map((item): A | S => {
-        if (!("axons" in item)) return item;
+        if (!("axons" in item)) return item as S;
         const entry = axons.find((n) => n.href === item.axons);
         if (!entry) {
             const known = axons.map((n) => n.href).join(", ");

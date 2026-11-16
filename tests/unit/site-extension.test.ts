@@ -11,6 +11,7 @@ import {
     staticHrefs,
     validateCollections,
     type CollectionConfig,
+    type SiteNavItem,
 } from "@/lib/site-extension";
 import { SITE } from "@/site/config";
 import { describe, expect, it } from "vitest";
@@ -238,9 +239,10 @@ describe("shipped site layer", () => {
         });
     }
 
-    it("every site nav entry targets a site pathname", () => {
+    it("every site nav entry targets a site pathname (references to Axons entries aside)", () => {
         const keys: string[] = Object.keys(SITE.pathnames);
-        for (const entry of SITE.nav as readonly { href: string }[]) expect(keys).toContain(entry.href);
+        const items: readonly SiteNavItem[] = SITE.nav;
+        for (const item of items) if ("href" in item) expect(keys).toContain(item.href);
     });
 });
 
