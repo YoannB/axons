@@ -194,7 +194,8 @@
     },
     "common": {
         "loading": "Loading…",
-        "close": "Close"
+        "close": "Close",
+        "newTab": "(new tab)"
     },
     "pages": {
         "sitemap": {
