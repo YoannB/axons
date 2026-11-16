@@ -10,6 +10,7 @@ import {
     type CollectionConfig,
     type SeoResource,
 } from "@/lib/site-extension";
+import { normalizeSiteUrl } from "@/lib/site-url";
 import { SITE } from "@/site/config";
 
 export type { SeoResource } from "@/lib/site-extension";
@@ -17,7 +18,8 @@ export type { SeoResource } from "@/lib/site-extension";
 // Site identity and chrome come from site/config.ts (owned by a derived site); the names below are
 // kept as re-exports so imports do not change. See docs/architecture.md → Deriving a site.
 export const SITE_NAME: string = SITE.name;
-export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+// Never ends with "/" (lib/site-url.ts): consumers append paths to it.
+export const SITE_URL: string = normalizeSiteUrl(process.env.NEXT_PUBLIC_SITE_URL);
 export const AI_DAILY_LIMIT = Number(process.env.NEXT_PUBLIC_AI_DAILY_LIMIT ?? 0) || 0;
 // AI feature switch. NEXT_PUBLIC_AI_ENABLED is computed by next.config.ts at build time from the
 // PRESENCE of OPENROUTER_API_KEY (only the boolean reaches the client, never the key). No key or a

@@ -228,7 +228,7 @@ However, because they can become part of localized copy, they should only contai
 
 | Variable                     | Required    | Purpose                                                                                                                              |
 | ---------------------------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------ |
-| `NEXT_PUBLIC_SITE_URL`       | Recommended | Canonical site URL used for metadata and sitemap generation.                                                                         |
+| `NEXT_PUBLIC_SITE_URL`       | Recommended | Canonical site URL used for metadata and sitemap generation (trailing `/` stripped, `lib/site-url.ts`).                              |
 | `NEXT_PUBLIC_LOCALES`        | No          | Served locales, comma-separated subset of `fr,en,es,de,it,pt` (e.g. `fr,en`). Empty = all six. Unknown code = build error.           |
 | `NEXT_PUBLIC_DEFAULT_LOCALE` | No          | Default locale (`en` if empty and served, otherwise the first served). Must be a served locale, otherwise the build fails.           |
 | `NEXT_PUBLIC_AI_DAILY_LIMIT` | No          | Daily AI quota per user, enforced client-side (localStorage) AND server-side per IP (Netlify Blobs). `0` or empty hides the feature. |
