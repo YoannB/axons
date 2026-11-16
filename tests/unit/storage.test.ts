@@ -1,5 +1,5 @@
 // @vitest-environment node
-import { LS_THEME_MODE, LS_USAGE, readLS, writeLS } from "@/lib/storage";
+import { LS_THEME_MODE, LS_USAGE, STORAGE_KEYS, readLS, writeLS } from "@/lib/storage";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 
 type LocalStorageStub = {
@@ -64,6 +64,10 @@ describe("storage — constants", () => {
     it("exposes the centrally declared localStorage keys", () => {
         expect(LS_USAGE).toBe("axons-usage");
         expect(LS_THEME_MODE).toBe("axons-theme-mode");
+    });
+
+    it("STORAGE_KEYS exposes Axons' keys by name, next to the site's (site/storage.ts)", () => {
+        expect(STORAGE_KEYS).toMatchObject({ usage: LS_USAGE, themeMode: LS_THEME_MODE });
     });
 });
 

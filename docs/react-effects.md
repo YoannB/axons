@@ -31,7 +31,8 @@ _Boot-script placement_ in `docs/architecture.md`) prevents FOUC/banner-flash wi
 
 ## Theme persistence & single source of truth
 
-All `localStorage` keys are declared ONLY in `lib/storage.ts` (`LS_USAGE`, `LS_THEME_MODE`);
+All `localStorage` keys are declared ONLY in `lib/storage.ts` (`LS_USAGE`, `LS_THEME_MODE`, and
+the merged `STORAGE_KEYS`, which adds a derived site's `site/storage.ts` keys, collisions throw);
 never redeclare them in `lib/store.ts` (duplicate = divergent sources = broken hydration).
 The theme mode is persisted TWICE on user intent: a cookie (read by the boot script before
 hydration) and localStorage (read by `hydrateClient` on next load). Reading persisted
