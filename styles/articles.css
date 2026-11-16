@@ -32,8 +32,27 @@
     font-weight: 600;
 }
 .article__meta {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
     margin: 0 0 14px;
     font-size: 0.85rem;
+}
+/* "New" / "Archive" status badges (EntryBadges → neutral Chip, text in --text-1: AA both themes). */
+.entry-badges {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+.article__archive-notice {
+    margin: 0 0 18px;
+    padding: 10px 14px;
+    border: 1px solid var(--border-2);
+    border-left-width: 4px;
+    border-radius: var(--radius-md);
+    color: var(--text-2);
+    font-size: 0.9rem;
 }
 .article__cover {
     width: 100%;

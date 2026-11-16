@@ -3,6 +3,9 @@
 // `site/` folder (config.ts + messages/<locale>.json) and edits no Axons file; see
 // docs/architecture.md → Deriving a site.
 import type { ReactNode } from "react";
+import { validateRules, type CollectionRules } from "./articles/status";
+
+export type { CollectionRules } from "./articles/status";
 
 /** A localized pathname: one path for every locale, or one path per locale. */
 export type SitePathname = string | Readonly<Record<string, string>>;
@@ -48,7 +51,7 @@ export type CollectionSchemaType = "BlogPosting" | "TechArticle" | "Article";
  * Axons' own articles are the default collection (`id: "articles"`); a site declares more in
  * `SITE.collections` and adds two delegating page files (docs/articles.md → Collections).
  */
-export interface CollectionConfig<Href extends string = string> {
+export interface CollectionConfig<Href extends string = string> extends CollectionRules {
     /** Folder under content/ (kebab-case), also the collection key used by the page factories. */
     readonly id: string;
     /** false => listing and entries answer 404, and the nav / sitemap entries disappear. */
@@ -57,7 +60,7 @@ export interface CollectionConfig<Href extends string = string> {
     readonly href: string extends Href ? string : Exclude<Href, `${string}[${string}`>;
     /** Logical key of the entry route, ending with "/[slug]", e.g. "/reminders/[slug]". */
     readonly itemHref: string extends Href ? string : Extract<Href, `${string}/[slug]`>;
-    /** Messages namespace: title, intro, empty, publishedOn, onlyIn (+ latestTitle, viewAll). */
+    /** Messages namespace: title, intro, empty, publishedOn, onlyIn (+ latestTitle, archivesTitle, viewAll). */
     readonly namespace: string;
     readonly schemaType: CollectionSchemaType;
 }
@@ -97,6 +100,11 @@ export interface SiteConfig<P extends SitePathnames = SitePathnames> {
     readonly nav: readonly SiteNavItem<Extract<keyof P, string>>[];
     /** The site's own Markdown collections (routes declared in `pathnames`), next to Axons' articles. */
     readonly collections: readonly CollectionConfig<Extract<keyof P, string>>[];
+    /**
+     * "New" / "Archive" badge rules applied to EVERY collection (Axons' articles included); a
+     * collection's own `newForDays` / `archiveBefore` wins. Absent => no badge (Axons' default).
+     */
+    readonly collectionDefaults?: CollectionRules;
     /**
      * Message paths (dotted, e.g. "meta.home") whose Axons value the site messages may REPLACE.
      * Any other collision between site/messages and messages/ throws at build time.
@@ -177,6 +185,7 @@ export function validateCollections<C extends CollectionConfig>(collections: rea
         if (!c.itemHref.endsWith("/[slug]")) {
             throw new Error(`Invalid ${where}: itemHref "${c.itemHref}" must end with "/[slug]".`);
         }
+        validateRules(c, where);
     }
     return collections;
 }

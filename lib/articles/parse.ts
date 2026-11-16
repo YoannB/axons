@@ -13,6 +13,9 @@ export interface Article {
     date: string;
     // Site-absolute public path (e.g. /articles/<id>/cover.svg), optional.
     image?: string;
+    // Front-matter `archived` (only when set): true/false overrides the collection's archiveBefore
+    // rule for this translation (lib/articles/status.ts).
+    archived?: boolean;
     body: string;
 }
 
@@ -66,7 +69,7 @@ function requiredString(data: Record<string, unknown>, key: string, file: string
     return value.trim();
 }
 
-function isValidIsoDate(value: string): boolean {
+export function isValidIsoDate(value: string): boolean {
     if (!ISO_DATE.test(value)) return false;
     const date = new Date(`${value}T00:00:00Z`);
     return !Number.isNaN(date.getTime()) && date.toISOString().slice(0, 10) === value;
@@ -90,6 +93,9 @@ export function parseArticleFile({ id, locale, raw, collection }: ArticleFile): 
         image = requiredString(fields, "image", file);
         if (!image.startsWith("/")) fail(file, `image "${image}" must be an absolute site path (/...).`);
     }
+    const archived = fields.archived;
+    if (archived !== undefined && typeof archived !== "boolean")
+        fail(file, `field "archived" must be true or false (got ${JSON.stringify(archived)}).`);
     if (!body) fail(file, "empty Markdown body.");
 
     return {
@@ -100,6 +106,7 @@ export function parseArticleFile({ id, locale, raw, collection }: ArticleFile): 
         description: requiredString(fields, "description", file),
         date,
         ...(image ? { image } : {}),
+        ...(archived === undefined ? {} : { archived }),
         body,
     };
 }

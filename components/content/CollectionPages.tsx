@@ -1,9 +1,11 @@
 import { ArticleBody } from "@/components/content/ArticleBody";
 import { ArticleFeed } from "@/components/content/ArticleFeed";
+import { badgesFor, EntryBadges } from "@/components/content/EntryBadges";
 import { StaticPage } from "@/components/content/StaticPage";
-import { getCollection, SITE_NAME } from "@/constants/site";
+import { collectionRules, getCollection, SITE_NAME } from "@/constants/site";
 import { getPathname } from "@/i18n/routing";
-import { getEntries, getEntry } from "@/lib/articles/source";
+import { collectionToday, getEntries, getEntry } from "@/lib/articles/source";
+import { entryStatus } from "@/lib/articles/status";
 import { articleJsonLd, articleMetadata, pageMetadata, type EntryHref, type LogicalHref } from "@/lib/seo";
 import { getFormatter, getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
@@ -25,7 +27,6 @@ type EntryParams = Promise<{ locale: string; slug: string }>;
 export function collectionListing(id: string) {
     const collection = getCollection(id);
     const href = collection.href as LogicalHref;
-    const itemHref = collection.itemHref as EntryHref;
 
     async function generateMetadata({ params }: { params: LocaleParams }) {
         const { locale } = await params;
@@ -49,12 +50,7 @@ export function collectionListing(id: string) {
                 crumbs={[{ label: ts("bcHome"), href: getPathname({ locale, href: "/" }) }, { label: t("title") }]}
                 body={
                     items.length ? (
-                        <ArticleFeed
-                            items={items}
-                            locale={locale}
-                            namespace={collection.namespace}
-                            itemHref={itemHref}
-                        />
+                        <ArticleFeed items={items} locale={locale} collection={collection.id} />
                     ) : (
                         <p>{t("empty")}</p>
                     )
@@ -91,6 +87,9 @@ export function collectionEntry(id: string) {
             dateStyle: "long",
             timeZone: "UTC",
         });
+        const tb = await getTranslations({ locale, namespace: "entryStatus" });
+        const status = entryStatus(article, collectionRules(collection), await collectionToday(locale));
+        const badges = badgesFor(status, { new: tb("new"), archive: tb("archive") });
         const jsonLd = articleJsonLd(entry, locale, SITE_NAME, { itemHref, schemaType: collection.schemaType });
 
         return (
@@ -106,9 +105,14 @@ export function collectionEntry(id: string) {
                     ]}
                     body={
                         <article className="article">
-                            <p className="article__meta muted">
+                            {/* A div, not a <p>: the Chip renders a <div>. */}
+                            <div className="article__meta muted">
                                 <time dateTime={article.date}>{t("publishedOn", { date: published })}</time>
-                            </p>
+                                <EntryBadges badges={badges} />
+                            </div>
+                            {status.isArchived ? (
+                                <p className="article__archive-notice">{tb("archiveNotice")}</p>
+                            ) : null}
                             {article.image ? (
                                 // eslint-disable-next-line @next/next/no-img-element -- static public asset of unknown size
                                 <img src={article.image} alt="" className="article__cover" />

@@ -136,6 +136,13 @@ describe("validateCollections", () => {
             'itemHref "/reminders/[id]" must end with "/[slug]"',
         );
     });
+
+    it("accepts badge rules and rejects invalid ones (lib/articles/status.ts validateRules)", () => {
+        expect(validateCollections([collection({ newForDays: 90, archiveBefore: "2018-01-01" })])).toHaveLength(1);
+        expect(() => validateCollections([collection({ newForDays: -1 })])).toThrow(
+            'Invalid collection "reminders": newForDays',
+        );
+    });
 });
 
 describe("hiddenHrefs", () => {

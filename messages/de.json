@@ -435,6 +435,7 @@
             "title": "Artikel",
             "intro": "Anleitungen und Hintergrundnotizen zur Website, in Markdown veröffentlicht.",
             "latestTitle": "Neueste Artikel",
+            "archivesTitle": "Aus dem Archiv",
             "viewAll": "Alle Artikel",
             "publishedOn": "Veröffentlicht am {date}",
             "onlyIn": "Nur auf {language} verfügbar",
@@ -450,5 +451,10 @@
             "title": "Axons — das Next.js-Boilerplate für deine KI-Agenten",
             "description": "Eine moderne, schnelle und SEO-fähige Next.js-16-Basis für mehrsprachige KI-Web-Apps, auf Netlify deploybar."
         }
+    },
+    "entryStatus": {
+        "new": "Neu",
+        "archive": "Archiv",
+        "archiveNotice": "Archivinhalt: vor längerer Zeit veröffentlicht und unverändert erhalten, er kann veraltet sein."
     }
 }
