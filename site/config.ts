@@ -62,7 +62,9 @@ export const SITE = {
     },
     pathnames,
     // Example: [{ href: "/about", key: "nav.about" }, { href: "/services", key: "nav.services", header: false }]
-    // (labels go in site/messages/<locale>.json under "nav").
+    // (labels go in site/messages/<locale>.json under "nav"). Site entries follow Home; to place an
+    // Axons entry among them, reference it: [about, { axons: "/articles" }, contact] gives
+    // Home, About, Articles, Contact, Sitemap, legal pages.
     nav: [],
     // Example: [{ id: "reminders", enabled: true, href: "/reminders", itemHref: "/reminders/[slug]",
     // namespace: "pages.reminders", schemaType: "TechArticle" }] + content/reminders/ + both routes
