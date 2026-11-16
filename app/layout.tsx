@@ -1,6 +1,7 @@
 import { SITE_NAME, SITE_URL } from "@/constants/site";
 import { SITE } from "@/site/config";
 import { LOCALES } from "@/i18n/locales";
+import { buildBootScript } from "@/lib/boot-script";
 import { getLocale } from "next-intl/server";
 import Script from "next/script";
 import type { ReactNode } from "react";
@@ -21,10 +22,10 @@ export const metadata = {
     openGraph: { siteName: SITE_NAME, type: "website", url: SITE_URL },
 };
 
-// Anti-flash boot: sets data-theme + has-consent BEFORE hydration.
-// Also reads the locale from the pathname to set lang (the root does not receive params.locale):
-// every SERVED locale is recognized (the list is serialized from i18n/locales.ts at build time).
-const bootScript = `(function(){try{var d=document.documentElement;var m=localStorage.getItem('axons-theme-mode')||(/axons-theme=([^;]+)/.exec(document.cookie)||[])[1];var sys=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';d.dataset.theme=(m==='light'||m==='dark')?m:sys;if(/axons-consent=/.test(document.cookie))d.classList.add('has-consent');var seg=location.pathname.split('/')[1];if(${JSON.stringify(LOCALES)}.indexOf(seg)>-1)d.setAttribute('lang',seg);}catch(e){}})();`;
+// Anti-flash boot: sets data-theme + has-consent + lang BEFORE hydration (lib/boot-script.ts).
+// The root does not receive params.locale: every SERVED locale is recognized from the pathname
+// (the list is serialized from i18n/locales.ts at build time).
+const bootScript = buildBootScript(LOCALES);
 
 export default async function RootLayout({ children }: { children: ReactNode }) {
     // getLocale() reads the locale resolved from the request context (set by middleware.ts / next-intl),
