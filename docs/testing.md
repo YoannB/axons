@@ -102,4 +102,7 @@ say so EXPLICITLY rather than rely on an implicit default:
 
 `tests/unit/tooling-ignores.test.ts` ASKS ESLint (`isPathIgnored`) and Prettier (`getFileInfo`)
 and checks the TS / Vitest configs; it fails if one of the ignores is dropped. Add the same
-entry to any new tool that walks the repository.
+entry to any new tool that walks the repository. The ESLint and Prettier cases load the real
+tool (config + plugins), which can exceed Vitest's 5 s default under a loaded parallel run: they
+carry an explicit 30 s timeout. Give the same budget to any new case that instantiates a tool;
+never relax an assertion to make it faster.
