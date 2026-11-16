@@ -1,5 +1,7 @@
 import "server-only";
 import { routing } from "@/i18n/routing";
+import { dayIn } from "@/lib/day";
+import { getNow, getTimeZone } from "next-intl/server";
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { cache } from "react";
@@ -52,4 +54,12 @@ export function getArticles(locale: string, limit?: number) {
 
 export function getArticle(locale: string, slug: string) {
     return getEntry("articles", locale, slug);
+}
+
+// "Today" for the New badge: the calendar day of the request in next-intl's `timeZone`
+// (i18n/request.ts), the zone the site's dates are read in. Every route under [locale] renders on
+// demand, so it is evaluated per request (docs/articles.md → New and archive badges).
+export async function collectionToday(locale: string): Promise<string> {
+    const [now, timeZone] = await Promise.all([getNow({ locale }), getTimeZone({ locale })]);
+    return dayIn(now.getTime(), timeZone);
 }

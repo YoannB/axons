@@ -9,7 +9,9 @@ import {
     validateCollections,
     type CollectionConfig,
     type SeoResource,
+    type SiteConfig,
 } from "@/lib/site-extension";
+import { resolveRules, validateRules, type CollectionRules, type ResolvedRules } from "@/lib/articles/status";
 import { normalizeSiteUrl } from "@/lib/site-url";
 import { SITE } from "@/site/config";
 
@@ -90,6 +92,16 @@ export const ARTICLES_COLLECTION = {
 export const COLLECTIONS = validateCollections([ARTICLES_COLLECTION, ...SITE.collections]);
 export type Collection = (typeof COLLECTIONS)[number];
 export const getCollection = (id: string): Collection => findCollection(COLLECTIONS, id);
+// "New" / "Archive" badge rules shared by every collection. OPTIONAL in site/config.ts (Axons' own
+// config omits it), so it is read through the contract type. Absent => no badge, Axons' default.
+const siteConfig: SiteConfig = SITE;
+export const COLLECTION_DEFAULTS: CollectionRules = validateRules(
+    siteConfig.collectionDefaults ?? {},
+    "site/config.ts collectionDefaults",
+);
+/** Badge rules of a collection: its own newForDays / archiveBefore, else the site defaults. */
+export const collectionRules = (collection: CollectionConfig): ResolvedRules =>
+    resolveRules(collection, COLLECTION_DEFAULTS);
 /** Routes of the disabled collections (nav and sitemap.xml skip them). */
 export const HIDDEN_HREFS: readonly string[] = hiddenHrefs(COLLECTIONS);
 

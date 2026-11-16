@@ -70,6 +70,9 @@ export const SITE = {
     // namespace: "pages.reminders", schemaType: "TechArticle" }] + content/reminders/ + both routes
     // in `pathnames` + two page files (docs/articles.md → Collections).
     collections: [],
+    // Optional "New" / "Archive" badges of every collection (articles included), e.g.
+    // collectionDefaults: { newForDays: 90, archiveBefore: "2018-01-01" }. Absent => no badge; a
+    // collection's own newForDays / archiveBefore wins (docs/articles.md → New and archive badges).
     // Example: ["meta.home", "hero"] lets site/messages replace Axons' home metadata and hero copy.
     messageOverrides: [],
     // Message paths read by the site's own Client Components (useTranslations), e.g. ["ide"]; the

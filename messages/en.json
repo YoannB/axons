@@ -435,6 +435,7 @@
             "title": "Articles",
             "intro": "Guides and background notes about the site, published as Markdown.",
             "latestTitle": "Latest articles",
+            "archivesTitle": "From the archives",
             "viewAll": "All articles",
             "publishedOn": "Published on {date}",
             "onlyIn": "Only available in {language}",
@@ -450,5 +451,10 @@
             "title": "Axons — the Next.js boilerplate for your AI agents",
             "description": "A modern, fast, SEO-ready Next.js 16 foundation for multilingual AI web apps, deployable on Netlify."
         }
+    },
+    "entryStatus": {
+        "new": "New",
+        "archive": "Archive",
+        "archiveNotice": "Archived content: published a while ago and kept as it was, it may be out of date."
     }
 }

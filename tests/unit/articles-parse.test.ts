@@ -59,6 +59,12 @@ describe("parseArticleFile — success", () => {
         expect(article.date).toBe("2026-01-31");
         expect(article.image).toBe("/articles/demo/c.png");
     });
+
+    it("keeps an explicit archived flag (true or false) and omits it when absent", () => {
+        expect(parseArticleFile(file("demo", "en", { archived: "true" })).archived).toBe(true);
+        expect(parseArticleFile(file("demo", "en", { archived: "false" })).archived).toBe(false);
+        expect(parseArticleFile(file("demo", "en"))).not.toHaveProperty("archived");
+    });
 });
 
 describe("parseArticleFile — errors", () => {
@@ -116,6 +122,12 @@ describe("parseArticleFile — errors", () => {
 
     it("rejects an empty image", () => {
         expect(() => parseArticleFile(file("demo", "en", { image: '""' }))).toThrow(/"image" required/);
+    });
+
+    it("rejects a non-boolean archived flag", () => {
+        expect(() => parseArticleFile(file("demo", "en", { archived: '"yes"' }))).toThrow(
+            /"archived" must be true or false \(got "yes"\)/,
+        );
     });
 
     it("rejects an empty body", () => {
