@@ -88,6 +88,12 @@ export interface SiteConfig<P extends SitePathnames = SitePathnames> {
      * Any other collision between site/messages and messages/ throws at build time.
      */
     readonly messageOverrides: readonly string[];
+    /**
+     * Message paths (dotted, e.g. "ide" or "pages.reminders") read by the SITE's Client Components
+     * (`useTranslations`), serialized to the client next to Axons' own (i18n/client-messages.ts).
+     * Server-only copy stays out of the page payload. A missing path fails the unit tests.
+     */
+    readonly clientMessages: readonly string[];
 }
 
 /**
