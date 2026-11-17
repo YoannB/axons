@@ -70,7 +70,8 @@ move these under `app/`, and do not delete `middleware.ts` to silence the warnin
 
 The interception matcher must EXCLUDE technical and API routes (`api`, `_next`, `_vercel`,
 `trpc`, the extension-less `/icon` favicon route of `app/icon.tsx` (`icon$`), and any path
-containing a dot), and must be ADAPTED if the app ever gains a dynamic
+containing a dot — which is what keeps the social images `/og/<locale>/….png` out of it, see
+docs/seo-layout.md → Social images), and must be ADAPTED if the app ever gains a dynamic
 route or a route whose path contains a dot — a too-wide matcher intercepts `/api/*` and
 breaks the AI handlers, a too-narrow one leaks unlocalized traffic. This is the live
 `middleware.ts` (kept active for Netlify, see the divergence note above); the parked
@@ -81,18 +82,19 @@ breaks the AI handlers, a too-narrow one leaks unlocalized traffic. This is the 
 A derived site (a repo that merges Axons tags from an `upstream` remote) must not edit Axons
 files, or every upstream merge conflicts. It owns ONE folder, `site/`, and replaces its files:
 
-| File                           | Holds                                                                                                                                                                                                                                                                |
-| ------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `site/config.ts`               | `SITE` (`satisfies SiteConfig`): name, root title/description fallbacks, GitHub URL, brand accent, chrome switches, `articlesEnabled`, SEO resources + hero video, `pathnames`, `nav`, `collections`, `messageOverrides`, `clientMessages`, MUI `palette` (per mode) |
-| `content/<collection>/`        | a site's own Markdown collections (declared in `SITE.collections`; docs/articles.md → Collections)                                                                                                                                                                   |
-| `site/theme.css`               | the site's CSS, imported LAST by `app/globals.css` (token overrides such as `--accent-1`, `--bg-0`, `--btn-fg`); empty in Axons                                                                                                                                      |
-| `site/logo.tsx`                | the logo DRAWING (`LOGO_VIEWBOX` + `LogoMark`); `components/ui/Logo.tsx` keeps the frame and `aria-label={SITE_NAME}`                                                                                                                                                |
-| `site/icon.svg`                | the favicon, served by `app/icon.tsx` (SVG, generated at build)                                                                                                                                                                                                      |
-| `site/shell.tsx`               | `SiteShell`: the page FRAME around every page (header, `<main>`, footer); Axons re-exports `DefaultShell`. Props `SiteShellProps`                                                                                                                                    |
-| `site/home.tsx`                | `SiteHome`: the home BODY (metadata stays `meta.home`); Axons re-exports `AxonsHome`. Props `SiteHomeProps`                                                                                                                                                          |
-| `site/messages/<locale>.json`  | the site's own copy, one file per SUPPORTED locale (`{}` = nothing to add)                                                                                                                                                                                           |
-| `site/storage.ts`              | `SITE_STORAGE_KEYS`: the site's own localStorage keys by name (`{}` in Axons), merged into `STORAGE_KEYS`                                                                                                                                                            |
-| `app/[locale]/<page>/page.tsx` | the site's own pages (new files: no conflict)                                                                                                                                                                                                                        |
+| File                           | Holds                                                                                                                                                                                                                                                                                    |
+| ------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `site/config.ts`               | `SITE` (`satisfies SiteConfig`): name, root title/description fallbacks, GitHub URL, brand accent, chrome switches, `articlesEnabled`, SEO resources + hero video, `pathnames`, `nav`, `collections`, `messageOverrides`, `clientMessages`, MUI `palette` (per mode), optional `ogPages` |
+| `content/<collection>/`        | a site's own Markdown collections (declared in `SITE.collections`; docs/articles.md → Collections)                                                                                                                                                                                       |
+| `site/theme.css`               | the site's CSS, imported LAST by `app/globals.css` (token overrides such as `--accent-1`, `--bg-0`, `--btn-fg`); empty in Axons                                                                                                                                                          |
+| `site/logo.tsx`                | the logo DRAWING (`LOGO_VIEWBOX` + `LogoMark`); `components/ui/Logo.tsx` keeps the frame and `aria-label={SITE_NAME}`                                                                                                                                                                    |
+| `site/icon.svg`                | the favicon, served by `app/icon.tsx` (SVG, generated at build)                                                                                                                                                                                                                          |
+| `site/shell.tsx`               | `SiteShell`: the page FRAME around every page (header, `<main>`, footer); Axons re-exports `DefaultShell`. Props `SiteShellProps`                                                                                                                                                        |
+| `site/home.tsx`                | `SiteHome`: the home BODY (metadata stays `meta.home`); Axons re-exports `AxonsHome`. Props `SiteHomeProps`                                                                                                                                                                              |
+| `site/messages/<locale>.json`  | the site's own copy, one file per SUPPORTED locale (`{}` = nothing to add)                                                                                                                                                                                                               |
+| `site/storage.ts`              | `SITE_STORAGE_KEYS`: the site's own localStorage keys by name (`{}` in Axons), merged into `STORAGE_KEYS`                                                                                                                                                                                |
+| `site/og-image.tsx`            | `SITE_OG_IMAGE`: the social image (og:image / Twitter card) of every page: `Image` component, `theme` colours, fonts, logo; Axons' default draws `DefaultOgImage` with its tokens and the site's palette (docs/seo-layout.md → Social images)                                            |
+| `app/[locale]/<page>/page.tsx` | the site's own pages (new files: no conflict)                                                                                                                                                                                                                                            |
 
 The contract (`SiteConfig`) and the merges are PURE code in `lib/site-extension.ts`
 (100%-branch unit tests in `tests/unit/site-extension.test.ts`); Axons-owned files only consume
@@ -135,6 +137,13 @@ them, so a new `SiteConfig` field shows up in a derived site as a TYPE ERROR in 
   keeps them. A site replacing the frame also replaces what Header/Footer provided (nav, language
   and theme switches, footer links incl. "Manage cookies" when `CONSENT_REQUIRED`): e2e specs
   scoped to `getByRole('banner')`/`contentinfo` then need the site's equivalents.
+- Social images: every page already gets `og:image` + `twitter:image` through `pageMetadata` (no
+  code). A site page gets its OWN card with ONE line in `SITE.ogPages`
+  (`{ "/about": "pages.about" }`: the namespace holding its `title` and `description`/`intro`);
+  left out, it shares the home card. Collection listings and entries are automatic. Branding:
+  `site/og-image.tsx` (`theme`, `logo`, `fonts`, or a whole `Image`). A site that adds
+  `site/og-image.tsx` files of its own (fonts, logo) reads them with a LITERAL
+  `path.join(process.cwd(), "site", …)` so they are traced.
 - Messages: `i18n/request.ts` deep-merges `site/messages/<locale>.json` INTO
   `messages/<locale>.json` (`mergeMessages`). New keys are added; a key present on both sides
   THROWS (build fails, path named) unless that path or a parent is listed in

@@ -78,4 +78,8 @@ export const SITE = {
     // Message paths read by the site's own Client Components (useTranslations), e.g. ["ide"]; the
     // rest of the catalogue stays on the server (docs/i18n.md → Client messages).
     clientMessages: [],
+    // Optional: the site's own pages that get their OWN social image (og:image), each pointing at
+    // the messages namespace holding its `title` and `description` (else `intro`), e.g.
+    // ogPages: { "/about": "pages.about" }. Others share the home image; collections are automatic.
+    // The drawing (colours, logo, fonts) is site/og-image.tsx (docs/seo-layout.md → Social images).
 } as const satisfies SiteConfig<typeof pathnames>;

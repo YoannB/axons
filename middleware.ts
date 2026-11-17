@@ -12,6 +12,7 @@ export default createMiddleware(routing);
 export const config = {
     // Same matcher as proxy.ts: excludes API, tRPC, _next, _vercel and
     // paths containing a dot (assets), plus the extension-less /icon metadata route (favicon,
-    // app/icon.tsx). Adapt it if the app has routes with a dot.
+    // app/icon.tsx). Adapt it if the app has routes with a dot. The social images
+    // (/og/<locale>/….png, app/og/) rely on the dot rule to stay unlocalized.
     matcher: "/((?!api|trpc|_next|_vercel|icon$|.*\\..*).*)",
 };

@@ -6,6 +6,8 @@ import type { ReactNode } from "react";
 import { validateRules, type CollectionRules } from "./articles/status";
 
 export type { CollectionRules } from "./articles/status";
+// Contract of site/og-image.tsx (the social image), defined next to its pure rules.
+export type { OgFont, OgImageProps, OgTheme, SiteOgImage } from "./og/model";
 
 /** A localized pathname: one path for every locale, or one path per locale. */
 export type SitePathname = string | Readonly<Record<string, string>>;

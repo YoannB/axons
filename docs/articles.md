@@ -23,8 +23,10 @@ fenced blocks (`.prettierrc.json` override: `embeddedLanguageFormatting: "off"` 
 (` ```js `, `ts`, `bash`/`sh`, `html`/`xml`, `css`, `scss`, `stylus`, `json`, `yaml`,
 `markdown`, … — lowlight's `common` set + `stylus`); see _Code highlighting_ below. Do not repeat the title as `# Heading` (a body `h1` is
 demoted to `h2`; the page title is the `h1`). Raw HTML in the body is NOT interpreted
-(`react-markdown`, no `dangerouslySetInnerHTML`). For social cards prefer PNG/JPG covers: most
-networks ignore SVG `og:image`.
+(`react-markdown`, no `dangerouslySetInnerHTML`). Social cards: every entry shares as a generated
+1200x630 PNG (title, description, collection badge) into which the cover is embedded as a
+thumbnail when it is PNG, JPEG or SVG (other formats are skipped); see docs/seo-layout.md →
+Social images.
 
 Validation is fail-fast at BUILD time (`lib/articles/parse.ts`): a missing/empty field, a bad
 slug or date, a non-boolean `archived`, a relative image, an empty body, an unclosed header or a slug used twice in the
@@ -58,7 +60,8 @@ collection (a derived site's "reminders", …), with `content/<collection>/` in 
   Archive badges through the neutral `Chip`), `ArticleBody.tsx` (Markdown renderer + server-side
   code highlighting); `components/home/LatestArticles.tsx` (3 most recent non-archived entries of a
   collection, `collection` prop, default articles; renders nothing without entries).
-- `lib/seo.ts` — `articleMetadata` / `articleJsonLd` (optional `itemHref` / `schemaType`) /
+- `lib/seo.ts` — `articleMetadata` (with the entry's social image, `/og/<locale>/<route>/<slug>.png`)
+  / `articleJsonLd` (optional `itemHref` / `schemaType`) /
   `articlePath` / `entryPath`; `app/sitemap.ts` adds one entry per served translation of every
   ENABLED collection.
 
