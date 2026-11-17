@@ -6,6 +6,8 @@ import type { ReactNode } from "react";
 import { validateRules, type CollectionRules } from "./articles/status";
 
 export type { CollectionRules } from "./articles/status";
+// Contract of site/og-image.tsx (the social image), defined next to its pure rules.
+export type { OgFont, OgImageProps, OgTheme, SiteOgImage } from "./og/model";
 
 /** A localized pathname: one path for every locale, or one path per locale. */
 export type SitePathname = string | Readonly<Record<string, string>>;
@@ -116,6 +118,13 @@ export interface SiteConfig<P extends SitePathnames = SitePathnames> {
      * Server-only copy stays out of the page payload. A missing path fails the unit tests.
      */
     readonly clientMessages: readonly string[];
+    /**
+     * Social image of the site's OWN static pages: logical href → messages namespace holding the
+     * page's `title` and `description` (else `intro`), e.g. `{ "/about": "pages.about" }`. Collection
+     * listings and entries are automatic. A page left out shares the home image. Absent => `{}`.
+     * The drawing itself is `site/og-image.tsx` (docs/seo-layout.md → Social images).
+     */
+    readonly ogPages?: Readonly<Partial<Record<StaticHref<P>, string>>>;
 }
 
 /**

@@ -104,6 +104,45 @@ grid width, so there is no CLS. The anti-bot icon from the mockup is NOT rendere
 reset button is gated by `process.env.NODE_ENV === 'development'` and inlined away in production
 builds. Resetting must push an info toast from the click handler (user intent), not from an Effect.
 
+## Social images (og:image, Twitter card)
+
+Every page shares as a 1200x630 PNG card (title, description, site name + logo, host, and a
+section badge on collection entries) in the page's language. `lib/seo.ts` adds `og:image`
+(+ width, height, alt = the page title, type) and `twitter:card=summary_large_image` +
+`twitter:image` through `pageMetadata` / `articleMetadata`: absolute URLs on `SITE_URL`.
+
+- URL = `/og/<locale><logical path>.png` (`lib/og/model.ts`, pure, 100% branch): the LOGICAL route
+  key (`/legal`, `/articles/<slug>`), never the localized path; the home is `index.png`. The `.png`
+  dot keeps it out of the locale middleware (the matcher skips paths with a dot), so no rewrite or
+  redirect ever touches an image.
+- Route = `app/og/[locale]/[...path]/route.tsx`: `generateStaticParams` lists every image
+  (`OG_PAGES` × served locales + every served translation of each enabled collection entry) and
+  `dynamicParams = false`, so ALL images are PRERENDERED at build (`●` in the build output) and any
+  other path answers 404. Nothing is drawn at request time; a new page or entry needs a rebuild,
+  like the page itself. `next start` serves them from the build cache (`x-nextjs-cache: HIT`); on
+  Netlify the adapter serves the prerendered responses from its cache and the CDN, purged on deploy.
+- Which page has its OWN image: `OG_PAGES` (`constants/site.ts`) = Axons' pages (home `meta.home`,
+  sitemap, legal, privacy, cookies), the listing of every enabled collection, then the site's
+  `SITE.ogPages` (`{ "/about": "pages.about" }`: logical href → messages namespace with `title` and
+  `description`, else `intro`). Entries are automatic (front matter title/description, collection
+  title as the section badge). A page outside `OG_PAGES` shares the home image (alt = site name).
+  The texts are read from the SAME messages as the page metadata, so the card never drifts;
+  `lib/og/render.tsx` fits them (`truncate`: word boundary + ellipsis; `titleSize`).
+- Front-matter `image`: embedded as a thumbnail in the entry's card (PNG, JPEG or SVG from
+  `public/`; other formats are skipped). The JSON-LD `image` still points to the cover itself.
+- Drawing = `site/og-image.tsx` (`SITE_OG_IMAGE`, contract `SiteOgImage`): `Image` (Axons:
+  `components/og/DefaultOgImage.tsx`), `theme` (6-digit hex; Axons' dark tokens + the site's
+  `SITE.palette.dark` accents), `fontFamily` + `fonts()` and `logo()` (default: `site/icon.svg`).
+  It is Satori JSX: flexbox only, inline styles, every element with several children
+  `display: flex`, no CSS variables, no MUI.
+- Fonts: Geist Regular/Bold in `assets/og/` (OFL, `assets/og/README.md`), with the `GPOS` table
+  removed: Satori applied its kerning around spaces and drew irregular word gaps. Any replacement
+  font must cover the accented Latin of the six locales; check a rendered card, not the build.
+- Tracing: loaders read files with a LITERAL `path.join(process.cwd(), …)`, so the tracer lists
+  them in `.next/server/app/og/[locale]/[...path]/route.js.nft.json` (only needed if an image is
+  ever rendered on demand). Covered by `tests/e2e/og-images.spec.ts` (tags, 200, `image/png`,
+  1200x630 from the PNG header) and `tests/unit/og-*.test.ts`.
+
 ## Tabs, Terminal & scripted sequences (generic, no MUI)
 
 `components/ui/Tabs.tsx`: a tab WITH `href` is a real link inside a `<nav>` (`aria-current=page`)
