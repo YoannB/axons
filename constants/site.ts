@@ -12,6 +12,7 @@ import {
     type SiteConfig,
 } from "@/lib/site-extension";
 import { resolveRules, validateRules, type CollectionRules, type ResolvedRules } from "@/lib/articles/status";
+import { buildOgPages } from "@/lib/og/model";
 import { normalizeSiteUrl } from "@/lib/site-url";
 import { SITE } from "@/site/config";
 
@@ -108,6 +109,23 @@ export const HIDDEN_HREFS: readonly string[] = hiddenHrefs(COLLECTIONS);
 // Footer + HTML sitemap: every entry (site entries after Home). Header: HEADER_NAV.
 export const NAV = buildNav(AXONS_NAV, SITE.nav, HIDDEN_HREFS);
 export const HEADER_NAV = headerNav(NAV);
+
+// Pages with their OWN social image (logical href → messages namespace with title + description
+// or intro): Axons' pages, the enabled collection listings, then the site's (SITE.ogPages). Entries
+// of enabled collections are automatic; any other page shares the home image (lib/seo.ts).
+const AXONS_OG_PAGES = {
+    "/": "meta.home",
+    "/sitemap": "pages.sitemap",
+    "/legal": "pages.legal",
+    "/privacy": "pages.privacy",
+    "/cookies": "pages.cookies",
+} as const;
+export const ENABLED_COLLECTIONS = COLLECTIONS.filter((c) => c.enabled);
+export const OG_PAGES: Readonly<Record<string, string>> = buildOgPages(
+    AXONS_OG_PAGES,
+    Object.fromEntries(ENABLED_COLLECTIONS.map((c) => [c.href, c.namespace])),
+    (siteConfig.ogPages ?? {}) as Record<string, string>,
+);
 
 export const SEO_RESOURCES: readonly SeoResource[] = SITE.seoResources;
 export const HERO_VIDEO_ID: string = SITE.heroVideoId;
