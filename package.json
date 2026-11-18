@@ -2,7 +2,7 @@
     "name": "axons",
     "author": "Yoann Barbier (EZJSDEV)",
     "license": "AGPL-3.0-only",
-    "version": "0.14.0",
+    "version": "0.15.0",
     "private": true,
     "type": "module",
     "engines": {
@@ -39,6 +39,7 @@
         "lowlight": "^3.3.0",
         "next": "^16.4.6",
         "next-intl": "^4.14.9",
+        "prop-types": "^15.8.1",
         "react": "^19.3.0",
         "react-dom": "^19.3.0",
         "react-markdown": "^10.1.0",
