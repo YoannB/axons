@@ -287,6 +287,12 @@ describe("shipped site layer", () => {
         const items: readonly SiteNavItem[] = SITE.nav;
         for (const item of items) if ("href" in item) expect(keys).toContain(item.href);
     });
+
+    it("comments: the shipped config stays neutral without a shortname, and turns on with one", () => {
+        expect(siteCommentsActive(SITE, undefined)).toBe(false);
+        expect(siteCommentsActive(SITE, "")).toBe(false);
+        expect(siteCommentsActive(SITE, "axons-demo")).toBe(SITE.articlesEnabled);
+    });
 });
 
 describe("mergeStorageKeys", () => {

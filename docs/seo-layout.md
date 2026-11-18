@@ -113,10 +113,12 @@ the viewport (`max-height: calc(100dvh - 64px)` with a `vh` fallback, `overflow-
 Ad slots render placeholders in development and are hidden in production until real tags and
 consent exist (`components/ui/AdSlot.tsx`, `ADS_ENABLED`). The cookie banner itself renders
 ONLY when a tracker needing consent is configured (`CONSENT_REQUIRED` = GTM id set OR ads
-enabled, pure `lib/flags.ts`): no banner theatre on a tracker-free site (CNIL). When it exists,
+enabled OR comments active, pure `lib/flags.ts`): no banner theatre on a tracker-free site (CNIL).
+It lists exactly the configured purposes (`cookie.purposes.{analytics,ads,comments}`); "Accept"
+grants them all, "Refuse" none (Disqus comments: docs/articles.md → Comments). When it exists,
 the footer "Manage cookies" button re-opens it (`reopenConsent`, in-memory; the stored choice
 stays in effect until a new one is made) and withdrawing a previous "yes" reloads the page,
-because an injected GTM cannot be unloaded. The decision to render is taken SOLELY
+because an injected GTM (or Disqus) cannot be unloaded. The decision to render is taken SOLELY
 on the build-inlined `ADS_ENABLED` constant — NEVER on `typeof window !== 'undefined'` inside an
 SSR'd component, because the server (window undefined) and client (window defined) would render
 different trees and throw a hydration mismatch (the exact class of bug already killed in

@@ -1,5 +1,6 @@
 import { expect, test, type Page } from "@playwright/test";
 import { ARTICLES_ENABLED } from "../../constants/site";
+import { blockDisqus } from "./support/disqus";
 import { acceptCookiesButton, cookieBanner, languageButton, languageOption } from "./support/home";
 
 // v0.4.0 articles: listing -> article -> language switch onto the TRANSLATED slug, SEO tags,
@@ -19,6 +20,11 @@ async function ready(page: Page) {
 test.describe("Articles", () => {
     // A derived site that turned the section off (constants/site.ts) has nothing to check here.
     test.skip(!ARTICLES_ENABLED, "articles section disabled (ARTICLES_ENABLED = false)");
+    // "Accept" also grants the comments purpose: when comments are on, the entry pages would load
+    // Disqus. Never reach it from a spec (tests/e2e/comments.spec.ts covers the comments).
+    test.beforeEach(async ({ page }) => {
+        await blockDisqus(page);
+    });
 
     test("list -> article -> language switch on the translated slug", async ({ page }) => {
         await page.goto("/fr/articles");
