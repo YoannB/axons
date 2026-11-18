@@ -5,8 +5,9 @@ import { acceptCookiesButton, cookieBanner, languageButton, languageOption } fro
 
 // v0.4.0 articles: listing -> article -> language switch onto the TRANSLATED slug, SEO tags,
 // sitemap and the home "latest articles" block. Relies on the two demo articles shipped in
-// content/articles/ (translated in every supported locale), plus the archived demo entry
-// (`archived-entries`, front matter `archived: true`).
+// content/articles/ (translated in every supported locale). Axons publishes no archived entry: the
+// render of an archive (badge, notice, no comments) is covered by
+// tests/unit/collection-entry-archive.test.tsx.
 
 async function ready(page: Page) {
     await expect(page.locator("#app-splash")).toHaveClass(/is-leaving/);
@@ -32,11 +33,7 @@ test.describe("Articles", () => {
         await expect(page.getByRole("heading", { level: 1, name: "Articles" })).toBeVisible();
         // Newest first.
         const titles = page.locator(".article-feed .article-teaser__title");
-        await expect(titles).toHaveText([
-            "Écrire un article dans Axons",
-            "L'architecture d'Axons en cinq minutes",
-            "Conserver les anciennes entrées en archives",
-        ]);
+        await expect(titles).toHaveText(["Écrire un article dans Axons", "L'architecture d'Axons en cinq minutes"]);
 
         await titles.first().getByRole("link").click();
         await expect(page).toHaveURL(/\/fr\/articles\/ecrire-un-article$/);
@@ -51,19 +48,11 @@ test.describe("Articles", () => {
         await expect(page.getByRole("heading", { level: 1, name: "Einen Artikel in Axons schreiben" })).toBeVisible();
     });
 
-    test("an archived entry carries the Archive badge on its card and its page, never New", async ({ page }) => {
+    test("Axons' default rules show no New and no Archive badge", async ({ page }) => {
         await page.goto("/fr/articles");
         await ready(page);
-        const archived = page.locator(".article-teaser", { hasText: "Conserver les anciennes entrées en archives" });
-        await expect(archived.locator(".entry-badge--archive")).toHaveText("Archive");
-        // Axons' default rules: no "New" window, and only the flagged entry is an archive.
-        await expect(page.locator(".article-feed .entry-badge--new")).toHaveCount(0);
-        await expect(page.locator(".article-feed .entry-badge--archive")).toHaveCount(1);
-
-        await archived.getByRole("link", { name: "Conserver les anciennes entrées en archives" }).click();
-        await expect(page).toHaveURL(/\/fr\/articles\/conserver-les-anciennes-entrees$/);
-        await expect(page.locator(".article__meta .entry-badge--archive")).toHaveText("Archive");
-        await expect(page.locator(".article__archive-notice")).toContainText("conservé tel quel");
+        await expect(page.locator(".article-feed .article-teaser")).toHaveCount(2);
+        await expect(page.locator(".article-feed .entry-badge")).toHaveCount(0);
     });
 
     test("canonical, hreflang and JSON-LD of the article page", async ({ page }) => {
@@ -98,9 +87,7 @@ test.describe("Articles", () => {
         await ready(page);
         const block = page.locator("#latest-articles");
         await expect(block.getByRole("heading", { level: 2, name: "Derniers articles" })).toBeVisible();
-        // The archived demo entry is not presented as news: only the two current articles.
         await expect(block.locator(".article-teaser")).toHaveCount(2);
-        await expect(block.locator(".entry-badge--archive")).toHaveCount(0);
         await block.getByRole("link", { name: /Tous les articles/ }).click();
         await expect(page).toHaveURL(/\/fr\/articles$/);
     });
