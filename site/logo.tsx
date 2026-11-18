@@ -3,16 +3,21 @@
 // aria-label={SITE_NAME}): draw only the CONTENT here, in LOGO_VIEWBOX coordinates. The
 // `logo__*` classes are animated by styles/ui/logo.css; a site may use its own classes
 // (styled in site/theme.css) or none. The favicon is site/icon.svg (served by app/icon.tsx).
+// `id` is unique per rendered logo (splash + header + loader can coexist): build EVERY SVG id
+// (gradient, mask, clipPath, filter) from it, never a literal id (docs/architecture.md → Deriving a site).
+import type { LogoMarkProps } from "@/lib/site-extension";
+
 export const LOGO_VIEWBOX = "0 0 48 48";
 
 // The pulse travels the axon BACK AND FORTH (keyPoints 0;1;0) instead of looping
 // 0->1->0 by teleporting: no more visible jump at the end of the run. keySplines
 // softens the ends. The orbit and the core already loop symmetrically (no jump).
-export function LogoMark() {
+export function LogoMark({ id }: LogoMarkProps) {
+    const grad = `${id}-grad`;
     return (
         <>
             <defs>
-                <linearGradient id="logoGrad" x1="0" y1="0" x2="1" y2="1">
+                <linearGradient id={grad} x1="0" y1="0" x2="1" y2="1">
                     <stop offset="0%" stopColor="var(--accent-1)" />
                     <stop offset="100%" stopColor="var(--accent-2)" />
                 </linearGradient>
@@ -30,7 +35,7 @@ export function LogoMark() {
                     path="M10 30 C 18 30, 18 18, 26 18 S 36 26, 38 16"
                 />
             </circle>
-            <path className="logo__core" d="M24 12 L33 33 H15 Z" fill="url(#logoGrad)" />
+            <path className="logo__core" d="M24 12 L33 33 H15 Z" fill={`url(#${grad})`} />
         </>
     );
 }

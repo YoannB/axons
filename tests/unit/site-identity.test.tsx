@@ -2,6 +2,7 @@ import { Logo } from "@/components/ui/Logo";
 import { buildTheme } from "@/components/ui/material/theme";
 import { SITE } from "@/site/config";
 import { LOGO_VIEWBOX, LogoMark } from "@/site/logo";
+import { useId } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 
@@ -30,6 +31,12 @@ describe("buildTheme — palette from site/config.ts", () => {
     });
 });
 
+const idsOf = (markup: string) => [...markup.matchAll(/\sid="([^"]+)"/g)].map((m) => m[1]);
+// The useId value of a component rendered alone at the root (what <Logo /> passes to LogoMark).
+function IdProbe() {
+    return useId();
+}
+
 describe("Logo — frame from Axons, drawing from site/logo.tsx", () => {
     it("names the logo after the site and uses the site's viewBox", () => {
         const html = renderToStaticMarkup(<Logo size={30} />);
@@ -37,7 +44,27 @@ describe("Logo — frame from Axons, drawing from site/logo.tsx", () => {
         expect(html).toContain('role="img"');
         expect(html).toContain(`viewBox="${LOGO_VIEWBOX}"`);
         expect(html).toContain('width="30"');
-        // The drawing is the site's own (site/logo.tsx), whatever it is.
-        expect(html).toContain(renderToStaticMarkup(<LogoMark />));
+        // The drawing is the site's own (site/logo.tsx), whatever it is (rendered with the same id).
+        const id = renderToStaticMarkup(<IdProbe />);
+        expect(html).toContain(renderToStaticMarkup(<LogoMark id={id} />));
+    });
+
+    it("gives every rendered logo its own SVG ids, and every url(#…) points into its own logo", () => {
+        // Splash + header (+ a loader) render the logo at once: a literal id in site/logo.tsx would
+        // be duplicated, and url(#id) would resolve to the FIRST one (hidden splash => broken paint).
+        const html = renderToStaticMarkup(
+            <>
+                <Logo />
+                <Logo className="splash-logo" />
+            </>,
+        );
+        const logos = html.split("</svg>").filter((part) => part.includes("<svg"));
+        expect(logos).toHaveLength(2);
+        const all = logos.flatMap(idsOf);
+        expect(new Set(all).size).toBe(all.length);
+        for (const logo of logos) {
+            const own = new Set(idsOf(logo));
+            for (const [, ref] of logo.matchAll(/url\(#([^)]+)\)/g)) expect(own).toContain(ref);
+        }
     });
 });
