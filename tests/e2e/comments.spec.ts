@@ -7,11 +7,11 @@ import { lp } from "./support/locale-path";
 // Comments under collection entries (docs/articles.md → Comments). Needs a build that saw a
 // shortname: CI sets a FAKE NEXT_PUBLIC_DISQUS_SHORTNAME, and every request to Disqus is
 // intercepted and aborted (support/disqus.ts), so the specs check what the page TRIES to load.
-// Relies on Axons' demo articles: `writing-articles` (live) and `archived-entries` (archived).
+// Relies on Axons' demo articles `writing-articles` and `architecture-tour`. No comments under an
+// archived entry: tests/unit/collection-entry-archive.test.tsx (Axons publishes no archive).
 
 const ENTRY = lp("fr", "/articles/ecrire-un-article");
 const OTHER_ENTRY = lp("fr", "/articles/visite-de-l-architecture");
-const ARCHIVED = lp("fr", "/articles/conserver-les-anciennes-entrees");
 
 async function open(page: Page, path: string) {
     await page.goto(path);
@@ -50,15 +50,6 @@ test.describe("Comments (Disqus)", () => {
         // This page only: the next entry asks again.
         await open(page, OTHER_ENTRY);
         await expect(page.locator("[data-comments-gate]")).toBeVisible();
-    });
-
-    test("an archived entry has no comments at all", async ({ page }) => {
-        const attempts = await blockDisqus(page);
-        await open(page, ARCHIVED);
-        await expect(page.locator(".article__archive-notice")).toBeVisible();
-        await expect(page.locator("[data-entry-comments]")).toHaveCount(0);
-        await page.waitForLoadState("networkidle");
-        expect(attempts).toEqual([]);
     });
 
     test("consent given in the banner loads the comments without a click", async ({ page }) => {

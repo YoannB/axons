@@ -111,6 +111,16 @@ collections: [{ id: "reminders", /* … */ newForDays: 0, archiveBefore: "2016-0
 - Validation fails the build on a negative / non-integer `newForDays`, a malformed
   `archiveBefore` (site defaults and each collection) or a non-boolean `archived`.
 
+**Testing the badges.** Axons publishes NO archived (or new) demo entry: a fixture article would
+show on the public site. The rules are unit-tested (`tests/unit/articles-status.test.ts`, today
+injected), the status → badge mapping and the card in `tests/unit/entry-badges.test.tsx`, and the
+render of an archive in `tests/unit/collection-entry-archive.test.tsx`: an in-memory entry (the
+content source is mocked) goes through the real `collectionEntry` page and `ArticleFeed`, which
+must show the Archive badge and the notice, never New, and no comments. Storybook shows the card
+(`ArticleTeaser` → `ArchivedEntry`, `ArchivedFallback`). The e2e only checks that Axons' default
+rules show no badge. To SEE an archive locally, set `archived: true` on a demo translation (or an
+`archiveBefore` after its date) and do not commit it.
+
 **How "New" disappears.** "Today" is `collectionToday(locale)`: `getNow()` read in next-intl's
 `timeZone` (`i18n/request.ts`, the zone the site's dates are read in), turned into a calendar day
 by `lib/day.ts` `dayIn`. Every route under `[locale]` renders ON DEMAND (`ƒ` in the build output:
@@ -287,5 +297,5 @@ collection="<id>" />` (section id `latest-<id>`), or a plain list with
 Create `content/articles/<id>/` with one `<locale>.md` per supported locale (translate the
 `slug`, keep `date` identical), put any image in `public/articles/<id>/`, run the Definition of
 done, open a PR. The article is online after the Netlify redeploy of `main` (a few minutes),
-not on a simple refresh. The E2E `tests/e2e/articles.spec.ts` relies on the two demo articles
-(`writing-articles`, `architecture-tour`) and the archived one (`archived-entries`, `archived: true`): a derived site replacing them updates that spec.
+not on a simple refresh. The E2E `tests/e2e/articles.spec.ts` (and `comments.spec.ts`) rely on the two demo
+articles (`writing-articles`, `architecture-tour`): a derived site replacing them updates those specs.
