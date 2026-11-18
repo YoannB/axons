@@ -1,4 +1,5 @@
-import { SITE_NAME, SITE_URL } from "@/constants/site";
+import { AppSplash } from "@/components/ui/AppSplash";
+import { SITE_NAME, SITE_URL, SPLASH } from "@/constants/site";
 import { SITE } from "@/site/config";
 import { LOCALES } from "@/i18n/locales";
 import { buildBootScript } from "@/lib/boot-script";
@@ -39,10 +40,9 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
             </head>
             <body>
                 {/* Pre-hydration splash: server node, hidden (never removed) by SplashLoader,
-            which lives under the providers in app/[locale]/layout.tsx (same document). */}
-                <div id="app-splash" aria-hidden="true">
-                    <span className="loader__bar" />
-                </div>
+            which lives under the providers in app/[locale]/layout.tsx (same document).
+            Its content (logo, bar) is the site's choice: SITE.splash. */}
+                <AppSplash {...SPLASH} />
                 {children}
             </body>
         </html>
