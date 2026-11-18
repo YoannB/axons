@@ -37,7 +37,11 @@ type Story = StoryObj<typeof meta>;
 export const WithCover: Story = { args: { image: "/storybook-assets/story-cover.svg" } };
 export const WithoutCover: Story = { args: { collectionLabel: "Articles" } };
 export const WithoutCoverShortTitle: Story = {
-    args: { title: "Closures", description: "The smallest possible title on a title cover.", collectionLabel: "Articles" },
+    args: {
+        title: "Closures",
+        description: "The smallest possible title on a title cover.",
+        collectionLabel: "Articles",
+    },
 };
 export const WithoutCoverLongTitle: Story = {
     args: {
