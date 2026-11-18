@@ -1,4 +1,4 @@
-import { ADS_ENABLED, AI_ENABLED, CONSENT_REQUIRED, GTM_ID } from "@/constants/site";
+import { ADS_ENABLED, AI_ENABLED, COMMENTS_ENABLED, CONSENT_REQUIRED, GTM_ID } from "@/constants/site";
 import { visibleLegalSections, type LegalFlags, type LegalSection } from "@/lib/legal-sections";
 
 // The site switches the legal copy depends on (lib/legal-sections.ts).
@@ -7,6 +7,7 @@ export const LEGAL_FLAGS: LegalFlags = {
     ads: ADS_ENABLED,
     gtm: GTM_ID !== "",
     consent: CONSENT_REQUIRED,
+    comments: COMMENTS_ENABLED,
 };
 
 // Body of the legal / privacy / cookies pages. Server-compatible: no hook. `sections` is the raw

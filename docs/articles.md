@@ -60,6 +60,10 @@ collection (a derived site's "reminders", …), with `content/<collection>/` in 
   Archive badges through the neutral `Chip`), `ArticleBody.tsx` (Markdown renderer + server-side
   code highlighting); `components/home/LatestArticles.tsx` (3 most recent non-archived entries of a
   collection, `collection` prop, default articles; renders nothing without entries).
+- `lib/comments.ts` — PURE comment rules (config resolution, per-collection switch, thread
+  identity, Disqus language); `components/content/EntryComments.tsx` (client: consent gate +
+  on-demand Disqus), `CommentsGate.tsx` (neutral placeholder, story), `DisqusThread.tsx` (the only
+  `disqus-react` import). See _Comments_.
 - `lib/seo.ts` — `articleMetadata` (with the entry's social image, `/og/<locale>/<route>/<slug>.png`)
   / `articleJsonLd` (optional `itemHref` / `schemaType`) /
   `articlePath` / `entryPath`; `app/sitemap.ts` adds one entry per served translation of every
@@ -122,6 +126,73 @@ under `latestTitle`. When every entry of the collection is an archive, it shows 
 archives under `archivesTitle` (each with its Archive badge) instead of disappearing: a site whose
 content is all old keeps a home block, but never presents it as news. With Axons' defaults
 nothing is archived, so the block is unchanged.
+
+## Comments (Disqus, behind consent)
+
+Optional comments under the NON-archived entries of chosen collections. Off by default: without
+configuration nothing renders, no Disqus code ships, the CSP and the cookie banner are unchanged.
+
+Configuration (`site/config.ts`; pure rules in `lib/comments.ts`, 100% branch-covered by
+`tests/unit/comments.test.ts`):
+
+```ts
+comments: { provider: "disqus", shortname: "my-forum" }, // shortname optional, see below
+collectionDefaults: { comments: true },                    // every collection, Axons' articles included
+collections: [{ id: "reminders", /* … */ comments: false }], // a collection's own value wins
+```
+
+- **Shortname priority**: `NEXT_PUBLIC_DISQUS_SHORTNAME` (build-time, inlined) WINS over
+  `SITE.comments.shortname`, so one codebase can point a preview at another forum. The env alone
+  never turns comments on: `SITE.comments` must be declared. No shortname from either source =>
+  off. A malformed shortname (anything but letters, digits, inner hyphens) fails the build, and so
+  does a non-boolean `comments`.
+- **Active** (`COMMENTS_ENABLED`) = resolved shortname AND at least one enabled collection with
+  comments. It switches on the `comments` consent purpose (`CONSENT_REQUIRED` becomes true), the
+  `when: ["comments"]` legal paragraphs (docs/i18n.md → Legal copy follows the site switches) and
+  the Disqus CSP origins (docs/architecture.md → Security headers).
+- **Axons' demo**: `comments: { provider: "disqus" }` + `collectionDefaults: { comments: true }`
+  with NO shortname, so the preview shows comments only when Netlify has
+  `NEXT_PUBLIC_DISQUS_SHORTNAME` (Site configuration → Environment variables, scope Builds, then
+  redeploy: the value is inlined at build). CI sets a FAKE one for the e2e specs.
+
+Where: `collectionEntry` (`components/content/CollectionPages.tsx`) renders `EntryComments` after
+the `<article>` only when the collection has comments AND `entryStatus(...).isArchived` is false.
+Never on an archived entry, a listing or any other page.
+
+Thread identity (`disqusThreadConfig`): `identifier` = `<collection>/<entry id>/<locale>`, stable
+across URL and slug changes; `url` = the translation's ABSOLUTE canonical URL (`entryUrl`, on
+`SITE_URL`); `title` = the front-matter title; `language` = the Disqus code of the locale (`fr`,
+`en`, `es_ES`, `de`, `it`, `pt_EU`; unknown => `en`). ONE THREAD PER TRANSLATION, on purpose: a
+Disqus thread stores a single URL and title, readers answer in the page's language, and moderation
+emails and "recent comments" would otherwise point every language at whichever translation opened
+the thread first. Changing this scheme orphans existing threads (Disqus has a URL/identifier
+mapper, but plan it as a migration).
+
+Consent (CNIL): Disqus places third-party cookies, so NOTHING is requested from it before an
+explicit choice. `EntryComments` (client) first renders `CommentsGate`: a notice naming Disqus as a
+third-party service, a link to its privacy policy, "Show comments" (this page only, local state set
+in the click handler) and "Always show comments" (`allowComments`: records the `comments` purpose,
+other purposes unchanged, refused when none was chosen yet). The cookie banner lists the configured
+purposes, `comments` included, and "Accept" grants it. The consent's server snapshot is `null`, so
+SSR and hydration always render the placeholder; a returning visitor who granted the purpose sees
+the thread load right after hydration. Refusing never hides the entry. Withdrawing a granted
+purpose reloads the page, as for GTM (an injected Disqus cannot be unloaded). A consent cookie
+written before this feature has no `comments` field: it reads as refused (never implied).
+
+Loading: `disqus-react` (`DiscussionEmbed`) is imported ONLY by `components/content/DisqusThread.tsx`,
+itself loaded through `next/dynamic` with `ssr: false` once the visitor chose: no Disqus JS in any
+page bundle, and no request before the choice (`tests/e2e/comments.spec.ts` aborts every Disqus
+request and asserts none happens before the click or the consent). `disqus-react` requires
+`prop-types` without declaring it; it resolves to the copy MUI already installs.
+
+Theme: the Disqus iframe is transparent over `--bg-0` and picks light or dark ONCE, from the text
+colour around `#disqus_thread` (`.entry-comments__thread { color: var(--text-1) }`). A theme toggle
+therefore RELOADS the thread: `DisqusThread` subscribes to the `data-theme` attribute of `<html>`
+(MutationObserver through `useSyncExternalStore`, no effect state) and keys `DiscussionEmbed` on
+it, so the remount happens after the new colours are painted.
+
+Disqus side (its admin, not this repo): set the Website URL, add the production and preview hosts
+to Trusted Domains, and review the Ads settings (free plans may show ads inside the thread).
 
 ## Code highlighting
 

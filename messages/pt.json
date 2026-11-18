@@ -170,12 +170,17 @@
         "builtWith": "Construído com Next.js, Material UI, next-intl e OpenRouter"
     },
     "cookie": {
-        "message": "Este site utiliza cookies para melhorar a sua experiência, medir audiência e apresentar anúncios. Pode aceitar ou recusar a sua utilização.",
+        "message": "Este site utiliza cookies e serviços de terceiros que requerem o seu consentimento, para as finalidades indicadas abaixo. Pode aceitá-los ou recusá-los.",
         "accept": "Aceitar",
         "refuse": "Recusar",
         "settings": "Preferências",
         "link": "Saber mais",
-        "manage": "Gerir cookies"
+        "manage": "Gerir cookies",
+        "purposes": {
+            "analytics": "Medição de audiência",
+            "ads": "Publicidade",
+            "comments": "Comentários (Disqus, serviço de terceiros)"
+        }
     },
     "theme": {
         "light": "Claro",
@@ -217,7 +222,11 @@
                     "heading": "Alojamento",
                     "body": [
                         "O site é alojado pela Netlify, Inc., 2325 3rd Street, Suite 100, San Francisco, CA 94107, Estados Unidos (ou pela sua subsidiária europeia relevante).",
-                        "Os dados técnicos necessários ao funcionamento do serviço (registos de ligação, endereços IP) são tratados pelo alojamento no âmbito da prestação do serviço."
+                        "Os dados técnicos necessários ao funcionamento do serviço (registos de ligação, endereços IP) são tratados pelo alojamento no âmbito da prestação do serviço.",
+                        {
+                            "text": "Os comentários apresentados sob alguns conteúdos são escritos pelos seus autores e alojados pelo Disqus, um serviço de comentários de terceiros (política de privacidade: https://disqus.com/privacy-policy/).",
+                            "when": ["comments"]
+                        }
                     ]
                 },
                 {
@@ -278,6 +287,10 @@
                         {
                             "text": "As preferências de tema e o consentimento de cookies são armazenados localmente no seu browser (cookie + localStorage) e não são transmitidos ao servidor.",
                             "when": ["!ai"]
+                        },
+                        {
+                            "text": "Se optar por mostrar os comentários de um conteúdo, o serviço Disqus é carregado no seu navegador e recebe os dados necessários para os apresentar (como o seu endereço IP e as informações do navegador); o que aí publicar é tratado pelo Disqus segundo a sua própria política de privacidade: https://disqus.com/privacy-policy/.",
+                            "when": ["comments"]
                         }
                     ]
                 },
@@ -295,6 +308,10 @@
                                 {
                                     "text": "a publicidade (consentimento)",
                                     "when": ["ads"]
+                                },
+                                {
+                                    "text": "a apresentação dos comentários através do Disqus (consentimento)",
+                                    "when": ["comments"]
                                 },
                                 {
                                     "text": "a disponibilização de respostas de IA ao seu pedido (execução do serviço solicitado)",
@@ -333,6 +350,10 @@
                         {
                             "text": "Os dados não são vendidos nem arrendados. Apenas o alojamento (Netlify) pode tratar os dados estritamente necessários para prestar o serviço.",
                             "when": ["!ai"]
+                        },
+                        {
+                            "text": "Quando mostra os comentários, o Disqus, prestador terceiro, recebe os dados necessários para os apresentar e trata-os segundo a sua própria política.",
+                            "when": ["comments"]
                         },
                         "Se ocorrer alguma transferência fora da União Europeia, ela é enquadrada por salvaguardas apropriadas (cláusulas contratuais-tipo da Comissão Europeia ou decisão de adequação)."
                     ]
@@ -385,6 +406,10 @@
                         {
                             "text": "Cookies publicitários: depositados apenas após o seu consentimento, podem ser recusados sem degradar a navegação.",
                             "when": ["ads", "!gtm"]
+                        },
+                        {
+                            "text": "Cookies de comentários (Disqus): o fio de comentários é carregado a partir do Disqus, um serviço de terceiros, apenas após um clique em «Mostrar os comentários» ou a sua autorização para os comentários; o Disqus pode então depositar os seus próprios cookies, descritos na sua política de privacidade (https://disqus.com/privacy-policy/). Recusá-los nunca impede a leitura do conteúdo.",
+                            "when": ["comments"]
                         }
                     ]
                 },
@@ -457,5 +482,13 @@
         "new": "Novo",
         "archive": "Arquivo",
         "archiveNotice": "Conteúdo de arquivo: publicado há algum tempo e mantido como estava, pode estar desatualizado."
+    },
+    "comments": {
+        "title": "Comentários",
+        "notice": "Os comentários são fornecidos pelo Disqus, um serviço de terceiros. Mostrá-los carrega o Disqus, que pode depositar os seus próprios cookies e tratar os seus dados segundo a sua política de privacidade.",
+        "policy": "Política de privacidade do Disqus",
+        "show": "Mostrar os comentários",
+        "always": "Mostrar sempre os comentários",
+        "loading": "A carregar os comentários…"
     }
 }

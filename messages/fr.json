@@ -170,12 +170,17 @@
         "builtWith": "Construit avec Next.js, Material UI, next-intl et OpenRouter"
     },
     "cookie": {
-        "message": "Ce site utilise des cookies pour améliorer votre expérience, mesurer l'audience et afficher des publicités. Vous pouvez accepter ou refuser leur utilisation.",
+        "message": "Ce site utilise des cookies et des services tiers soumis à votre consentement, pour les finalités ci-dessous. Vous pouvez les accepter ou les refuser.",
         "accept": "Accepter",
         "refuse": "Refuser",
         "settings": "Préférences",
         "link": "En savoir plus",
-        "manage": "Gérer mes cookies"
+        "manage": "Gérer mes cookies",
+        "purposes": {
+            "analytics": "Mesure d'audience",
+            "ads": "Publicité",
+            "comments": "Commentaires (Disqus, service tiers)"
+        }
     },
     "theme": {
         "light": "Clair",
@@ -217,7 +222,11 @@
                     "heading": "Hébergeur",
                     "body": [
                         "Le site est hébergé par Netlify, Inc., 2325 3rd Street, Suite 100, San Francisco, CA 94107, États-Unis (ou sa filiale européenne le cas échéant).",
-                        "Les données techniques nécessaires au fonctionnement du service (journaux de connexion, adresses IP) sont traitées par l'hébergeur dans le cadre de la fourniture du service."
+                        "Les données techniques nécessaires au fonctionnement du service (journaux de connexion, adresses IP) sont traitées par l'hébergeur dans le cadre de la fourniture du service.",
+                        {
+                            "text": "Les commentaires affichés sous certains contenus sont rédigés par leurs auteurs et hébergés par Disqus, un service tiers de commentaires (politique de confidentialité : https://disqus.com/privacy-policy/).",
+                            "when": ["comments"]
+                        }
                     ]
                 },
                 {
@@ -278,6 +287,10 @@
                         {
                             "text": "Les préférences de thème et le consentement aux cookies sont stockés localement dans votre navigateur (cookie + localStorage) et ne sont pas transmis au serveur.",
                             "when": ["!ai"]
+                        },
+                        {
+                            "text": "Si vous choisissez d'afficher les commentaires d'un contenu, le service Disqus se charge dans votre navigateur et reçoit les données nécessaires à leur affichage (comme votre adresse IP et les informations de votre navigateur) ; ce que vous y publiez est traité par Disqus selon sa propre politique de confidentialité : https://disqus.com/privacy-policy/.",
+                            "when": ["comments"]
                         }
                     ]
                 },
@@ -295,6 +308,10 @@
                                 {
                                     "text": "l'affichage de publicités (consentement)",
                                     "when": ["ads"]
+                                },
+                                {
+                                    "text": "l'affichage des commentaires via Disqus (consentement)",
+                                    "when": ["comments"]
                                 },
                                 {
                                     "text": "la fourniture de réponses IA à votre demande (exécution du service demandé)",
@@ -333,6 +350,10 @@
                         {
                             "text": "Les données ne sont pas cédées ni louées. Seul l'hébergeur (Netlify) est susceptible de traiter les données strictement nécessaires à l'exécution du service.",
                             "when": ["!ai"]
+                        },
+                        {
+                            "text": "Lorsque vous affichez les commentaires, Disqus, prestataire tiers, reçoit les données nécessaires à leur affichage et les traite selon sa propre politique.",
+                            "when": ["comments"]
                         },
                         "Si un transfert hors Union européenne intervient, il est encadré par des garanties appropriées (clauses contractuelles types de la Commission européenne ou décision d'adéquation)."
                     ]
@@ -385,6 +406,10 @@
                         {
                             "text": "Cookies publicitaires : déposés uniquement après votre consentement, ils peuvent être refusés sans dégrader la navigation.",
                             "when": ["ads", "!gtm"]
+                        },
+                        {
+                            "text": "Cookies de commentaires (Disqus) : le fil de commentaires est chargé depuis Disqus, un service tiers, uniquement après un clic sur « Afficher les commentaires » ou votre accord pour les commentaires ; Disqus peut alors déposer ses propres cookies, décrits dans sa politique de confidentialité (https://disqus.com/privacy-policy/). Les refuser n'empêche jamais de lire le contenu.",
+                            "when": ["comments"]
                         }
                     ]
                 },
@@ -457,5 +482,13 @@
         "new": "Nouveau",
         "archive": "Archive",
         "archiveNotice": "Contenu d'archive : publié il y a longtemps et conservé tel quel, il peut être daté."
+    },
+    "comments": {
+        "title": "Commentaires",
+        "notice": "Les commentaires sont fournis par Disqus, un service tiers. Les afficher charge Disqus, qui peut déposer ses propres cookies et traiter vos données selon sa politique de confidentialité.",
+        "policy": "Politique de confidentialité de Disqus",
+        "show": "Afficher les commentaires",
+        "always": "Toujours afficher les commentaires",
+        "loading": "Chargement des commentaires…"
     }
 }

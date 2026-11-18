@@ -4,8 +4,19 @@
 // docs/architecture.md → Deriving a site.
 import type { ReactNode } from "react";
 import { validateRules, type CollectionRules } from "./articles/status";
+import {
+    commentsActive,
+    resolveComments,
+    validateCommentsSwitch,
+    type CommentsSwitch,
+    type SiteComments,
+} from "./comments";
 
 export type { CollectionRules } from "./articles/status";
+export type { CommentsSwitch, SiteComments } from "./comments";
+
+/** `SITE.collectionDefaults`: badge rules + the comments switch, applied to every collection. */
+export type CollectionDefaults = CollectionRules & CommentsSwitch;
 // Contract of site/og-image.tsx (the social image), defined next to its pure rules.
 export type { OgFont, OgImageProps, OgTheme, SiteOgImage } from "./og/model";
 
@@ -53,7 +64,7 @@ export type CollectionSchemaType = "BlogPosting" | "TechArticle" | "Article";
  * Axons' own articles are the default collection (`id: "articles"`); a site declares more in
  * `SITE.collections` and adds two delegating page files (docs/articles.md → Collections).
  */
-export interface CollectionConfig<Href extends string = string> extends CollectionRules {
+export interface CollectionConfig<Href extends string = string> extends CollectionRules, CommentsSwitch {
     /** Folder under content/ (kebab-case), also the collection key used by the page factories. */
     readonly id: string;
     /** false => listing and entries answer 404, and the nav / sitemap entries disappear. */
@@ -132,7 +143,13 @@ export interface SiteConfig<P extends SitePathnames = SitePathnames> {
      * "New" / "Archive" badge rules applied to EVERY collection (Axons' articles included); a
      * collection's own `newForDays` / `archiveBefore` wins. Absent => no badge (Axons' default).
      */
-    readonly collectionDefaults?: CollectionRules;
+    readonly collectionDefaults?: CollectionDefaults;
+    /**
+     * Comments under the NON-archived entries of the collections that opt in (`comments: true` on a
+     * collection or in `collectionDefaults`). Absent => no comments anywhere. The shortname may come
+     * from NEXT_PUBLIC_DISQUS_SHORTNAME, which wins (docs/articles.md → Comments).
+     */
+    readonly comments?: SiteComments;
     /**
      * Message paths (dotted, e.g. "meta.home") whose Axons value the site messages may REPLACE.
      * Any other collision between site/messages and messages/ throws at build time.
@@ -227,8 +244,25 @@ export function validateCollections<C extends CollectionConfig>(collections: rea
             throw new Error(`Invalid ${where}: itemHref "${c.itemHref}" must end with "/[slug]".`);
         }
         validateRules(c, where);
+        validateCommentsSwitch(c, where);
     }
     return collections;
+}
+
+/**
+ * Are comments active on this site? Same rule as constants/site.ts (`COMMENTS_ENABLED`): Axons'
+ * articles (no own switch, `articlesEnabled`) + the site's collections, the env shortname winning.
+ * Kept here, free of `@/` imports, so next.config.ts can widen the CSP only when comments exist.
+ */
+export function siteCommentsActive(
+    site: Pick<SiteConfig, "comments" | "articlesEnabled" | "collections" | "collectionDefaults">,
+    envShortname: string | undefined,
+): boolean {
+    return commentsActive(
+        resolveComments(site.comments, envShortname),
+        [{ enabled: site.articlesEnabled }, ...site.collections],
+        site.collectionDefaults ?? {},
+    );
 }
 
 /** Routes (listing + entry) of the DISABLED collections: hidden from nav and sitemap.xml. */

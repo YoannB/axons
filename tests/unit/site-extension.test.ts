@@ -8,6 +8,7 @@ import {
     hiddenHrefs,
     mergeMessages,
     mergePathnames,
+    siteCommentsActive,
     staticHrefs,
     validateCollections,
     type CollectionConfig,
@@ -145,6 +146,41 @@ describe("validateCollections", () => {
     });
 });
 
+describe("validateCollections — comments switch", () => {
+    it("accepts a boolean, rejects anything else", () => {
+        expect(validateCollections([collection({ comments: true })])).toHaveLength(1);
+        expect(() => validateCollections([collection({ comments: "yes" as unknown as boolean })])).toThrow(
+            'Invalid collection "reminders": comments must be a boolean',
+        );
+    });
+});
+
+describe("siteCommentsActive", () => {
+    const base = { articlesEnabled: true, collections: [] as CollectionConfig[], collectionDefaults: undefined };
+    it("off without SITE.comments, even with an env shortname", () => {
+        expect(siteCommentsActive({ ...base, collectionDefaults: { comments: true } }, "demo")).toBe(false);
+    });
+    it("off without a shortname", () => {
+        const site = { ...base, comments: { provider: "disqus" as const }, collectionDefaults: { comments: true } };
+        expect(siteCommentsActive(site, undefined)).toBe(false);
+    });
+    it("articles follow collectionDefaults; a disabled section does not count", () => {
+        const site = { ...base, comments: { provider: "disqus" as const, shortname: "demo" } };
+        expect(siteCommentsActive(site, undefined)).toBe(false);
+        expect(siteCommentsActive({ ...site, collectionDefaults: { comments: true } }, undefined)).toBe(true);
+        const off = { ...site, articlesEnabled: false, collectionDefaults: { comments: true } };
+        expect(siteCommentsActive(off, undefined)).toBe(false);
+    });
+    it("one site collection opting in is enough", () => {
+        const site = {
+            ...base,
+            comments: { provider: "disqus" as const },
+            collections: [collection({ comments: true })],
+        };
+        expect(siteCommentsActive(site, "demo")).toBe(true);
+    });
+});
+
 describe("hiddenHrefs", () => {
     it("lists both routes of every disabled collection only", () => {
         expect(
@@ -250,6 +286,12 @@ describe("shipped site layer", () => {
         const keys: string[] = Object.keys(SITE.pathnames);
         const items: readonly SiteNavItem[] = SITE.nav;
         for (const item of items) if ("href" in item) expect(keys).toContain(item.href);
+    });
+
+    it("comments: the shipped config stays neutral without a shortname, and turns on with one", () => {
+        expect(siteCommentsActive(SITE, undefined)).toBe(false);
+        expect(siteCommentsActive(SITE, "")).toBe(false);
+        expect(siteCommentsActive(SITE, "axons-demo")).toBe(SITE.articlesEnabled);
     });
 });
 
