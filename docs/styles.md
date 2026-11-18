@@ -28,7 +28,8 @@ Load only the file(s) for the selector you touch. Selector prefixes are BEM bloc
 
 | File (`styles/…`)          | Owns                                                                                                                                                     |
 | -------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `tokens.css`               | `:root` design tokens (dark by default, incl. `--code-*` highlighting, `--btn-fg` primary label) and the `[data-theme="light"]` overrides                |
+| `tokens.css`               | `:root` design tokens (dark default, incl. `--code-*`, `--btn-fg` label, `--scrollbar-*`) and the `[data-theme="light"]` overrides                       |
+| `scrollbars.css`           | themed scrollbars on every element, desktop only (standard + `::-webkit-scrollbar*` fallback): see _Scrollbars_                                          |
 | `base.css`                 | reset, `html`/`body` (incl. `overflow-x: clip`), sticky-footer skeleton, `.prose`, `.muted`                                                              |
 | `layout/containers.css`    | `.container` chain, `.page-shell` + rails, `.section`, `.card`, and the max-width/padding of page blocks (`.hero`, `.showcase`, `.faq`, …)               |
 | `layout/ad-slots.css`      | `.ad-slot`                                                                                                                                               |
@@ -60,3 +61,27 @@ Load only the file(s) for the selector you touch. Selector prefixes are BEM bloc
 A block can have rules in more than one file (layout constraints in `containers.css`, mobile
 squeeze in `header.css`, hover pings in `icons.css`): before changing a selector, search it
 across `styles/` (e.g. `rg "\.feature-strip" styles`).
+
+## Scrollbars
+
+`styles/scrollbars.css` themes every scroll area (page and inner panes) from four tokens of
+`tokens.css`: `--scrollbar-size` (WebKit fallback width), `--scrollbar-track` (transparent),
+`--scrollbar-thumb`, `--scrollbar-thumb-hover` (derived from `--muted` / `--text-2`; the thumb
+reaches at least 3:1 on `--bg-0` and the surfaces in both themes). CSS only, no JS library.
+
+- Gated by `@media (hover: hover) and (pointer: fine) and (forced-colors: none)`: touch screens
+  keep their native overlay bars, Windows High Contrast keeps the system bars.
+- Standard first: `scrollbar-width: thin` + `scrollbar-color` on `*` (width is not inherited;
+  colour is set per element so a hovered pane does not brighten the panes it contains). The
+  pointer brightens the thumb of the scroll area it is over (`:where(body *):hover`; `html` is
+  excluded, being always hovered).
+- `::-webkit-scrollbar*` fallback only inside `@supports not (scrollbar-color: auto)` (Safari,
+  older Chromium). Chrome >= 121 ignores those pseudo-elements on an element whose
+  `scrollbar-color`/`scrollbar-width` is not `auto`, so the guard only makes explicit what Chrome
+  already does; in Safari (which knows `scrollbar-width` since 18.2) it resets the width to
+  `auto` so the pseudo-elements apply.
+- Zero specificity everywhere (`*`, `:where`), and the file sits right after `base.css` in the
+  manifest: a component rule (e.g. `.tabs__list`) always overrides it.
+- A derived site recolours scrollbars by overriding the tokens ONLY, in `site/theme.css`, e.g.
+  `:root { --scrollbar-thumb: color-mix(in oklab, var(--accent-1) 55%, transparent); }` (and the
+  light variant under `[data-theme="light"]`). Never restyle the pseudo-elements there.
