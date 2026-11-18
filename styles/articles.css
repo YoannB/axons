@@ -25,6 +25,83 @@
     font-size: 0.75rem;
     color: var(--text-2);
 }
+/* Title cover of an entry without `image` (docs/articles.md → Cards without an image). Derived
+   from the theme tokens only: a site recolours it through --accent-* / --surface-* / --text-*.
+   Text is --text-1 on a LIGHT tint of the accents over --surface-2, so AA (>= 4.5:1) holds in
+   both themes whatever the accent hue; the full-strength accents only paint the decorative bar. */
+.article-teaser .article-card__thumb {
+    container-type: inline-size;
+    place-items: stretch;
+}
+.article-teaser__cover {
+    --cover-tint-1: 30%;
+    --cover-tint-2: 22%;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 6px;
+    min-height: 120px;
+    padding: 16px 16px 16px 20px;
+    color: var(--text-1);
+    background:
+        radial-gradient(
+            120% 90% at 100% 0%,
+            color-mix(in oklab, var(--accent-2) var(--cover-tint-2), transparent),
+            transparent 70%
+        ),
+        linear-gradient(
+            135deg,
+            color-mix(in oklab, var(--accent-1) var(--cover-tint-1), var(--surface-2)),
+            var(--surface-2)
+        );
+    transition: filter 0.3s ease;
+}
+[data-theme="light"] .article-teaser__cover {
+    --cover-tint-1: 18%;
+    --cover-tint-2: 16%;
+}
+/* Decorative accent bar on the leading edge. */
+.article-teaser__cover::before {
+    content: "";
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 4px;
+    background: linear-gradient(180deg, var(--accent-1), var(--accent-2));
+}
+.article-card:hover .article-teaser__cover {
+    filter: saturate(1.15) brightness(1.04);
+}
+.article-teaser__cover-kicker {
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-2);
+}
+/* Whole words per line (no hyphenation, a word is only broken when it cannot fit a line on its
+   own), clamped with an ellipsis. Size follows the thumb width (container query units). */
+.article-teaser__cover-title {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 4;
+    line-clamp: 4;
+    overflow: hidden;
+    font-size: clamp(0.95rem, 0.55rem + 3.4cqi, 1.35rem);
+    font-weight: 750;
+    line-height: 1.22;
+    letter-spacing: -0.01em;
+    overflow-wrap: break-word;
+    hyphens: manual;
+    text-wrap: pretty;
+}
+/* Wide thumb (single-column card on mobile): bigger text, fewer lines in the same height. */
+@container (min-width: 320px) {
+    .article-teaser__cover-title {
+        -webkit-line-clamp: 3;
+        line-clamp: 3;
+    }
+}
 .latest-articles__all {
     display: inline-block;
     margin-top: 14px;

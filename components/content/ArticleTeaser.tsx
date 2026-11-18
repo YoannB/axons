@@ -20,6 +20,9 @@ export interface ArticleTeaserProps {
     headingLevel?: "h2" | "h3";
     // "New" / "Archive" status badges (pre-translated), shown next to the date.
     badges?: EntryBadge[];
+    // Collection label (pre-translated, e.g. "Articles") shown small on the title cover of an
+    // entry without `image`. Optional: absent = the cover shows the title alone.
+    collectionLabel?: string;
 }
 
 // Internal article preview (listing + "latest articles" block). Server-compatible: no hook,
@@ -36,6 +39,7 @@ export function ArticleTeaser({
     fallback,
     headingLevel: Heading = "h2",
     badges,
+    collectionLabel,
 }: ArticleTeaserProps) {
     // The translation's OWN URL, built like the sitemap/hreflang (entryPath → getPathname, which
     // honours localePrefix "as-needed"): no prefix for the default locale. next-intl's <Link> with
@@ -49,11 +53,13 @@ export function ArticleTeaser({
                     // eslint-disable-next-line @next/next/no-img-element -- static public asset of unknown size
                     <img src={image} alt="" className="article-card__img" loading="lazy" />
                 ) : (
-                    <span className="article-card__mark">
-                        {title
-                            .replace(/[^\p{L}\p{N}]/gu, "")
-                            .slice(0, 2)
-                            .toUpperCase()}
+                    // No cover: a typographic one with the title itself (CSS line-clamp, no JS).
+                    // Decorative like the whole thumb link: the real title is the heading below.
+                    <span className="article-teaser__cover" lang={fallback ? locale : undefined}>
+                        {collectionLabel ? (
+                            <span className="article-teaser__cover-kicker">{collectionLabel}</span>
+                        ) : null}
+                        <span className="article-teaser__cover-title">{title}</span>
                     </span>
                 )}
             </Link>
