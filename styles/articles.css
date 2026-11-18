@@ -187,3 +187,35 @@
     border-inline-start: 3px solid var(--accent-1);
     color: var(--muted);
 }
+
+/* ===== Entry comments (components/content/EntryComments.tsx, CommentsGate.tsx) ===== */
+.entry-comments {
+    margin-top: 40px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border-2);
+}
+.entry-comments__title {
+    margin: 0 0 12px;
+}
+.entry-comments__notice,
+.entry-comments__loading {
+    margin: 0 0 14px;
+    color: var(--text-2);
+    font-size: 0.9rem;
+}
+.entry-comments__actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+.entry-comments__policy {
+    font-size: 0.82rem;
+    color: var(--accent-2);
+    text-decoration: underline;
+}
+/* Disqus picks its light/dark scheme from the text colour around the thread (its iframe is
+   transparent over --bg-0), so the thread sits on the page colours of the painted theme. */
+.entry-comments__thread {
+    color: var(--text-1);
+}

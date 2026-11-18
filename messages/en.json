@@ -170,12 +170,17 @@
         "builtWith": "Built with Next.js, Material UI, next-intl and OpenRouter"
     },
     "cookie": {
-        "message": "This site uses cookies to improve your experience, measure audience and display ads. You can accept or refuse their use.",
+        "message": "This site uses cookies and third-party services that require your consent, for the purposes below. You can accept or refuse them.",
         "accept": "Accept",
         "refuse": "Refuse",
         "settings": "Preferences",
         "link": "Learn more",
-        "manage": "Manage cookies"
+        "manage": "Manage cookies",
+        "purposes": {
+            "analytics": "Audience measurement",
+            "ads": "Advertising",
+            "comments": "Comments (Disqus, a third-party service)"
+        }
     },
     "theme": {
         "light": "Light",
@@ -217,7 +222,11 @@
                     "heading": "Host",
                     "body": [
                         "The site is hosted by Netlify, Inc., 2325 3rd Street, Suite 100, San Francisco, CA 94107, United States (or its relevant European subsidiary).",
-                        "Technical data required to operate the service (connection logs, IP addresses) is processed by the host as part of providing the service."
+                        "Technical data required to operate the service (connection logs, IP addresses) is processed by the host as part of providing the service.",
+                        {
+                            "text": "Comments shown under some content are written by their authors and hosted by Disqus, a third-party comment service (privacy policy: https://disqus.com/privacy-policy/).",
+                            "when": ["comments"]
+                        }
                     ]
                 },
                 {
@@ -278,6 +287,10 @@
                         {
                             "text": "Theme preferences and cookie consent are stored locally in your browser (cookie + localStorage) and are not transmitted to the server.",
                             "when": ["!ai"]
+                        },
+                        {
+                            "text": "If you choose to show the comments of an entry, the Disqus service loads in your browser and receives the data needed to display them (such as your IP address and browser information); what you post there is processed by Disqus under its own privacy policy: https://disqus.com/privacy-policy/.",
+                            "when": ["comments"]
                         }
                     ]
                 },
@@ -295,6 +308,10 @@
                                 {
                                     "text": "advertising (consent)",
                                     "when": ["ads"]
+                                },
+                                {
+                                    "text": "displaying comments through Disqus (consent)",
+                                    "when": ["comments"]
                                 },
                                 {
                                     "text": "providing AI answers to your request (performance of the requested service)",
@@ -333,6 +350,10 @@
                         {
                             "text": "Data is not sold or rented. Only the host (Netlify) may process the data strictly necessary to deliver the service.",
                             "when": ["!ai"]
+                        },
+                        {
+                            "text": "When you show the comments, Disqus, a third-party provider, receives the data needed to display them and processes it under its own policy.",
+                            "when": ["comments"]
                         },
                         "If any transfer outside the European Union occurs, it is framed by appropriate safeguards (European Commission standard contractual clauses or an adequacy decision)."
                     ]
@@ -385,6 +406,10 @@
                         {
                             "text": "Advertising cookies: placed only after your consent, they can be refused without degrading navigation.",
                             "when": ["ads", "!gtm"]
+                        },
+                        {
+                            "text": "Comment cookies (Disqus): the comment thread is loaded from Disqus, a third-party service, only after you click \"Show comments\" or allow comments; Disqus may then place its own cookies, described in its privacy policy (https://disqus.com/privacy-policy/). Refusing them never prevents reading the content.",
+                            "when": ["comments"]
                         }
                     ]
                 },
@@ -457,5 +482,13 @@
         "new": "New",
         "archive": "Archive",
         "archiveNotice": "Archived content: published a while ago and kept as it was, it may be out of date."
+    },
+    "comments": {
+        "title": "Comments",
+        "notice": "Comments are provided by Disqus, a third-party service. Showing them loads Disqus, which may place its own cookies and process your data under its privacy policy.",
+        "policy": "Disqus privacy policy",
+        "show": "Show comments",
+        "always": "Always show comments",
+        "loading": "Loading comments…"
     }
 }

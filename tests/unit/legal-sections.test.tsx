@@ -9,8 +9,8 @@ import pt from "@/messages/pt.json";
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 
-const ALL_ON: LegalFlags = { ai: true, ads: true, gtm: true, consent: true };
-const ALL_OFF: LegalFlags = { ai: false, ads: false, gtm: false, consent: false };
+const ALL_ON: LegalFlags = { ai: true, ads: true, gtm: true, consent: true, comments: true };
+const ALL_OFF: LegalFlags = { ai: false, ads: false, gtm: false, consent: false, comments: false };
 
 describe("visibleLegalSections — pure filter", () => {
     const sections: LegalSection[] = [
@@ -59,7 +59,7 @@ describe("visibleLegalSections — pure filter", () => {
 // The REAL copy, in every locale: what a site with the switches off would publish.
 const LOCALES = { de, en, es, fr, it: it_, pt } as const;
 const PAGES = ["legal", "privacy", "cookies"] as const;
-const FLAG_RE = /^!?(ai|ads|gtm|consent)$/;
+const FLAG_RE = /^!?(ai|ads|gtm|consent|comments)$/;
 
 function raw(locale: keyof typeof LOCALES, page: (typeof PAGES)[number]): LegalSection[] {
     return (LOCALES[locale].pages[page] as unknown as { sections: LegalSection[] }).sections;
@@ -103,13 +103,34 @@ describe.each(Object.keys(LOCALES) as (keyof typeof LOCALES)[])("legal copy — 
 
     it("no tracker: the cookies page drops the consent and retention sections, the privacy page the consent purposes", () => {
         const on = visibleLegalSections(raw(locale, "cookies"), ALL_ON);
-        const off = visibleLegalSections(raw(locale, "cookies"), { ...ALL_ON, gtm: false, ads: false, consent: false });
+        const off = visibleLegalSections(raw(locale, "cookies"), {
+            ...ALL_ON,
+            gtm: false,
+            ads: false,
+            consent: false,
+            comments: false,
+        });
         // Consent (banner) and retention (consent + audience cookies) only describe trackers.
         expect(off.length).toBe(on.length - 2);
         const purposes = (flags: LegalFlags) =>
             visibleLegalSections(raw(locale, "privacy"), flags)[2].body.find(Array.isArray) as string[];
-        expect(purposes(ALL_ON)).toHaveLength(4);
+        expect(purposes(ALL_ON)).toHaveLength(5);
         expect(purposes(ALL_OFF)).toHaveLength(1);
+    });
+
+    it("comments off: no page mentions Disqus", () => {
+        for (const page of PAGES) {
+            expect(text(raw(locale, page), { ...ALL_ON, comments: false })).not.toMatch(/Disqus/);
+        }
+    });
+
+    it("comments on: Disqus and its privacy policy are disclosed on the three pages", () => {
+        for (const page of PAGES) {
+            expect(text(raw(locale, page), ALL_ON)).toMatch(/Disqus/);
+            expect(text(raw(locale, page), ALL_ON)).toContain("https://disqus.com/privacy-policy/");
+        }
+        const purposes = visibleLegalSections(raw(locale, "privacy"), ALL_ON)[2].body.find(Array.isArray) as string[];
+        expect(purposes.filter((p) => p.includes("Disqus"))).toHaveLength(1);
     });
 
     it("ads without GTM, and GTM without ads: exactly one tracker paragraph on the cookies page", () => {

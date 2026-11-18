@@ -73,6 +73,11 @@ export const SITE = {
     // Optional "New" / "Archive" badges of every collection (articles included), e.g.
     // collectionDefaults: { newForDays: 90, archiveBefore: "2018-01-01" }. Absent => no badge; a
     // collection's own newForDays / archiveBefore wins (docs/articles.md → New and archive badges).
+    // `comments: true` here (or on one collection) shows comments under its non-archived entries.
+    // Axons' demo: comments on its articles, ACTIVE ONLY when NEXT_PUBLIC_DISQUS_SHORTNAME is set
+    // (no shortname here) — without it nothing changes (docs/articles.md → Comments).
+    collectionDefaults: { comments: true },
+    comments: { provider: "disqus" },
     // Example: ["meta.home", "hero"] lets site/messages replace Axons' home metadata and hero copy.
     messageOverrides: [],
     // Message paths read by the site's own Client Components (useTranslations), e.g. ["ide"]; the

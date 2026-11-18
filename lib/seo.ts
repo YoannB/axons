@@ -19,6 +19,11 @@ export function entryPath(itemHref: EntryHref, locale: string, slug: string): st
     return getPathname({ locale, href: { pathname: itemHref as "/articles/[slug]", params: { slug } } });
 }
 
+// Absolute canonical URL of an entry translation (SITE_URL + its localized path).
+export function entryUrl(itemHref: EntryHref, locale: string, slug: string): string {
+    return absolute(entryPath(itemHref, locale, slug));
+}
+
 // Localized path of an article translation (Axons' default collection).
 export function articlePath(locale: string, slug: string): string {
     return entryPath("/articles/[slug]", locale, slug);

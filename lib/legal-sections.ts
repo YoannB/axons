@@ -1,10 +1,10 @@
 // Legal / privacy / cookies copy (messages/<locale>.json → pages.{legal,privacy,cookies}.sections)
 // only describes what the build actually runs: a paragraph may carry `when` conditions on the
-// site switches (AI, ads, GTM, consent banner), so a site with AI off never mentions OpenRouter.
+// site switches (AI, ads, GTM, consent banner, third-party comments), so a site with AI off never mentions OpenRouter.
 // Pure: the pages pass the flags from constants/site.ts. Variants are written by REMOVING the
 // clauses of a disabled feature, never by adding legal statements.
 
-export type LegalFlag = "ai" | "ads" | "gtm" | "consent";
+export type LegalFlag = "ai" | "ads" | "gtm" | "consent" | "comments";
 export type LegalCondition = LegalFlag | `!${LegalFlag}`;
 export type LegalFlags = Readonly<Record<LegalFlag, boolean>>;
 

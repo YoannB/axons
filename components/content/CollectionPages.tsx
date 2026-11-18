@@ -1,12 +1,14 @@
 import { ArticleBody } from "@/components/content/ArticleBody";
 import { ArticleFeed } from "@/components/content/ArticleFeed";
 import { badgesFor, EntryBadges } from "@/components/content/EntryBadges";
+import { EntryComments } from "@/components/content/EntryComments";
 import { StaticPage } from "@/components/content/StaticPage";
-import { collectionRules, getCollection, SITE_NAME } from "@/constants/site";
+import { collectionComments, collectionRules, COMMENTS, getCollection, SITE_NAME } from "@/constants/site";
 import { getPathname } from "@/i18n/routing";
 import { collectionToday, getEntries, getEntry } from "@/lib/articles/source";
 import { entryStatus } from "@/lib/articles/status";
-import { articleJsonLd, articleMetadata, pageMetadata, type EntryHref, type LogicalHref } from "@/lib/seo";
+import { disqusThreadConfig } from "@/lib/comments";
+import { articleJsonLd, articleMetadata, entryUrl, pageMetadata, type EntryHref, type LogicalHref } from "@/lib/seo";
 import { getFormatter, getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
 
@@ -91,6 +93,21 @@ export function collectionEntry(id: string) {
         const status = entryStatus(article, collectionRules(collection), await collectionToday(locale));
         const badges = badgesFor(status, { new: tb("new"), archive: tb("archive") });
         const jsonLd = articleJsonLd(entry, locale, SITE_NAME, { itemHref, schemaType: collection.schemaType });
+        // Comments: only under a NON-archived entry of a collection that has them (docs/articles.md
+        // → Comments). One thread per translation, keyed by collection/entry id/locale, not by URL.
+        const comments =
+            COMMENTS && collectionComments(collection) && !status.isArchived
+                ? {
+                      shortname: COMMENTS.shortname,
+                      config: disqusThreadConfig({
+                          collection: collection.id,
+                          entryId: entry.id,
+                          locale,
+                          url: entryUrl(itemHref, locale, article.slug),
+                          title: article.title,
+                      }),
+                  }
+                : null;
 
         return (
             <>
@@ -104,21 +121,26 @@ export function collectionEntry(id: string) {
                         { label: article.title },
                     ]}
                     body={
-                        <article className="article">
-                            {/* A div, not a <p>: the Chip renders a <div>. */}
-                            <div className="article__meta muted">
-                                <time dateTime={article.date}>{t("publishedOn", { date: published })}</time>
-                                <EntryBadges badges={badges} />
-                            </div>
-                            {status.isArchived ? (
-                                <p className="article__archive-notice">{tb("archiveNotice")}</p>
+                        <>
+                            <article className="article">
+                                {/* A div, not a <p>: the Chip renders a <div>. */}
+                                <div className="article__meta muted">
+                                    <time dateTime={article.date}>{t("publishedOn", { date: published })}</time>
+                                    <EntryBadges badges={badges} />
+                                </div>
+                                {status.isArchived ? (
+                                    <p className="article__archive-notice">{tb("archiveNotice")}</p>
+                                ) : null}
+                                {article.image ? (
+                                    // eslint-disable-next-line @next/next/no-img-element -- static public asset of unknown size
+                                    <img src={article.image} alt="" className="article__cover" />
+                                ) : null}
+                                <ArticleBody markdown={article.body} />
+                            </article>
+                            {comments ? (
+                                <EntryComments shortname={comments.shortname} config={comments.config} />
                             ) : null}
-                            {article.image ? (
-                                // eslint-disable-next-line @next/next/no-img-element -- static public asset of unknown size
-                                <img src={article.image} alt="" className="article__cover" />
-                            ) : null}
-                            <ArticleBody markdown={article.body} />
-                        </article>
+                        </>
                     }
                 />
             </>

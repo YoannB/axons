@@ -1,5 +1,6 @@
 import { LOCALES as SERVED_LOCALES } from "@/i18n/locales";
 import { resolveTimeZone } from "@/lib/day";
+import { collectionHasComments, resolveComments, validateCommentsSwitch } from "@/lib/comments";
 import { isAiEnabled, isConsentRequired } from "@/lib/flags";
 import {
     buildNav,
@@ -7,12 +8,14 @@ import {
     headerNav,
     hiddenHrefs,
     resolveSplash,
+    siteCommentsActive,
     validateCollections,
     type CollectionConfig,
+    type CollectionDefaults,
     type SeoResource,
     type SiteConfig,
 } from "@/lib/site-extension";
-import { resolveRules, validateRules, type CollectionRules, type ResolvedRules } from "@/lib/articles/status";
+import { resolveRules, validateRules, type ResolvedRules } from "@/lib/articles/status";
 import { buildOgPages } from "@/lib/og/model";
 import { normalizeSiteUrl } from "@/lib/site-url";
 import { SITE } from "@/site/config";
@@ -33,9 +36,6 @@ export const AI_ENABLED = isAiEnabled(process.env.NEXT_PUBLIC_AI_ENABLED, AI_DAI
 export const AI_QUOTA_TZ = resolveTimeZone(process.env.NEXT_PUBLIC_AI_QUOTA_TZ);
 export const ADS_ENABLED = process.env.NEXT_PUBLIC_ADS_ENABLED === "true";
 export const GTM_ID = process.env.NEXT_PUBLIC_GTM_ID ?? "";
-// The cookie banner exists only when a tracker that needs consent is configured (CNIL: no
-// banner theatre when the site sets no such tracker; functional storage needs none).
-export const CONSENT_REQUIRED = isConsentRequired({ gtmId: GTM_ID, adsEnabled: ADS_ENABLED });
 export const GITHUB_URL: string = SITE.githubUrl;
 
 // Site chrome switches (Axons defaults: true / true / 1). A one-page tool can drop the header
@@ -97,10 +97,11 @@ export const getCollection = (id: string): Collection => findCollection(COLLECTI
 // "New" / "Archive" badge rules shared by every collection. OPTIONAL in site/config.ts (Axons' own
 // config omits it), so it is read through the contract type. Absent => no badge, Axons' default.
 const siteConfig: SiteConfig = SITE;
-export const COLLECTION_DEFAULTS: CollectionRules = validateRules(
+export const COLLECTION_DEFAULTS: CollectionDefaults = validateRules(
     siteConfig.collectionDefaults ?? {},
     "site/config.ts collectionDefaults",
 );
+validateCommentsSwitch(COLLECTION_DEFAULTS, "site/config.ts collectionDefaults");
 /** Badge rules of a collection: its own newForDays / archiveBefore, else the site defaults. */
 export const collectionRules = (collection: CollectionConfig): ResolvedRules =>
     resolveRules(collection, COLLECTION_DEFAULTS);
@@ -124,6 +125,22 @@ const AXONS_OG_PAGES = {
     "/cookies": "pages.cookies",
 } as const;
 export const ENABLED_COLLECTIONS = COLLECTIONS.filter((c) => c.enabled);
+
+// Comments under collection entries (OPTIONAL `SITE.comments`, docs/articles.md → Comments). The
+// shortname: NEXT_PUBLIC_DISQUS_SHORTNAME (inlined at build) wins over SITE.comments.shortname.
+// null => off. COMMENTS_ENABLED = at least one enabled collection shows them.
+export const COMMENTS = resolveComments(siteConfig.comments, process.env.NEXT_PUBLIC_DISQUS_SHORTNAME);
+export const COMMENTS_ENABLED: boolean = siteCommentsActive(siteConfig, process.env.NEXT_PUBLIC_DISQUS_SHORTNAME);
+/** Does this collection show comments under its non-archived entries? */
+export const collectionComments = (collection: CollectionConfig): boolean =>
+    collectionHasComments(COMMENTS, collection, COLLECTION_DEFAULTS);
+// The cookie banner exists only when a tracker that needs consent is configured (CNIL: no
+// banner theatre when the site sets no such tracker; functional storage needs none).
+export const CONSENT_REQUIRED = isConsentRequired({
+    gtmId: GTM_ID,
+    adsEnabled: ADS_ENABLED,
+    commentsEnabled: COMMENTS_ENABLED,
+});
 export const OG_PAGES: Readonly<Record<string, string>> = buildOgPages(
     AXONS_OG_PAGES,
     Object.fromEntries(ENABLED_COLLECTIONS.map((c) => [c.href, c.namespace])),

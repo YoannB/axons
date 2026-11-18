@@ -7,6 +7,7 @@ import { SITE } from "@/site/config";
 // a namespace missing from this list. See docs/i18n.md → Client messages.
 const AXONS_CLIENT_MESSAGES = [
     "aiNotice",
+    "comments",
     "common",
     "cookie",
     "errors",

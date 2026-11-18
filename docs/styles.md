@@ -52,7 +52,7 @@ Load only the file(s) for the selector you touch. Selector prefixes are BEM bloc
 | `pages/cookie-banner.css`  | `.cookie-banner`                                                                                                                                         |
 | `pages/static.css`         | `.static-page` (legal, privacy, cookies, sitemap)                                                                                                        |
 | `pages/not-found.css`      | `.not-found`, `.empty-universe` (404)                                                                                                                    |
-| `articles.css`             | `.article`, `.article-body` (incl. `hljs-*` code tokens), `.article-feed`, `.article-teaser`, `.latest-articles`                                         |
+| `articles.css`             | `.article`, `.article-body` (incl. `hljs-*` code tokens), `.article-feed`, `.article-teaser`, `.latest-articles`, `.entry-comments`                      |
 | `a11y.css`                 | `:focus-visible`, the global `prefers-reduced-motion` kill-switch, `.bc-link`, `.toast-region`                                                           |
 | `text-tools.css`           | `.diff*`, `.diff-legend`, `.editor-pair`, `.ai-notice`, `.choice-chips`                                                                                  |
 | `ui/tabs.css`              | `.tabs`                                                                                                                                                  |
