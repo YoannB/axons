@@ -65,6 +65,23 @@ collection (a derived site's "reminders", …), with `content/<collection>/` in 
   `articlePath` / `entryPath`; `app/sitemap.ts` adds one entry per served translation of every
   ENABLED collection.
 
+## Cards without an image
+
+`ArticleTeaser`'s thumbnail is the front-matter `image` when there is one. Otherwise it is a
+typographic cover (`.article-teaser__cover`, `styles/articles.css`) showing the entry's FULL
+title, clamped by CSS (`line-clamp`: 4 lines in the 200px desktop thumb, 3 in the wide mobile
+one, whole words per line, ellipsis at the end), sized on the thumb's width (container query
+units), with the collection's `title` message (`collectionLabel`, passed by `ArticleFeed`) as a
+small label above it. Server-rendered, no client JS. The whole thumb link stays decorative
+(`aria-hidden`, `tabIndex={-1}`): the heading link is the only title assistive tech reads.
+
+Colours come from the tokens only: `--text-1` on a light tint of `--accent-1` / `--accent-2`
+over `--surface-2` (tint strength `--cover-tint-1` / `--cover-tint-2`, lower in light mode),
+plus a full-strength accent bar on the leading edge. Text stays AA in both themes whatever the
+accent hue; a derived site recolours the cover by overriding its tokens in `site/theme.css`, and
+never needs to touch `components/content/`. Keep the text on the TINT (never on the raw accent
+gradient: white on `--accent-2` is ~1.8:1).
+
 ## New and archive badges
 
 Two optional, generic statuses, shown as TEXT badges (neutral `Chip`, label in `--text-1` on a

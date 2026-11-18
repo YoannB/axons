@@ -57,6 +57,7 @@ export async function ArticleFeed({
                         dateLabel={dateLabel}
                         image={article.image}
                         headingLevel={headingLevel}
+                        collectionLabel={t("title")}
                         badges={badgesFor(entryStatus(article, rules, today), labels)}
                         fallback={
                             isFallback && meta
