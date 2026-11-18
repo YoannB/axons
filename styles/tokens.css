@@ -34,6 +34,12 @@
     --code-tag: #f9a8d4;
     --code-meta: #fde68a;
     --code-deletion: #fda4af;
+    /* Scrollbars (styles/scrollbars.css), VS Code spirit: a quiet thumb on a transparent track
+       that brightens on hover. Thumb >= 3:1 against --bg-0 / --surface-*, in both themes. */
+    --scrollbar-size: 10px;
+    --scrollbar-track: transparent;
+    --scrollbar-thumb: color-mix(in oklab, var(--muted) 70%, transparent);
+    --scrollbar-thumb-hover: color-mix(in oklab, var(--text-2) 80%, transparent);
     color-scheme: dark;
 }
 [data-theme="light"] {
@@ -58,5 +64,7 @@
     --code-tag: #86198f;
     --code-meta: #713f12;
     --code-deletion: #9f1239;
+    --scrollbar-thumb: color-mix(in oklab, var(--muted) 80%, transparent);
+    --scrollbar-thumb-hover: color-mix(in oklab, var(--text-2) 85%, transparent);
     color-scheme: light;
 }
