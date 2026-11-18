@@ -6,6 +6,7 @@ import {
     findCollection,
     headerNav,
     hiddenHrefs,
+    resolveSplash,
     validateCollections,
     type CollectionConfig,
     type SeoResource,
@@ -103,6 +104,8 @@ export const COLLECTION_DEFAULTS: CollectionRules = validateRules(
 /** Badge rules of a collection: its own newForDays / archiveBefore, else the site defaults. */
 export const collectionRules = (collection: CollectionConfig): ResolvedRules =>
     resolveRules(collection, COLLECTION_DEFAULTS);
+/** What the pre-hydration splash shows (OPTIONAL `SITE.splash`; Axons: the bar only). */
+export const SPLASH = resolveSplash(siteConfig.splash);
 /** Routes of the disabled collections (nav and sitemap.xml skip them). */
 export const HIDDEN_HREFS: readonly string[] = hiddenHrefs(COLLECTIONS);
 

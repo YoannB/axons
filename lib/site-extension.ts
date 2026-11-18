@@ -74,6 +74,32 @@ export interface SitePaletteMode {
     readonly contrastText: string;
 }
 
+/**
+ * What the pre-hydration splash (`#app-splash`, rendered by `app/layout.tsx`) shows. Both are
+ * optional; absent => Axons' default (`resolveSplash`): the progress bar only, no logo.
+ */
+export interface SiteSplash {
+    /** The site's logo (`Logo` with the `.splash-logo` class, animated by CSS) above the bar. Default false. */
+    readonly logo?: boolean;
+    /** The animated progress bar (`.loader__bar`). Default true. */
+    readonly bar?: boolean;
+}
+
+/** `SITE.splash` with Axons' defaults applied: the bar only, as Axons has always shown it. */
+export function resolveSplash(splash: SiteSplash = {}): Required<SiteSplash> {
+    return { logo: splash.logo ?? false, bar: splash.bar ?? true };
+}
+
+/**
+ * Props of the site's logo drawing (`LogoMark` in `site/logo.tsx`). `id` is unique per rendered
+ * logo (React `useId`, CSS-selector safe): the splash, the header and a loader can show the logo
+ * at once, so every SVG `id` of the drawing (gradient, mask, clipPath, filter) is built from it,
+ * e.g. `${id}-grad` and `url(#${id}-grad)`. A hard-coded id would be duplicated in the page.
+ */
+export interface LogoMarkProps {
+    readonly id: string;
+}
+
 /** Everything that makes a site itself rather than Axons. Implemented by `site/config.ts`. */
 export interface SiteConfig<P extends SitePathnames = SitePathnames> {
     readonly name: string;
@@ -125,6 +151,12 @@ export interface SiteConfig<P extends SitePathnames = SitePathnames> {
      * The drawing itself is `site/og-image.tsx` (docs/seo-layout.md → Social images).
      */
     readonly ogPages?: Readonly<Partial<Record<StaticHref<P>, string>>>;
+    /**
+     * Content of the pre-hydration splash: `{ logo: true }` shows the site's logo (class
+     * `.splash-logo`, animated by the site's own keyframes in `site/theme.css`) above the bar.
+     * Absent => the bar only (see `resolveSplash`; docs/seo-layout.md → Pre-hydration splash).
+     */
+    readonly splash?: SiteSplash;
 }
 
 /**

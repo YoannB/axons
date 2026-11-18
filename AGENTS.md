@@ -33,7 +33,7 @@ editing, open the ONE doc matching your task from the index below; cross-refs ar
 | `messages/*.json`, served locales (`NEXT_PUBLIC_LOCALES`), localized URLs, `timeZone`, locale navigation, client messages (`CLIENT_MESSAGES`)                                                         | `docs/i18n.md`            |
 | Markdown articles & collections: `content/<collection>/`, front matter, listing/latest block, New/Archive badges, SEO (hreflang, JSON-LD, sitemap), slug-aware language switch, declaring a collection | `docs/articles.md`        |
 | text diff/similarity (`lib/text/`), DiffView, EditorPair, ChoiceChips, AiNotice, dirty-input guard, elapsed wait                                                 | `docs/text-tools.md`      |
-| visual/layout/animation: hero roulette, icon draw, video detach/dismiss, containers/rails, mobile overflow, header squeeze, ads/consent/dev-reset, Tabs/Terminal, 404 empty state, social images (og:image, Twitter card, `site/og-image.tsx`, `/og/*.png`) | `docs/seo-layout.md` |
+| visual/layout/animation: hero roulette, icon draw, pre-hydration splash (`SITE.splash`, splash logo), video detach/dismiss, containers/rails, mobile overflow, header squeeze, ads/consent/dev-reset, Tabs/Terminal, 404 empty state, social images (og:image, Twitter card, `site/og-image.tsx`, `/og/*.png`) | `docs/seo-layout.md` |
 | tests (Vitest/Playwright), 100%-branch discipline, the closing-`---` gotcha, npm audit                                                                           | `docs/testing.md`         |
 | Storybook stories, component visual states, `.storybook/` config                                                                                                 | `docs/storybook.md`       |
 

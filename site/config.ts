@@ -82,4 +82,7 @@ export const SITE = {
     // the messages namespace holding its `title` and `description` (else `intro`), e.g.
     // ogPages: { "/about": "pages.about" }. Others share the home image; collections are automatic.
     // The drawing (colours, logo, fonts) is site/og-image.tsx (docs/seo-layout.md → Social images).
+    // Optional: what the pre-hydration splash shows, e.g. splash: { logo: true } puts the logo
+    // (class .splash-logo, animated from site/theme.css) above the bar. Absent => the bar only
+    // (docs/seo-layout.md → Pre-hydration splash).
 } as const satisfies SiteConfig<typeof pathnames>;

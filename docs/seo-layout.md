@@ -16,6 +16,28 @@ outline that stays visible (the "pencil sketch"); the draw cycle returns to `das
 cookie chips) are rendered as filled `.ui-icon__dot` paths, excluded from the draw/ghost
 animation, so the glyph is recognizable at a glance.
 
+## Pre-hydration splash
+
+`app/layout.tsx` renders `AppSplash` (`components/ui/AppSplash.tsx`) as `#app-splash`: plain
+server markup, painted before any script, full-screen `position: fixed` (no layout shift), hidden
+on hydration by `SplashLoader` through `.is-leaving` (never removed; see `docs/react-effects.md`).
+Its content is the site's choice, `SITE.splash` resolved into `SPLASH` (`constants/site.ts`):
+
+- `bar` (default `true`): the `.loader__bar` progress bar.
+- `logo` (default `false`, Axons shows the bar only): the REAL `Logo` (the site's `LogoMark`)
+  with the `.splash-logo` class (120px, Axons' `logoBreath` keyframes), above the bar. The grid
+  uses `place-content: center` so the two stay together in the middle.
+
+A site animates the splash logo with its own keyframes on `.splash-logo` in `site/theme.css`
+(imported last, so its `animation` wins), the same way it styles the header logo and the loader:
+never redraw the logo in CSS (a mask or `::before` duplicating the paths). The global
+`prefers-reduced-motion` rule (`styles/a11y.css`) freezes every CSS animation, the splash's
+included; an SMIL `<animate*>` in the drawing is NOT covered by it. The logo's SVG ids come from
+`useId` (`LogoMark({ id })`), so splash and header never share a gradient/mask id. The root 404
+hides the splash by CSS (`body:has(.root-not-found)`), whatever it shows. Unit:
+`tests/unit/app-splash.test.tsx`; e2e (JS disabled = the pre-hydration paint):
+`tests/e2e/splash.spec.ts`.
+
 ## Detach-on-scroll video player
 
 BIDIRECTIONAL but geometry-locked. The trigger sentinel is `position:absolute` at the TOP of
