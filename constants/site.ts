@@ -1,24 +1,27 @@
-import { LOCALES as SERVED_LOCALES } from "@/i18n/locales";
+import { LOCALES as SERVED_LOCALES } from "../i18n/locales";
 import {
     findCollection,
     hiddenHrefs,
     validateCollections,
     type CollectionConfig,
     type CollectionDefaults,
-} from "@/lib/articles/collections";
-import { resolveRules, validateRules, type ResolvedRules } from "@/lib/articles/status";
+} from "../lib/articles/collections";
+import { resolveRules, validateRules, type ResolvedRules } from "../lib/articles/status";
 import {
     collectionHasComments,
     commentsActive,
     resolveComments,
     validateCommentsSwitch,
     type SiteComments,
-} from "@/lib/comments";
-import { resolveTimeZone } from "@/lib/day";
-import { isAiEnabled, isConsentRequired } from "@/lib/flags";
-import { buildOgPages } from "@/lib/og/model";
-import { normalizeSiteUrl } from "@/lib/site-url";
+} from "../lib/comments";
+import { resolveTimeZone } from "../lib/day";
+import { isAiEnabled, isConsentRequired } from "../lib/flags";
+import { buildOgPages } from "../lib/og/model";
+import { normalizeSiteUrl } from "../lib/site-url";
 
+// RELATIVE imports only (never `@/`): next.config.ts imports this file, and the config loader
+// does not resolve `@/` aliases in the files it imports.
+//
 // The site's identity and configuration, as plain values. The copy lives in
 // messages/<locale>.json, the colour tokens in styles/tokens.css, the favicon in app/icon.svg and
 // the logo drawing in components/ui/Logo.tsx.
