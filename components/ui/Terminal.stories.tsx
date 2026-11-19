@@ -11,7 +11,7 @@ const LINES: AppTerminalLine[] = [
     { id: "3", kind: "success", text: "Creating the components" },
     { id: "4", kind: "success", text: "SEO optimization (meta, sitemap, robots.txt)" },
     { id: "5", kind: "success", text: "Site is live!" },
-    { id: "6", kind: "link", text: "https://axons-preview.netlify.app", href: "https://axons-preview.netlify.app" },
+    { id: "6", kind: "link", text: "https://example.netlify.app", href: "https://example.netlify.app" },
 ];
 
 function Scripted() {

@@ -1,6 +1,5 @@
 /* ===== Themed scrollbars (CSS only, no JS library) =====
-   Colours come from the --scrollbar-* tokens (styles/tokens.css); a derived site recolours them
-   by overriding those tokens only, in site/theme.css.
+   Colours come from the --scrollbar-* tokens (styles/tokens.css): recolour them there only.
 
    Scope: devices with a fine pointer that can hover (desktop). Touch screens keep the system's
    native overlay scrollbars untouched: nothing here applies to them.

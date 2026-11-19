@@ -1,6 +1,5 @@
 import { AppSplash } from "@/components/ui/AppSplash";
-import { SITE_NAME, SITE_URL, SPLASH } from "@/constants/site";
-import { SITE } from "@/site/config";
+import { DEFAULT_DESCRIPTION, DEFAULT_TITLE, SITE_NAME, SITE_URL, SPLASH } from "@/constants/site";
 import { LOCALES } from "@/i18n/locales";
 import { buildBootScript } from "@/lib/boot-script";
 import { getLocale } from "next-intl/server";
@@ -16,10 +15,10 @@ import "./globals.css";
 export const metadata = {
     metadataBase: new URL(SITE_URL),
     title: {
-        default: SITE.defaultTitle,
+        default: DEFAULT_TITLE,
         template: `%s · ${SITE_NAME}`,
     },
-    description: SITE.defaultDescription,
+    description: DEFAULT_DESCRIPTION,
     openGraph: { siteName: SITE_NAME, type: "website", url: SITE_URL },
 };
 
@@ -36,12 +35,16 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
     return (
         <html lang={locale} data-theme="dark" suppressHydrationWarning>
             <head>
-                <Script id="axons-boot" strategy="beforeInteractive" dangerouslySetInnerHTML={{ __html: bootScript }} />
+                <Script
+                    id="boot-script"
+                    strategy="beforeInteractive"
+                    dangerouslySetInnerHTML={{ __html: bootScript }}
+                />
             </head>
             <body>
                 {/* Pre-hydration splash: server node, hidden (never removed) by SplashLoader,
             which lives under the providers in app/[locale]/layout.tsx (same document).
-            Its content (logo, bar) is the site's choice: SITE.splash. */}
+            Its content (logo, bar): SPLASH in constants/site.ts. */}
                 <AppSplash {...SPLASH} />
                 {children}
             </body>

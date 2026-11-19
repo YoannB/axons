@@ -1,19 +1,17 @@
 import { Logo } from "@/components/ui/Logo";
 import { buildTheme } from "@/components/ui/material/theme";
-import { SITE } from "@/site/config";
-import { LOGO_VIEWBOX, LogoMark } from "@/site/logo";
-import { useId } from "react";
+import { PALETTE, SITE_NAME } from "@/constants/site";
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 
-describe("buildTheme — palette from site/config.ts", () => {
-    // Site-agnostic on purpose: a derived site replaces SITE.palette, so no colour is pinned here.
-    it.each(["dark", "light"] as const)("uses SITE.palette.%s by default", (mode) => {
+describe("buildTheme — palette from constants/site.ts", () => {
+    // No colour pinned here: PALETTE is identity, rewritten when rebranding.
+    it.each(["dark", "light"] as const)("uses PALETTE.%s by default", (mode) => {
         const theme = buildTheme(mode);
         expect(theme.palette.mode).toBe(mode);
-        expect(theme.palette.primary.main).toBe(SITE.palette[mode].primary);
-        expect(theme.palette.primary.contrastText).toBe(SITE.palette[mode].contrastText);
-        expect(theme.palette.secondary.main).toBe(SITE.palette[mode].secondary);
+        expect(theme.palette.primary.main).toBe(PALETTE[mode].primary);
+        expect(theme.palette.primary.contrastText).toBe(PALETTE[mode].contrastText);
+        expect(theme.palette.secondary.main).toBe(PALETTE[mode].secondary);
     });
 
     it("accepts an explicit palette", () => {
@@ -32,25 +30,18 @@ describe("buildTheme — palette from site/config.ts", () => {
 });
 
 const idsOf = (markup: string) => [...markup.matchAll(/\sid="([^"]+)"/g)].map((m) => m[1]);
-// The useId value of a component rendered alone at the root (what <Logo /> passes to LogoMark).
-function IdProbe() {
-    return useId();
-}
 
-describe("Logo — frame from Axons, drawing from site/logo.tsx", () => {
-    it("names the logo after the site and uses the site's viewBox", () => {
+describe("Logo", () => {
+    it("names the logo after the site and takes its size", () => {
         const html = renderToStaticMarkup(<Logo size={30} />);
-        expect(html).toContain(`aria-label="${SITE.name}"`);
+        expect(html).toContain(`aria-label="${SITE_NAME}"`);
         expect(html).toContain('role="img"');
-        expect(html).toContain(`viewBox="${LOGO_VIEWBOX}"`);
         expect(html).toContain('width="30"');
-        // The drawing is the site's own (site/logo.tsx), whatever it is (rendered with the same id).
-        const id = renderToStaticMarkup(<IdProbe />);
-        expect(html).toContain(renderToStaticMarkup(<LogoMark id={id} />));
+        expect(html).toContain('height="30"');
     });
 
     it("gives every rendered logo its own SVG ids, and every url(#…) points into its own logo", () => {
-        // Splash + header (+ a loader) render the logo at once: a literal id in site/logo.tsx would
+        // Splash + header (+ a loader) render the logo at once: a literal id in the drawing would
         // be duplicated, and url(#id) would resolve to the FIRST one (hidden splash => broken paint).
         const html = renderToStaticMarkup(
             <>

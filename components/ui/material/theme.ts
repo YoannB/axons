@@ -1,5 +1,4 @@
-import type { SitePaletteMode } from "@/lib/site-extension";
-import { SITE } from "@/site/config";
+import { PALETTE, type PaletteMode } from "@/constants/site";
 import { createTheme, type Theme, type ThemeOptions } from "@mui/material/styles";
 
 // The mode IS PASSED AS A PARAMETER (no more hard-coded 'dark'): otherwise CssBaseline paints the
@@ -8,9 +7,8 @@ import { createTheme, type Theme, type ThemeOptions } from "@mui/material/styles
 // background.default/paper = 'transparent' so that styles/tokens.css (--* tokens) keeps
 // control over backgrounds, with no cascade war against the Emotion-injected styles.
 //
-// Colours come from the SITE (site/config.ts `palette`, one entry per mode): a derived site
-// rebrands MUI without touching this adapter.
-export function buildTheme(mode: "light" | "dark", palette: SitePaletteMode = SITE.palette[mode]): Theme {
+// Colours come from constants/site.ts `PALETTE` (one entry per mode).
+export function buildTheme(mode: "light" | "dark", palette: PaletteMode = PALETTE[mode]): Theme {
     return createTheme({
         cssVariables: true,
         palette: {

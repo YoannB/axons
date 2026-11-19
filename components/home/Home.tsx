@@ -5,14 +5,12 @@ import { LatestArticles } from "@/components/home/LatestArticles";
 import { SeoResources } from "@/components/home/SeoResources";
 import { ValueProps } from "@/components/home/ValueProps";
 import { PageShell } from "@/components/layout/PageShell";
-import type { SiteHomeProps } from "@/lib/site-extension";
 
-// Axons' home body, rendered by app/[locale]/page.tsx through `SiteHome` (site/home.tsx), which
-// re-exports it unless a derived site replaces it (docs/architecture.md → Deriving a site).
+// The home body, rendered by app/[locale]/page.tsx (which keeps the `meta.home` metadata).
 // Static Server Component. The interactive children are Client Components that read the
 // locale through the NextIntlClientProvider set in the layout; only LatestArticles (server)
 // receives the `locale` param.
-export function AxonsHome({ locale }: SiteHomeProps) {
+export function Home({ locale }: { locale: string }) {
     return (
         <PageShell>
             <Hero />

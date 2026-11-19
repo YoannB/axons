@@ -5,7 +5,8 @@ import { acceptCookiesButton, cookieBanner, languageButton, languageOption } fro
 
 // v0.4.0 articles: listing -> article -> language switch onto the TRANSLATED slug, SEO tags,
 // sitemap and the home "latest articles" block. Relies on the two demo articles shipped in
-// content/articles/ (translated in every supported locale). Axons publishes no archived entry: the
+// content/articles/ (translated in every supported locale; a site that replaces the demo content
+// rewrites the title expectations below). The demo publishes no archived entry: the
 // render of an archive (badge, notice, no comments) is covered by
 // tests/unit/collection-entry-archive.test.tsx.
 
@@ -19,7 +20,7 @@ async function ready(page: Page) {
 }
 
 test.describe("Articles", () => {
-    // A derived site that turned the section off (constants/site.ts) has nothing to check here.
+    // A site that turned the section off (constants/site.ts) has nothing to check here.
     test.skip(!ARTICLES_ENABLED, "articles section disabled (ARTICLES_ENABLED = false)");
     // "Accept" also grants the comments purpose: when comments are on, the entry pages would load
     // Disqus. Never reach it from a spec (tests/e2e/comments.spec.ts covers the comments).
@@ -48,7 +49,7 @@ test.describe("Articles", () => {
         await expect(page.getByRole("heading", { level: 1, name: "Einen Artikel in Axons schreiben" })).toBeVisible();
     });
 
-    test("Axons' default rules show no New and no Archive badge", async ({ page }) => {
+    test("the default rules show no New and no Archive badge", async ({ page }) => {
         await page.goto("/fr/articles");
         await ready(page);
         await expect(page.locator(".article-feed .article-teaser")).toHaveCount(2);

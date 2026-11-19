@@ -13,8 +13,8 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 Axons = Next.js 16 (App Router, Turbopack) + React 19 + TS boilerplate for SEO AI apps;
 Material UI 9 isolated behind a neutral API; `next-intl` 4; OpenRouter via one unified
 Route Handler; Vitest + Playwright + Storybook 10; Node 24; Netlify (OpenNext adapter).
-Site identity (`SITE_NAME`, nav, own routes/copy) lives in `site/` (`site/config.ts`, re-exported by
-`constants/site.ts`) — a derived site edits only `site/`.
+One plain Next.js app, one source per concern: identity/config in `constants/site.ts`, copy in
+`messages/<locale>.json` (`docs/architecture.md` → Site identity).
 
 **This file is the ONLY always-loaded instruction. Do NOT preload `docs/*`.** Before
 editing, open the ONE doc matching your task from the index below; cross-refs are
@@ -25,7 +25,7 @@ editing, open the ONE doc matching your task from the index below; cross-refs ar
 
 | Your task touches                                                                                                                                                | Load                      |
 | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------- |
-| repo structure, root vs segment layout, where a file goes, boot-script placement, security headers/framing, the i18n/middleware/proxy divergence, deriving a site (`site/` extension points) | `docs/architecture.md`    |
+| repo structure, root vs segment layout, where a file goes, boot-script placement, security headers/framing, the i18n/middleware/proxy divergence, where the site identity lives | `docs/architecture.md`    |
 | React state/effects, external store, hydration, theme persistence & single source, keeping public pages static                                                   | `docs/react-effects.md`   |
 | global (non-MUI) CSS: which `styles/**` file owns a selector, the `app/globals.css` import manifest & cascade order | `docs/styles.md` |
 | anything under `components/ui/material/`, MUI theme build, light mode, disabled-button contrast, Button external/busy, chips, toasts, global-vs-MUI CSS, MUI-control animations        | `docs/ui-material.md`     |
@@ -33,7 +33,7 @@ editing, open the ONE doc matching your task from the index below; cross-refs ar
 | `messages/*.json`, served locales (`NEXT_PUBLIC_LOCALES`), localized URLs, `timeZone`, locale navigation, client messages (`CLIENT_MESSAGES`)                                                         | `docs/i18n.md`            |
 | Markdown articles & collections: `content/<collection>/`, front matter, listing/latest block, New/Archive badges, SEO (hreflang, JSON-LD, sitemap), slug-aware language switch, declaring a collection, comments (Disqus, consent, CSP) | `docs/articles.md`        |
 | text diff/similarity (`lib/text/`), DiffView, EditorPair, ChoiceChips, AiNotice, dirty-input guard, elapsed wait                                                 | `docs/text-tools.md`      |
-| visual/layout/animation: hero roulette, icon draw, pre-hydration splash (`SITE.splash`, splash logo), video detach/dismiss, containers/rails, mobile overflow, header squeeze, ads/consent/dev-reset, Tabs/Terminal, 404 empty state, social images (og:image, Twitter card, `site/og-image.tsx`, `/og/*.png`) | `docs/seo-layout.md` |
+| visual/layout/animation: hero roulette, icon draw, pre-hydration splash (`SPLASH`, splash logo), video detach/dismiss, containers/rails, mobile overflow, header squeeze, ads/consent/dev-reset, Tabs/Terminal, 404 empty state, social images (og:image, Twitter card, `components/og/OgImage.tsx`, `/og/*.png`) | `docs/seo-layout.md` |
 | tests (Vitest/Playwright), 100%-branch discipline, the closing-`---` gotcha, npm audit                                                                           | `docs/testing.md`         |
 | Storybook stories, component visual states, `.storybook/` config                                                                                                 | `docs/storybook.md`       |
 
@@ -47,6 +47,8 @@ editing, open the ONE doc matching your task from the index below; cross-refs ar
 - Never destructively remove a React-owned DOM node (`el.remove()`); hide via CSS class.
 - Never localize `AGENTS.md`, `docs/**`, or `capabilities/**`.
 - Never preload every doc; that recreates the novel this split removes.
+- Never introduce structural changes (new folders, indirection layers, file moves, duplicated
+  sources) without a written proposal approved by the user.
 
 ## Definition of done (run before claiming success)
 

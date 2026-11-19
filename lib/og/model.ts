@@ -1,9 +1,7 @@
 // PURE module (no next-intl, no fs, no process.env): the social image (Open Graph / Twitter card)
-// of every page — its URL scheme, the text fitting rules and the contract a site implements in
-// site/og-image.tsx. The IO side (fonts, logo, cover, messages) is lib/og/render.tsx; the route is
+// of every page — its URL scheme, the text fitting rules and the props of the image component
+// (components/og/OgImage.tsx). The IO side (fonts, logo, cover, messages) is lib/og/render.tsx; the route is
 // app/og/[locale]/[...path]/route.tsx. Guide: docs/seo-layout.md → Social images.
-import type { ComponentType } from "react";
-
 /** Size of every social image: the 1.91:1 card of Open Graph and Twitter `summary_large_image`. */
 export const OG_SIZE = { width: 1200, height: 630 } as const;
 export const OG_CONTENT_TYPE = "image/png";
@@ -99,16 +97,16 @@ export const dataUri = (mime: string, bytes: Uint8Array): string =>
 
 /**
  * Pages that HAVE their own image: logical href → messages namespace holding `title` and
- * `description` (else `intro`, the convention of StaticPage pages). Axons' pages + the enabled
- * collection listings + `SITE.ogPages`; a key declared twice throws (build failure).
+ * `description` (else `intro`, the convention of StaticPage pages): the app's pages + the enabled
+ * collection listings (constants/site.ts `OG_PAGES`); a key declared twice throws (build failure).
  */
 export function buildOgPages(...sources: readonly Readonly<Record<string, string>>[]): Record<string, string> {
     const pages: Record<string, string> = {};
     for (const source of sources) {
         for (const [href, namespace] of Object.entries(source)) {
-            if (Object.hasOwn(pages, href)) throw new Error(`Social image of "${href}" declared twice (ogPages).`);
+            if (Object.hasOwn(pages, href)) throw new Error(`Social image of "${href}" declared twice (OG_PAGES).`);
             if (href.includes("["))
-                throw new Error(`ogPages: "${href}" is a dynamic route (collections are automatic).`);
+                throw new Error(`OG_PAGES: "${href}" is a dynamic route (collections are automatic).`);
             pages[href] = namespace;
         }
     }
@@ -129,7 +127,7 @@ export function socialImageMetadata(opts: { url: string; alt: string; title: str
     };
 }
 
-// ---- Contract implemented by site/og-image.tsx -------------------------------------------------
+// ---- What the image component (components/og/OgImage.tsx) receives ----------------------------
 
 /** Colours of the image, as 6-digit hex ("#7c5cff"): the default image appends alpha digits to the accents. */
 export interface OgTheme {
@@ -159,24 +157,11 @@ export interface OgImageProps {
     /** "example.com" */
     readonly host: string;
     readonly locale: string;
-    /** data: URI of the site logo (site/icon.svg by default). */
+    /** data: URI of the logo (app/icon.svg). */
     readonly logo: string;
     /** data: URI of the entry's front-matter `image`, when it has an embeddable one. */
     readonly cover?: string;
     readonly theme: OgTheme;
     /** Font family name of `fonts` (the component's `fontFamily`). */
     readonly fontFamily: string;
-}
-
-/** `SITE_OG_IMAGE` (site/og-image.tsx): how a site draws its social images. */
-export interface SiteOgImage {
-    /** Satori JSX (flexbox subset, inline styles, no MUI, no CSS variables). */
-    readonly Image: ComponentType<OgImageProps>;
-    readonly theme: OgTheme;
-    /** Font family declared by `fonts`. */
-    readonly fontFamily: string;
-    /** Loads the fonts once; read files with a LITERAL `path.join(process.cwd(), …)` (traced). */
-    readonly fonts: () => Promise<readonly OgFont[]>;
-    /** Loads the logo as a data: URI (same tracing rule). */
-    readonly logo: () => Promise<string>;
 }

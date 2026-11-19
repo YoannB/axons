@@ -1,8 +1,8 @@
 import { Logo } from "./Logo";
 
-/** Splash content: the resolved `SPLASH` of constants/site.ts (`SITE.splash` + Axons' defaults). */
+/** Splash content: `SPLASH` of constants/site.ts. */
 export interface AppSplashProps {
-    /** The site's logo, class `.splash-logo` (animated by CSS), above the bar. */
+    /** The logo, class `.splash-logo` (animated by CSS), above the bar. */
     logo: boolean;
     /** The animated progress bar. */
     bar: boolean;

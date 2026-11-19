@@ -1,5 +1,6 @@
 import { expect, test, type Page } from "@playwright/test";
 import { COMMENTS, COMMENTS_ENABLED } from "../../constants/site";
+import { COOKIE_CONSENT } from "../../lib/cookies";
 import { blockDisqus } from "./support/disqus";
 import { cookieBanner } from "./support/home";
 import { lp } from "./support/locale-path";
@@ -7,8 +8,8 @@ import { lp } from "./support/locale-path";
 // Comments under collection entries (docs/articles.md → Comments). Needs a build that saw a
 // shortname: CI sets a FAKE NEXT_PUBLIC_DISQUS_SHORTNAME, and every request to Disqus is
 // intercepted and aborted (support/disqus.ts), so the specs check what the page TRIES to load.
-// Relies on Axons' demo articles `writing-articles` and `architecture-tour`. No comments under an
-// archived entry: tests/unit/collection-entry-archive.test.tsx (Axons publishes no archive).
+// Relies on the demo articles `writing-articles` and `architecture-tour`. No comments under an
+// archived entry: tests/unit/collection-entry-archive.test.tsx (the demo publishes no archive).
 
 const ENTRY = lp("fr", "/articles/ecrire-un-article");
 const OTHER_ENTRY = lp("fr", "/articles/visite-de-l-architecture");
@@ -21,7 +22,7 @@ async function open(page: Page, path: string) {
 const embedUrl = () => `https://${COMMENTS?.shortname}.disqus.com/embed.js`;
 
 test.describe("Comments (Disqus)", () => {
-    test.skip(!COMMENTS_ENABLED, "comments off (no SITE.comments, no shortname or no collection with comments)");
+    test.skip(!COMMENTS_ENABLED, "comments off (no shortname or no collection with comments)");
 
     test("the cookie banner offers the comments purpose", async ({ page }) => {
         await blockDisqus(page);
@@ -70,7 +71,7 @@ test.describe("Comments (Disqus)", () => {
         await page.getByRole("button", { name: "Toujours afficher les commentaires" }).click();
         await expect.poll(() => attempts).toContain(embedUrl());
         const cookies = await page.context().cookies();
-        const consent = JSON.parse(decodeURIComponent(cookies.find((c) => c.name === "axons-consent")!.value));
+        const consent = JSON.parse(decodeURIComponent(cookies.find((c) => c.name === COOKIE_CONSENT)!.value));
         expect(consent).toMatchObject({ analytics: false, ads: false, comments: true });
         attempts.length = 0;
         await open(page, OTHER_ENTRY);

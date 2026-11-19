@@ -22,7 +22,7 @@ export async function ArticleFeed({
     items: ListedArticle[];
     locale: string;
     headingLevel?: "h2" | "h3";
-    // Collection id (default: Axons' articles): its messages namespace, entry route and badge rules.
+    // Collection id (default: the articles): its messages namespace, entry route and badge rules.
     collection?: string;
     // Overrides of the collection's namespace and entry route (historical props).
     namespace?: string;

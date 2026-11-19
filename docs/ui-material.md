@@ -12,10 +12,9 @@ prop-leak — that is on you).
 
 ## MUI theme build & light mode
 
-`buildTheme(mode, palette = SITE.palette[mode])` takes the RESOLVED light/dark value (never a
-hardcoded `'dark'`) and the SITE's colours (`site/config.ts` `palette`: `primary`, `secondary`,
-`contrastText` = text on the primary; Axons: `#7c5cff` / `#22d3ee` / `#fff`, what MUI computed
-before). `palette.background.default` and `paper` are `transparent` (a hardcoded dark + opaque
+`buildTheme(mode, palette = PALETTE[mode])` takes the RESOLVED light/dark value (never a
+hardcoded `'dark'`) and the site's colours (`constants/site.ts` `PALETTE`: `primary`, `secondary`,
+`contrastText` = text on the primary). `palette.background.default` and `paper` are `transparent` (a hardcoded dark + opaque
 CssBaseline background is what previously broke light mode), AND the `MuiCssBaseline`
 `styleOverrides` re-point `body` at `background-color: var(--bg-0); color: var(--text-1)`:
 CssBaseline's own `body` rule (`--mui-palette-background-default` = transparent,
@@ -57,7 +56,7 @@ adapter adds `target="_blank"` + `rel="noopener noreferrer"` (the neutral API ex
 boolean, never raw `target`/`rel`) and appends a visually hidden, localized "(new tab)"
 (`common.newTab`, a client namespace) to the content, or to `ariaLabel` when one is given. Only
 an ACTIVE external link reads next-intl, so every other `Button` still renders without an intl
-provider. No icon is added: Axons has no "open in new tab" glyph, and `iconRight` stays
+provider. No icon is added: the app has no "open in new tab" glyph, and `iconRight` stays
 available to a caller that wants one. A disabled/loading external link is a disabled `<button>`
 like any other link (no target, no hint).
 

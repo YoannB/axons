@@ -1,6 +1,6 @@
 // Render of an ARCHIVED entry (docs/articles.md → New and archive badges): the entry page shows the
 // Archive badge and the archive notice and never offers comments, and its card in a listing carries
-// the Archive badge, never New. Axons publishes no archived article, so the entry is an in-memory
+// the Archive badge, never New. The demo publishes no archived article, so the entry is an in-memory
 // fixture handed to the real page factory and feed (the content source is mocked): nothing is
 // added to the site. The status rules are covered by tests/unit/articles-status.test.ts, the badge
 // mapping by tests/unit/entry-badges.test.tsx.

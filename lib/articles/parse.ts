@@ -1,5 +1,5 @@
 // PURE module (no fs, no next-intl): parsing and indexing of the Markdown entries of a collection
-// stored as content/<collection>/<id>/<locale>.md (Axons' articles: content/articles/). The IO side lives in lib/articles/source.ts.
+// stored as content/<collection>/<id>/<locale>.md (the articles: content/articles/). The IO side lives in lib/articles/source.ts.
 // Fail-fast: an invalid file throws at BUILD time with its path, never a silently missing page.
 import { parse as parseYaml } from "yaml";
 

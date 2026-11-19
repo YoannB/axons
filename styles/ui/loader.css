@@ -23,7 +23,7 @@
 body:has(.root-not-found) #app-splash {
     display: none;
 }
-/* Logo of the splash (SITE.splash.logo): a site restyles/re-animates it from site/theme.css;
+/* Logo of the splash (SPLASH.logo, constants/site.ts), restyled/re-animated here;
    the global prefers-reduced-motion rule (styles/a11y.css) freezes any CSS animation on it. */
 .splash-logo {
     width: 120px;

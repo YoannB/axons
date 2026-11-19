@@ -1,10 +1,21 @@
-import { titleSize, type OgImageProps } from "@/lib/og/model";
+import { PALETTE } from "@/constants/site";
+import { titleSize, type OgImageProps, type OgTheme } from "@/lib/og/model";
 
-// Axons' default social image (1200x630), drawn by Satori through `next/og`: flexbox only, inline
-// styles, every element with several children is `display: flex`, no CSS variables and no MUI.
-// Texts arrive localized and already fitted (lib/og/render.tsx); colours come from the site's
-// `SITE_OG_IMAGE.theme` (site/og-image.tsx). A site draws its own by replacing `Image` there.
-export function DefaultOgImage({
+// Colours of the social image, as 6-digit hex: the dark tokens of styles/tokens.css + the MUI
+// accents (PALETTE.dark). Satori reads no CSS variable, so keep them in step when rebranding.
+export const OG_THEME: OgTheme = {
+    background: "#070b16",
+    surface: "#131a30",
+    text: "#eaf0ff",
+    muted: "#9fb0d0",
+    accent1: PALETTE.dark.primary,
+    accent2: PALETTE.dark.secondary,
+};
+
+// The social image (1200x630) of every page, drawn by Satori through `next/og`: flexbox only,
+// inline styles, every element with several children is `display: flex`, no CSS variables and no
+// MUI. Texts arrive localized and already fitted, colours are OG_THEME (lib/og/render.tsx).
+export function OgImage({
     title,
     description,
     section,

@@ -147,7 +147,7 @@ describe("pageMetadata — social image", () => {
     });
 
     it("shares the home image (alt = site name) for a page without its own", () => {
-        // A site page not listed in SITE.ogPages ("/about" is not a key of the Axons routing types).
+        // A page not listed in OG_PAGES ("/about" is not a key of the routing types).
         const metadata = pageMetadata({ title: "About", description: "About", href: "/about" as "/", locale: "fr" });
 
         expect(metadata.openGraph?.images).toMatchObject([{ url: "https://example.com/og/fr/index.png", alt: "Site" }]);

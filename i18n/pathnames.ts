@@ -1,9 +1,7 @@
-import { mergePathnames } from "@/lib/site-extension";
-import { SITE } from "@/site/config";
-
-// Axons-owned localized routes. A derived site declares its own in site/config.ts `pathnames`;
-// they are merged below (a key that redefines an Axons route throws at build time).
-const AXONS_PATHNAMES = {
+// Localized routes of the app (logical key → one path, or one path per locale), used by
+// i18n/routing.ts. Kept out of routing.ts (which pulls next-intl/navigation, so next/navigation) so
+// plain Node code — Playwright specs — can resolve localized paths too.
+export const PATHNAMES = {
     "/": "/",
     "/sitemap": {
         fr: "/plan-du-site",
@@ -56,6 +54,10 @@ const AXONS_PATHNAMES = {
     },
 } as const;
 
-// Merged Axons + site pathnames. Kept out of i18n/routing.ts (which pulls next-intl/navigation, so
-// next/navigation) so plain Node code — Playwright specs — can resolve localized paths too.
-export const PATHNAMES = mergePathnames(AXONS_PATHNAMES, SITE.pathnames);
+/** Logical key of a STATIC route of `P` (no dynamic `[param]` segment). */
+export type StaticHref<P> = Exclude<Extract<keyof P, string>, `${string}[${string}`>;
+
+/** Logical keys of the STATIC routes (no dynamic `[param]` segment), in declaration order. */
+export function staticHrefs<P extends Readonly<Record<string, unknown>>>(pathnames: P): StaticHref<P>[] {
+    return Object.keys(pathnames).filter((href) => !href.includes("[")) as StaticHref<P>[];
+}

@@ -31,7 +31,7 @@ The demo is currently used to validate the boilerplate, the AI integration, the 
 - [Why this boilerplate exists](#why-this-boilerplate-exists)
 - [Quick start](#quick-start)
 - [Environment variables](#environment-variables)
-- [Using Axons as the base for a new app](#using-axons-as-the-base-for-a-new-app)
+- [Creating a site from Axons](#creating-a-site-from-axons)
 - [Working with an AI coding agent](#working-with-an-ai-coding-agent)
 - [Working without an AI coding agent](#working-without-an-ai-coding-agent)
 - [Architecture overview](#architecture-overview)
@@ -267,36 +267,62 @@ Expected placeholders in message files include:
 {declaredDate}
 ```
 
-## Using Axons as the base for a new app
+## Creating a site from Axons
 
-Axons is designed to be forked, cloned, or downloaded and then transformed into a new product.
+Axons is the reference app. A new site is a **clone** of it that keeps Axons as its `upstream` remote: the site rewrites the Axons identity files **in place**, deletes the demo, and later merges Axons releases **deliberately**. There is no extension layer and no second source to merge: the site is one plain Next.js app, like Axons.
 
-The intended workflow is:
+The repository already contains technical decisions that are expensive to rediscover (Material UI isolation, hydration-safe client state, theme persistence, localized routing, AI route normalization, rate limiting, prompt/skill loading, unit/E2E/Storybook verification, Netlify constraints). The new site inherits them and replaces only the identity and the product.
 
-1. Clone the repository.
-2. Read the agent orientation files.
-3. Define the new product specification.
-4. Provide or describe visual references.
-5. Replace product-specific content.
-6. Implement changes incrementally.
-7. Run the quality gates.
-8. Deploy to a preview environment before production.
+### 1. Clone, with Axons as `upstream`
 
-> This workflow is the intended direction for the boilerplate. It is not yet presented as a certified one-shot automated process.
+```bash
+git clone https://github.com/YoannB/axons.git my-site
+cd my-site
+git remote rename origin upstream
+git remote add origin https://github.com/<you>/my-site.git
+git push -u origin main
+```
 
-The repository already contains technical decisions that are expensive to rediscover:
+### 2. Rewrite the identity files
 
-- Material UI isolation
-- hydration-safe client-only state
-- theme persistence
-- localized routing
-- AI route normalization
-- rate limiting
-- prompt/skill loading
-- unit/E2E/Storybook verification
-- Netlify deployment constraints
+| File                                                                                                | What to rewrite                                                                                                                                            |
+| --------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `constants/site.ts`                                                                                 | name, default title/description, GitHub URL, chrome switches, MUI `PALETTE`, `NAV`, collections, comments, `SPLASH`, `OG_PAGES`, SEO resources, hero video |
+| `messages/<locale>.json` (every supported locale)                                                   | all the copy: home, nav labels, metadata (`meta.home`), FAQ, legal pages                                                                                   |
+| `i18n/pathnames.ts`                                                                                 | the site's own localized routes (next to the existing ones)                                                                                                |
+| `components/home/Home.tsx` and `components/home/*`                                                  | the home body and its sections                                                                                                                             |
+| `components/ui/Logo.tsx`                                                                            | the logo drawing (keep every SVG id built from `useId`)                                                                                                    |
+| `styles/tokens.css`                                                                                 | colour tokens (`--accent-1`, `--bg-0`, `--btn-fg`, `--scrollbar-*`…), in step with `PALETTE`                                                               |
+| `app/icon.svg`                                                                                      | the favicon (also the logo of the social images)                                                                                                           |
+| `components/og/OgImage.tsx`                                                                         | the social image drawing and its colours (`OG_THEME`)                                                                                                      |
+| `lib/storage.ts`                                                                                    | only to add the site's own localStorage keys                                                                                                               |
+| `capabilities/agents/`, `capabilities/skills/`                                                      | the demo `hello` agent and any skill                                                                                                                       |
+| `README.md`, `package.json` (`name`, `author`, `version`), `LICENSE`, the first line of `AGENTS.md` | the project's own description, metadata and license                                                                                                        |
 
-Your new app should inherit those decisions and replace only the product layer.
+### 3. Delete the Axons demo
+
+- `content/articles/writing-articles/`, `content/articles/architecture-tour/` and `public/articles/` (the demo articles and their image), or set `ARTICLES_ENABLED = false` in `constants/site.ts`;
+- the specs that check the demo content: the expected titles in `tests/e2e/articles.spec.ts` and the demo slugs in `tests/e2e/comments.spec.ts` (rewrite them for the site's own entries, or delete them with the section);
+- `mockups/` (the Axons mockups).
+
+When this is done, `git grep -i axons` should only find what the site chose to keep (e.g. a credit).
+
+### 4. Merge an Axons update
+
+Axons releases are tagged (`vX.Y.Z`) and their notes list what changed and how to migrate. Take one deliberately, on a branch:
+
+```bash
+git checkout -b chore/axons-vX.Y.Z
+git fetch upstream --tags
+git merge vX.Y.Z
+```
+
+Resolve every conflict on purpose:
+
+- **identity** (the files of step 2, the site's content and demo deletions): keep the site's version, then port by hand any new key or field the release added (e.g. a new message key in every `messages/<locale>.json`, a new constant in `constants/site.ts`);
+- **engine** (everything else): take the Axons change when it is useful; keep the site's version only for code the site deliberately changed, and note why in the merge commit.
+
+Some merges will be hard: that is the accepted cost of a site that owns all its files. Then run the full Definition of done (`AGENTS.md`), open a PR on the site's repository and check the deploy preview before merging.
 
 ## Working with an AI coding agent
 
@@ -425,10 +451,10 @@ Start with these files:
 
 | Goal                        | File                                                       |
 | --------------------------- | ---------------------------------------------------------- |
-| Rename the app              | `site/config.ts`                                           |
-| Change navigation           | `site/config.ts` and `site/messages/*.json`                |
+| Rename the app              | `constants/site.ts` and `messages/*.json`                  |
+| Change navigation           | `constants/site.ts` (`NAV`) and `messages/*.json`          |
 | Change hero copy            | `messages/*.json`                                          |
-| Change SEO resources        | `site/config.ts` and `messages/*.json`                     |
+| Change SEO resources        | `constants/site.ts` and `messages/*.json`                  |
 | Change theme tokens         | `styles/tokens.css`                                        |
 | Change global (non-MUI) CSS | `styles/**` (map: `docs/styles.md`)                        |
 | Change MUI adapter behavior | `components/ui/material/`                                  |
@@ -873,15 +899,14 @@ When transforming Axons into a new app, update at least:
 
 ### Branding
 
-- `name` (and the rest of the identity) in `site/config.ts` — a derived site edits only `site/`, see `docs/architecture.md` → Deriving a site
-- logo drawing in `site/logo.tsx`, favicon in `site/icon.svg`, MUI colours in `site/config.ts` (`palette`) and CSS tokens in `site/theme.css`
-- social image in `public/`
+- the identity files listed in [Creating a site from Axons](#creating-a-site-from-axons): name and configuration in `constants/site.ts`, logo drawing in `components/ui/Logo.tsx`, favicon in `app/icon.svg`, MUI colours in `constants/site.ts` (`PALETTE`) and CSS tokens in `styles/tokens.css`
+- social image drawing in `components/og/OgImage.tsx`
 
 ### Localization
 
 - active locales in `i18n/locales.ts` (and the language switcher list in `constants/site.ts`)
-- the site's own localized pathnames in `site/config.ts` (`pathnames`, merged into `i18n/routing.ts`)
-- the site's own copy in `site/messages/*.json` (replacing Axons copy needs `messageOverrides`)
+- localized pathnames in `i18n/pathnames.ts`
+- all the copy in `messages/*.json`
 - legal pages in `messages/*.json`
 
 ### Legal / publisher information
@@ -897,7 +922,7 @@ When transforming Axons into a new app, update at least:
 - feature strip
 - FAQ
 - SEO resources
-- articles in `content/articles/` (the two demo articles, and `tests/e2e/articles.spec.ts` which relies on them), or `articlesEnabled: false` in `site/config.ts` to turn the section off
+- articles in `content/articles/` (the two demo articles, and `tests/e2e/articles.spec.ts` which relies on them), or `ARTICLES_ENABLED = false` in `constants/site.ts` to turn the section off
 - footer links
 - sitemap page
 
