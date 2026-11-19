@@ -42,7 +42,7 @@ describe("EntryBadges / ArticleTeaser", () => {
             />,
         );
 
-    it("renders nothing without badges (Axons' default card is unchanged)", () => {
+    it("renders nothing without badges (the default card is unchanged)", () => {
         expect(renderToStaticMarkup(<EntryBadges />)).toBe("");
         expect(renderToStaticMarkup(<EntryBadges badges={[]} />)).toBe("");
         expect(teaser()).not.toContain("entry-badges");

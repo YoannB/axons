@@ -2,7 +2,8 @@
 // (NextIntlClientProvider). Every prop a Server Component passes to a Client Component lands in
 // the page's RSC payload, so the full catalogue (legal pages, metadata…) would ship in every HTML
 // page although only Client Components need it. See docs/i18n.md → Client messages.
-import type { Messages } from "./site-extension";
+/** A message catalogue (messages/<locale>.json): nested objects of strings. */
+export type Messages = { [key: string]: unknown };
 
 const isTree = (value: unknown): value is Messages =>
     typeof value === "object" && value !== null && !Array.isArray(value);

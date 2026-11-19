@@ -16,11 +16,10 @@
   import, the pre-hydration splash node, and the `beforeInteractive` boot script. Resolves
   localized `lang` via `getLocale()`.
 - `app/[locale]/layout.tsx` = SEGMENT: validates locale, `getMessages({ locale })`, mounts
-  providers + chrome: the page FRAME `SiteShell` (`site/shell.tsx`; Axons' `DefaultShell` =
-  Header + `<main>` + Footer), then CookieBanner/GtmScript/SplashLoader OUTSIDE the frame. MUST
+  providers + chrome: Header + `<main>` + Footer, then CookieBanner/GtmScript/SplashLoader. MUST
   NOT contain `<html>`/`<body>` nor import `globals.css`. Exposes `generateStaticParams`.
-- `app/[locale]/page.tsx` = home metadata (`meta.home`) + the site's `SiteHome` body
-  (`site/home.tsx`; Axons' `components/home/AxonsHome.tsx`).
+- `app/[locale]/page.tsx` = home metadata (`meta.home`) + the home body
+  (`components/home/Home.tsx`).
 - Legal/sitemap pages = static Server Components (`params:{locale}`).
 - `app/[locale]/[...rest]/page.tsx` = catch-all calling `notFound()`: unknown paths under a
   locale render `app/[locale]/not-found.tsx` INSIDE the segment layout. Without it Next renders
@@ -58,9 +57,8 @@ dropped because it cannot express an allowlist. Invalid sources fail the build. 
 previews have their own hosts: list them explicitly, never widen to `https://*.netlify.app`.
 Third-party comments add the Disqus origins (`*.disqus.com`, `*.disquscdn.com`, `disqus.com`
 frames) to `script-src`, `style-src`, `img-src`, `frame-src` and `connect-src` ONLY when comments
-are active: `next.config.ts` reads `site/config.ts` and the env shortname through the pure
-`siteCommentsActive` (`lib/site-extension.ts`, no `@/` imports), the same rule as
-`COMMENTS_ENABLED` (docs/articles.md → Comments).
+are active: `next.config.ts` reads `COMMENTS_ENABLED` from `constants/site.ts` (docs/articles.md →
+Comments).
 
 ## Divergence note — do NOT "fix" per generic tutorials
 
@@ -74,99 +72,35 @@ move these under `app/`, and do not delete `middleware.ts` to silence the warnin
 ## Middleware matcher (root `middleware.ts`)
 
 The interception matcher must EXCLUDE technical and API routes (`api`, `_next`, `_vercel`,
-`trpc`, the extension-less `/icon` favicon route of `app/icon.tsx` (`icon$`), and any path
-containing a dot — which is what keeps the social images `/og/<locale>/….png` out of it, see
+`trpc`, and any path containing a dot (assets, the `app/icon.svg` favicon) — which is what keeps the social images `/og/<locale>/….png` out of it, see
 docs/seo-layout.md → Social images), and must be ADAPTED if the app ever gains a dynamic
 route or a route whose path contains a dot — a too-wide matcher intercepts `/api/*` and
 breaks the AI handlers, a too-narrow one leaks unlocalized traffic. This is the live
 `middleware.ts` (kept active for Netlify, see the divergence note above); the parked
 `proxy.ts.disabled` carries the same matcher for the day the adapter supports `proxy`.
 
-## Deriving a site (extension points)
+## Site identity (one source per concern)
 
-A derived site (a repo that merges Axons tags from an `upstream` remote) must not edit Axons
-files, or every upstream merge conflicts. It owns ONE folder, `site/`, and replaces its files:
+The app is ONE plain Next.js app; nothing merges a second source into it. What makes the site
+itself lives in these files, edited in place:
 
-| File                           | Holds                                                                                                                                                                                                                                                                                                                                                              |
-| ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `site/config.ts`               | `SITE` (`satisfies SiteConfig`): name, root title/description fallbacks, GitHub URL, brand accent, chrome switches, `articlesEnabled`, SEO resources + hero video, `pathnames`, `nav`, `collections`, `messageOverrides`, `clientMessages`, MUI `palette` (per mode), optional `ogPages`, optional `splash`, optional `comments` (+ `collectionDefaults.comments`) |
-| `content/<collection>/`        | a site's own Markdown collections (declared in `SITE.collections`; docs/articles.md → Collections)                                                                                                                                                                                                                                                                 |
-| `site/theme.css`               | the site's CSS, imported LAST by `app/globals.css` (token overrides such as `--accent-1`, `--bg-0`, `--btn-fg`, scrollbar colours `--scrollbar-*`: docs/styles.md → Scrollbars); empty in Axons                                                                                                                                                                    |
-| `site/logo.tsx`                | the logo DRAWING (`LOGO_VIEWBOX` + `LogoMark({ id })`, every SVG id built from `id`); `components/ui/Logo.tsx` keeps the frame and `aria-label={SITE_NAME}`                                                                                                                                                                                                        |
-| `site/icon.svg`                | the favicon, served by `app/icon.tsx` (SVG, generated at build)                                                                                                                                                                                                                                                                                                    |
-| `site/shell.tsx`               | `SiteShell`: the page FRAME around every page (header, `<main>`, footer); Axons re-exports `DefaultShell`. Props `SiteShellProps`                                                                                                                                                                                                                                  |
-| `site/home.tsx`                | `SiteHome`: the home BODY (metadata stays `meta.home`); Axons re-exports `AxonsHome`. Props `SiteHomeProps`                                                                                                                                                                                                                                                        |
-| `site/messages/<locale>.json`  | the site's own copy, one file per SUPPORTED locale (`{}` = nothing to add)                                                                                                                                                                                                                                                                                         |
-| `site/storage.ts`              | `SITE_STORAGE_KEYS`: the site's own localStorage keys by name (`{}` in Axons), merged into `STORAGE_KEYS`                                                                                                                                                                                                                                                          |
-| `site/og-image.tsx`            | `SITE_OG_IMAGE`: the social image (og:image / Twitter card) of every page: `Image` component, `theme` colours, fonts, logo; Axons' default draws `DefaultOgImage` with its tokens and the site's palette (docs/seo-layout.md → Social images)                                                                                                                      |
-| `app/[locale]/<page>/page.tsx` | the site's own pages (new files: no conflict)                                                                                                                                                                                                                                                                                                                      |
+| Concern                                                                             | File                                            |
+| ----------------------------------------------------------------------------------- | ----------------------------------------------- |
+| name, titles, URLs, palette, nav, collections, comments, splash, social-image pages | `constants/site.ts` (plain values)              |
+| every UI string, one file per supported locale                                      | `messages/<locale>.json`                        |
+| localized routes                                                                    | `i18n/pathnames.ts` (used by `i18n/routing.ts`) |
+| home body                                                                           | `components/home/Home.tsx`                      |
+| page frame (header, `<main>`, footer)                                               | `app/[locale]/layout.tsx`                       |
+| logo drawing                                                                        | `components/ui/Logo.tsx`                        |
+| colour tokens                                                                       | `styles/tokens.css`                             |
+| favicon                                                                             | `app/icon.svg`                                  |
+| localStorage keys                                                                   | `lib/storage.ts`                                |
+| social image drawing and colours                                                    | `components/og/OgImage.tsx`                     |
 
-The contract (`SiteConfig`) and the merges are PURE code in `lib/site-extension.ts`
-(100%-branch unit tests in `tests/unit/site-extension.test.ts`); Axons-owned files only consume
-them, so a new `SiteConfig` field shows up in a derived site as a TYPE ERROR in `site/config.ts`
-(explicit), never as a silent default or a merge conflict elsewhere.
+`Logo` builds EVERY SVG id of the drawing from `useId` (`${id}-grad`, `url(#${id}-grad)`): the
+splash, the header and a loader can show the logo at once, and a literal id would be duplicated
+(`url(#…)` then resolves to the first copy, the hidden splash's).
 
-- Identity/chrome: `constants/site.ts` keeps the logic (env, flags, `LOCALES`, ad sizes) and
-  re-exports `SITE` under the historical names (`SITE_NAME`, `GITHUB_URL`, `BRAND_ACCENT_FROM`,
-  `HEADER_NAV_ENABLED`, `GITHUB_LINK_ENABLED`, `ARTICLES_ENABLED`, `SEO_RESOURCES`,
-  `HERO_VIDEO_ID`): import from `@/constants/site`, not from `@/site/config`.
-- Routes: `SITE.pathnames` (same shape as next-intl `pathnames`, declared `as const`) is merged
-  into `i18n/pathnames.ts` (`PATHNAMES`, used by `i18n/routing.ts`) by `mergePathnames`; a key that redefines an Axons route THROWS at
-  build. Typed `Link`/`getPathname`/`pageMetadata` accept the site keys. `sitemap.xml` lists
-  every STATIC route (no `[param]`) of the merged map; a dynamic site route (a second Markdown
-  collection) must add its own entries.
-- Nav: `SITE.nav` entries `{ href, key: "nav.<id>", header? }` (`href` typed against
-  `SITE.pathnames`) are inserted after Home in the footer and the HTML sitemap page, and in the
-  header unless `header: false`. A disabled collection (`ARTICLES_ENABLED`, a site collection's `enabled`) drops its entry. Labels live in
-  `site/messages/<locale>.json` under `nav`.
-- Nav order: Home first, then `SITE.nav` in order, then Axons' other entries (articles, sitemap,
-  legal pages). To interleave an Axons entry with the site's, put a reference `{ axons: "/articles" }`
-  where it belongs in `SITE.nav`: that entry (its own label, route and header visibility) moves
-  there and leaves the tail. One ordered list reads exactly as rendered (no `before`/`after`
-  chains to resolve); with no reference the order is Axons' default. `buildNav` THROWS (build
-  fails) on an href that is not an Axons nav entry or one referenced twice; a reference to a
-  disabled collection stays hidden. Header, footer and HTML sitemap share the order (`NAV`,
-  `HEADER_NAV`). Example — Home, About, Services, Projects, Articles, Reminders, Contact, then
-  Sitemap and legal: `nav: [about, services, projects, { axons: "/articles" }, reminders, contact]`.
-- Storage: `site/storage.ts` declares `SITE_STORAGE_KEYS` (`{ ideTabs: "mysite-ide-tabs" }`, keys
-  prefixed with the site name); `lib/storage.ts` merges them with Axons' (`usage`, `themeMode`)
-  into `STORAGE_KEYS` via `mergeStorageKeys`, which THROWS on a name Axons declares, a key already
-  in use (Axons' or the site's own) or an empty key. Site code reads `STORAGE_KEYS.<name>` with
-  `readLS` / `writeLS`, never a literal key.
-- Frame & home: `site/shell.tsx` exports `SiteShell` (`SiteShellProps`: `children`, `locale`),
-  rendered by `app/[locale]/layout.tsx` inside the providers. It owns the `<main>` landmark and
-  the header/footer; the cookie banner, GTM and the splash loader stay in the layout, outside it.
-  `site/home.tsx` exports `SiteHome` (`SiteHomeProps`: `locale`), the body of `app/[locale]/page.tsx`.
-  Axons' defaults are re-exports (`components/layout/DefaultShell.tsx`,
-  `components/home/AxonsHome.tsx`), so Axons' own frame/home evolve upstream for a site that
-  keeps them. A site replacing the frame also replaces what Header/Footer provided (nav, language
-  and theme switches, footer links incl. "Manage cookies" when `CONSENT_REQUIRED`): e2e specs
-  scoped to `getByRole('banner')`/`contentinfo` then need the site's equivalents.
-- Social images: every page already gets `og:image` + `twitter:image` through `pageMetadata` (no
-  code). A site page gets its OWN card with ONE line in `SITE.ogPages`
-  (`{ "/about": "pages.about" }`: the namespace holding its `title` and `description`/`intro`);
-  left out, it shares the home card. Collection listings and entries are automatic. Branding:
-  `site/og-image.tsx` (`theme`, `logo`, `fonts`, or a whole `Image`). A site that adds
-  `site/og-image.tsx` files of its own (fonts, logo) reads them with a LITERAL
-  `path.join(process.cwd(), "site", …)` so they are traced.
-- Logo & splash: `site/logo.tsx` draws the CONTENT of the logo; `LogoMark` receives `id`
-  (`LogoMarkProps`, React `useId` in `Logo`, unique per rendered logo) and builds EVERY SVG id of
-  the drawing from it (`${id}-grad`, `url(#${id}-grad)`): the splash, the header and a loader can
-  show the logo at once, and a literal id would be duplicated (`url(#…)` then resolves to the
-  first copy, the hidden splash's). `SITE.splash` (optional, `{ logo?, bar? }`) chooses what the
-  pre-hydration splash shows; absent => the bar only. With `logo: true` the site animates its logo
-  through `.splash-logo` keyframes in `site/theme.css`, reusing the drawing — no duplicated paths
-  (docs/seo-layout.md → Pre-hydration splash).
-- Messages: `i18n/request.ts` deep-merges `site/messages/<locale>.json` INTO
-  `messages/<locale>.json` (`mergeMessages`). New keys are added; a key present on both sides
-  THROWS (build fails, path named) unless that path or a parent is listed in
-  `SITE.messageOverrides` (e.g. `"meta.home"`, `"hero"`): replacing Axons copy is always an
-  explicit, greppable choice. The legal `{placeholders}` are interpolated after the merge.
-  Only the paths in `CLIENT_MESSAGES` (Axons' + `SITE.clientMessages`) reach the client provider:
-  a site whose Client Components read their own namespace lists it there, the unit tests name any
-  forgotten one (`docs/i18n.md` → Client messages).
-
-Axons ITSELF keeps `pathnames: {}`, `nav: []`, `collections: []`, `messageOverrides: []` and empty
-`site/messages/*.json`, so its behavior is unchanged. Do not put Axons features in `site/`.
-In the derived repo, mark the folder as "ours" so upstream edits to Axons' defaults never
-conflict: `.gitattributes` → `site/** merge=ours`, plus `git config merge.ours.driver true`.
+Creating a new site from this repository, and merging its later updates, is described in
+`README.md`. Never introduce structural changes (new folders, indirection layers, file moves,
+duplicated sources) without a written proposal approved by the user.

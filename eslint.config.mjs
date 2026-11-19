@@ -14,7 +14,7 @@ const toConfigArray = (config) => (Array.isArray(config) ? config : [config]);
 /** @type {import('eslint').Linter.Config[]} */
 const config = [
     {
-        name: "axons/global-ignores",
+        name: "app/global-ignores",
         ignores: [
             "node_modules/**",
             ".netlify/**",
@@ -36,7 +36,7 @@ const config = [
     ...toConfigArray(nextTypescript),
 
     {
-        name: "axons/material-ui-boundary",
+        name: "app/material-ui-boundary",
         files: ["**/*.{js,mjs,cjs,jsx,ts,tsx}"],
         ignores: [
             // @mui imports are only allowed in the Material UI adapter folder.

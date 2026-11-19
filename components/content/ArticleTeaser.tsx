@@ -8,7 +8,7 @@ export interface ArticleTeaserProps {
     title: string;
     description: string;
     slug: string;
-    // Entry route of the collection (default: Axons' articles).
+    // Entry route of the collection (default: the articles).
     itemHref?: EntryHref;
     // Locale of the translation shown: the link goes to THAT translation's own URL.
     locale: AppLocale;

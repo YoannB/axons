@@ -15,7 +15,7 @@ const meta = {
         },
     },
     args: {
-        title: "Writing an article in Axons",
+        title: "Writing an article",
         description: "One folder per article, one Markdown file per language: from the front matter to the sitemap.",
         slug: "writing-an-article",
         locale: "en",
@@ -53,7 +53,7 @@ export const WithoutCoverLongTitle: Story = {
 export const WithoutCoverNoLabel: Story = {};
 export const LanguageFallback: Story = {
     args: {
-        title: "Écrire un article dans Axons",
+        title: "Écrire un article",
         description: "Un dossier par article, un fichier Markdown par langue : de l'entête YAML au sitemap.",
         slug: "ecrire-un-article",
         locale: "fr",

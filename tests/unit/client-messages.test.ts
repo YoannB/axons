@@ -2,8 +2,6 @@
 import { SEO_RESOURCES } from "@/constants/site";
 import { CLIENT_MESSAGES } from "@/i18n/client-messages";
 import { coversPath, pickMessages } from "@/lib/client-messages";
-import { mergeMessages } from "@/lib/site-extension";
-import { SITE } from "@/site/config";
 import { readdirSync, readFileSync } from "node:fs";
 import { join, relative } from "node:path";
 import { describe, expect, it } from "vitest";
@@ -52,7 +50,7 @@ describe("pickMessages", () => {
     });
 });
 
-// GUARD: every `useTranslations` call in the app's source (Axons' and the derived site's) reads a
+// GUARD: every `useTranslations` call in the app's source reads a
 // namespace that the client provider receives. A literal namespace is checked directly; a call
 // without one (`useTranslations()`, a variable) must declare what it reads in a
 // `// client-messages: a, b` comment in its file. Server Components use getTranslations.
@@ -128,7 +126,9 @@ describe("client messages guard", () => {
     });
 
     it("every useTranslations namespace is serialized to the client (i18n/client-messages.ts)", () => {
-        expect(unserved(files, CLIENT_MESSAGES), "add these paths to SITE.clientMessages (docs/i18n.md)").toEqual([]);
+        expect(unserved(files, CLIENT_MESSAGES), "add these paths to i18n/client-messages.ts (docs/i18n.md)").toEqual(
+            [],
+        );
     });
     it("no Client Component reads the raw catalogue (useMessages would see the client subset only)", () => {
         expect(files.filter((f) => /\buseMessages\(/.test(f.text)).map((f) => f.file)).toEqual([]);
@@ -140,11 +140,9 @@ describe("client messages guard", () => {
     });
 
     for (const locale of ["fr", "en", "es", "de", "it", "pt"]) {
-        it(`every client path exists in the ${locale} catalogue (Axons + site)`, async () => {
-            const axons = (await import(`../../messages/${locale}.json`)).default;
-            const site = (await import(`../../site/messages/${locale}.json`)).default;
-            const merged = mergeMessages(axons, site, SITE.messageOverrides);
-            expect(Object.keys(pickMessages(merged, CLIENT_MESSAGES)).length).toBeGreaterThan(0);
+        it(`every client path exists in the ${locale} catalogue`, async () => {
+            const messages = (await import(`../../messages/${locale}.json`)).default;
+            expect(Object.keys(pickMessages(messages, CLIENT_MESSAGES)).length).toBeGreaterThan(0);
         });
     }
 });

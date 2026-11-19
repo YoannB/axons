@@ -48,7 +48,7 @@ export const AsLinkPrimary: Story = {
     decorators: withLocale,
 };
 export const ExternalLink: Story = {
-    args: { variant: "ghost", href: "https://github.com/YoannB/axons", children: "Source code" },
+    args: { variant: "ghost", href: "https://github.com/example/app", children: "Source code" },
 };
 export const DisabledLink: Story = {
     args: { variant: "secondary", href: "/sitemap", disabled: true, children: "Sitemap" },
@@ -72,7 +72,7 @@ const withNewTabMessage: NonNullable<Story["decorators"]> = [
     ),
 ];
 export const External: Story = {
-    args: { variant: "secondary", href: "https://github.com/YoannB/axons", external: true, children: "Source code" },
+    args: { variant: "secondary", href: "https://github.com/example/app", external: true, children: "Source code" },
     decorators: withNewTabMessage,
     parameters: {
         docs: {

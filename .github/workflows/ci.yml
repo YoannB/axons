@@ -41,9 +41,9 @@ jobs:
             # A consent-requiring tracker must be configured for the cookie banner (and its
             # E2E) to exist; ads mirror the local .env.local used to write the specs.
             NEXT_PUBLIC_ADS_ENABLED: "true"
-            # FAKE Disqus shortname: turns Axons' demo comments on so tests/e2e/comments.spec.ts
+            # FAKE Disqus shortname: turns the demo comments on so tests/e2e/comments.spec.ts
             # runs. Every request to Disqus is intercepted and aborted by the specs.
-            NEXT_PUBLIC_DISQUS_SHORTNAME: "axons-e2e"
+            NEXT_PUBLIC_DISQUS_SHORTNAME: "e2e-fake"
             # E2E runs `next start` (NODE_ENV=production) with no Netlify Blobs store: fail-open
             # lets the server-contract specs reach validation. CI ONLY, never in a deployment.
             AI_QUOTA_FAIL_MODE: "open"

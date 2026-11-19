@@ -1,17 +1,11 @@
 // @vitest-environment node
-import { DefaultOgImage } from "@/components/og/DefaultOgImage";
+import { OG_THEME, OgImage } from "@/components/og/OgImage";
 import { COLLECTIONS, OG_PAGES } from "@/constants/site";
-import type { OgImageProps, SiteConfig } from "@/lib/site-extension";
-import { SITE } from "@/site/config";
+import type { OgImageProps } from "@/lib/og/model";
 import { renderToStaticMarkup } from "react-dom/server";
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, it } from "vitest";
 
-// site/og-image.tsx pulls the font/logo loaders (lib/og/assets.ts, server-only); nothing is read here.
-vi.mock("server-only", () => ({}));
-
-const { SITE_OG_IMAGE } = await import("@/site/og-image");
-
-// SITE-AGNOSTIC: the mechanisms (site declarations reach their consumers), never site values.
+// The mechanisms (declarations reach their consumers), never the configured values.
 describe("OG_PAGES — which pages get their own social image", () => {
     it("always includes the home", () => {
         expect(OG_PAGES["/"]).toBeTruthy();
@@ -23,20 +17,11 @@ describe("OG_PAGES — which pages get their own social image", () => {
             else expect(OG_PAGES).not.toHaveProperty(c.href);
         }
     });
-
-    it("includes every page the site declares in SITE.ogPages", () => {
-        const declared = (SITE as SiteConfig).ogPages ?? {};
-        for (const [href, namespace] of Object.entries(declared)) expect(OG_PAGES[href]).toBe(namespace);
-    });
 });
 
-describe("SITE_OG_IMAGE — contract of site/og-image.tsx", () => {
-    it("declares a component, a theme, a font family and the two loaders", () => {
-        expect(typeof SITE_OG_IMAGE.Image).toBe("function");
-        expect(SITE_OG_IMAGE.fontFamily).toBeTruthy();
-        expect(typeof SITE_OG_IMAGE.fonts).toBe("function");
-        expect(typeof SITE_OG_IMAGE.logo).toBe("function");
-        for (const colour of Object.values(SITE_OG_IMAGE.theme)) expect(colour).toMatch(/^#[0-9a-f]{6}$/i);
+describe("OG_THEME — colours of the social image", () => {
+    it("is 6-digit hex only (the drawing appends alpha digits to the accents)", () => {
+        for (const colour of Object.values(OG_THEME)) expect(colour).toMatch(/^#[0-9a-f]{6}$/i);
     });
 });
 
@@ -58,9 +43,9 @@ const PROPS: OgImageProps = {
     fontFamily: "Geist",
 };
 
-describe("DefaultOgImage — Axons' default drawing", () => {
+describe("OgImage — the drawing", () => {
     it("shows the title, description, site name, host and logo in the page language", () => {
-        const html = renderToStaticMarkup(<DefaultOgImage {...PROPS} />);
+        const html = renderToStaticMarkup(<OgImage {...PROPS} />);
         for (const text of [PROPS.title, PROPS.description, PROPS.siteName, PROPS.host]) expect(html).toContain(text);
         expect(html).toContain('lang="fr"');
         expect(html).toContain(`src="${PROPS.logo}"`);
@@ -68,19 +53,17 @@ describe("DefaultOgImage — Axons' default drawing", () => {
     });
 
     it("adds the section badge and the cover only when given", () => {
-        const bare = renderToStaticMarkup(<DefaultOgImage {...PROPS} />);
+        const bare = renderToStaticMarkup(<OgImage {...PROPS} />);
         expect(bare).not.toContain("Articles");
         expect(bare.match(/<img/g)).toHaveLength(1);
 
-        const full = renderToStaticMarkup(
-            <DefaultOgImage {...PROPS} section="Articles" cover="data:image/png;base64,AA==" />,
-        );
+        const full = renderToStaticMarkup(<OgImage {...PROPS} section="Articles" cover="data:image/png;base64,AA==" />);
         expect(full).toContain("Articles");
         expect(full).toContain('src="data:image/png;base64,AA=="');
     });
 
     it("omits the description block when the page has none", () => {
-        const html = renderToStaticMarkup(<DefaultOgImage {...PROPS} description="" />);
+        const html = renderToStaticMarkup(<OgImage {...PROPS} description="" />);
         expect(html).not.toContain("font-size:30px");
     });
 });

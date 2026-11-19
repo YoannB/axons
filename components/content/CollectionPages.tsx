@@ -12,7 +12,7 @@ import { articleJsonLd, articleMetadata, entryUrl, pageMetadata, type EntryHref,
 import { getFormatter, getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
 
-// Page FACTORIES of a Markdown collection (Axons' articles, a site's "reminders"…). Next routes are
+// Page FACTORIES of a Markdown collection (the articles, "reminders"…). Next routes are
 // files, so each collection keeps two page files that only delegate here (see the articles ones):
 //   app/[locale]/<route>/page.tsx         → collectionListing("<id>"): generateMetadata + Page
 //   app/[locale]/<route>/[slug]/page.tsx  → collectionEntry("<id>"): generateMetadata + Page

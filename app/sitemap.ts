@@ -1,11 +1,11 @@
 import { COLLECTIONS, HIDDEN_HREFS, SITE_URL } from "@/constants/site";
+import { staticHrefs } from "@/i18n/pathnames";
 import { getPathname, routing } from "@/i18n/routing";
 import { getCollectionCatalog } from "@/lib/articles/source";
 import { entryPath, type EntryHref, type LogicalHref } from "@/lib/seo";
-import { staticHrefs } from "@/lib/site-extension";
 import type { MetadataRoute } from "next";
 
-// Every STATIC route of routing.pathnames (Axons' pages + the derived site's), minus the routes of
+// Every STATIC route of routing.pathnames, minus the routes of
 // disabled collections. Collection listings change weekly, like the home.
 const HREFS: LogicalHref[] = staticHrefs(routing.pathnames).filter((href) => !HIDDEN_HREFS.includes(href));
 const ENABLED = COLLECTIONS.filter((c) => c.enabled);
@@ -22,7 +22,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
         })),
     );
     // One entry per TRANSLATION of every enabled collection (served locales only), dated by its
-    // front matter. Axons' articles come first (declaration order).
+    // front matter. The articles come first (declaration order).
     const entries = ENABLED.flatMap((collection) =>
         getCollectionCatalog(collection.id).flatMap((entry) =>
             Object.values(entry.translations).map((article) => ({

@@ -1,10 +1,8 @@
 import { expect, test } from "@playwright/test";
-import { resolveSplash, type SiteConfig } from "../../lib/site-extension";
-import { SITE } from "../../site/config";
+import { SPLASH } from "../../constants/site";
 
-// Pre-hydration splash (#app-splash) and its site option SITE.splash. Site-agnostic: the
-// expectations follow the site's own choice (Axons: bar only, no logo).
-const SPLASH = resolveSplash((SITE as SiteConfig).splash);
+// Pre-hydration splash (#app-splash) and its option SPLASH (constants/site.ts): the expectations
+// follow the configured choice (logo and/or bar).
 
 test.describe("Pre-hydration splash", () => {
     test.describe("before any script runs", () => {

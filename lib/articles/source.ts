@@ -45,7 +45,7 @@ export function getEntry(collection: string, locale: string, slug: string) {
     return findArticle(getCollectionCatalog(collection), locale, slug);
 }
 
-// Axons' articles = the default collection (historical API, unchanged).
+// The articles = the default collection (historical API, unchanged).
 export const getCatalog = (): ArticleEntry[] => getCollectionCatalog("articles");
 
 export function getArticles(locale: string, limit?: number) {

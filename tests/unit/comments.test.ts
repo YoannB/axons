@@ -13,8 +13,8 @@ import { describe, expect, it } from "vitest";
 const DISQUS = { provider: "disqus" } as const;
 const ON = { provider: "disqus", shortname: "demo" } as const;
 
-describe("resolveComments — SITE.comments + NEXT_PUBLIC_DISQUS_SHORTNAME", () => {
-    it("no SITE.comments => off, whatever the env says (disabled by default)", () => {
+describe("resolveComments — provider + NEXT_PUBLIC_DISQUS_SHORTNAME", () => {
+    it("no provider => off, whatever the env says (disabled by default)", () => {
         expect(resolveComments(undefined, undefined)).toBeNull();
         expect(resolveComments(undefined, "demo")).toBeNull();
     });

@@ -26,7 +26,7 @@ const withTranslations = (Story: ComponentType) => (
 /**
  * Rebuilds the server #app-splash container (full-screen fixed, see styles/ui/loader.css)
  * to demonstrate the "full-page splash screen" loader and the dismissal mechanics.
- * The real server markup (Logo with .splash-logo + bar, per SITE.splash) is AppSplash,
+ * The real server markup (Logo with .splash-logo + bar, per SPLASH in constants/site.ts) is AppSplash,
  * shown by the SplashWithLogo / SplashBarOnly stories below.
  */
 const withSplashContainer = (Story: ComponentType) => (
@@ -173,20 +173,20 @@ export const SplashDismissal: Story = {
     },
 };
 
-/** The REAL pre-hydration splash (AppSplash, as app/layout.tsx renders it) with SITE.splash = { logo: true }:
- *  the site's Logo with .splash-logo (animated by CSS) above the bar, grouped in the center. */
+/** The REAL pre-hydration splash (AppSplash, as app/layout.tsx renders it) with SPLASH = { logo: true }:
+ *  the Logo with .splash-logo (animated by CSS) above the bar, grouped in the center. */
 export const SplashWithLogo: Story = {
     render: () => <AppSplash logo bar />,
     parameters: {
         docs: {
             description: {
-                story: "AppSplash with `logo` and `bar`: the server markup of #app-splash when a site sets `SITE.splash: { logo: true }`. The logo is the real `Logo` (the site's drawing, ids from useId) with the `.splash-logo` class, which a site re-animates from site/theme.css. Fixed z:9999: it covers the canvas.",
+                story: "AppSplash with `logo` and `bar`: the server markup of #app-splash with `SPLASH = { logo: true }` (constants/site.ts). The logo is the real `Logo` (ids from useId) with the `.splash-logo` class, animated by styles/ui/loader.css. Fixed z:9999: it covers the canvas.",
             },
         },
     },
 };
 
-/** Axons' default splash (no SITE.splash): the progress bar only. */
+/** The default splash (SPLASH.logo false): the progress bar only. */
 export const SplashBarOnly: Story = {
     render: () => <AppSplash logo={false} bar />,
 };

@@ -12,7 +12,7 @@ export interface CollectionRules {
     readonly archiveBefore?: string;
 }
 
-/** Rules after merging collection > site defaults > Axons defaults (no badge at all). */
+/** Rules after merging collection > site defaults > none (no badge at all). */
 export interface ResolvedRules {
     readonly newForDays: number;
     readonly archiveBefore?: string;
@@ -35,7 +35,7 @@ export function validateRules(rules: CollectionRules, where: string): Collection
     return rules;
 }
 
-/** The collection's own value wins over the site default; nothing set => Axons' default (off). */
+/** The collection's own value wins over the site default; nothing set => off. */
 export function resolveRules(collection: CollectionRules, defaults: CollectionRules): ResolvedRules {
     const archiveBefore = collection.archiveBefore ?? defaults.archiveBefore;
     return {

@@ -1,30 +1,36 @@
-import { LOCALES as SERVED_LOCALES } from "@/i18n/locales";
-import { resolveTimeZone } from "@/lib/day";
-import { collectionHasComments, resolveComments, validateCommentsSwitch } from "@/lib/comments";
-import { isAiEnabled, isConsentRequired } from "@/lib/flags";
+import { LOCALES as SERVED_LOCALES } from "../i18n/locales";
 import {
-    buildNav,
     findCollection,
-    headerNav,
     hiddenHrefs,
-    resolveSplash,
-    siteCommentsActive,
     validateCollections,
     type CollectionConfig,
     type CollectionDefaults,
-    type SeoResource,
-    type SiteConfig,
-} from "@/lib/site-extension";
-import { resolveRules, validateRules, type ResolvedRules } from "@/lib/articles/status";
-import { buildOgPages } from "@/lib/og/model";
-import { normalizeSiteUrl } from "@/lib/site-url";
-import { SITE } from "@/site/config";
+} from "../lib/articles/collections";
+import { resolveRules, validateRules, type ResolvedRules } from "../lib/articles/status";
+import {
+    collectionHasComments,
+    commentsActive,
+    resolveComments,
+    validateCommentsSwitch,
+    type SiteComments,
+} from "../lib/comments";
+import { resolveTimeZone } from "../lib/day";
+import { isAiEnabled, isConsentRequired } from "../lib/flags";
+import { buildOgPages } from "../lib/og/model";
+import { normalizeSiteUrl } from "../lib/site-url";
 
-export type { SeoResource } from "@/lib/site-extension";
+// RELATIVE imports only (never `@/`): next.config.ts imports this file, and the config loader
+// does not resolve `@/` aliases in the files it imports.
+//
+// The site's identity and configuration, as plain values. The copy lives in
+// messages/<locale>.json, the colour tokens in styles/tokens.css, the favicon in app/icon.svg and
+// the logo drawing in components/ui/Logo.tsx.
 
-// Site identity and chrome come from site/config.ts (owned by a derived site); the names below are
-// kept as re-exports so imports do not change. See docs/architecture.md → Deriving a site.
-export const SITE_NAME: string = SITE.name;
+export const SITE_NAME = "Axons";
+/** Root metadata fallbacks (pages set their own localized title/description). */
+export const DEFAULT_TITLE = "Axons — Next.js AI/SEO boilerplate";
+export const DEFAULT_DESCRIPTION = "Next.js 16 boilerplate for SEO and AI (OpenRouter), deployable on Netlify.";
+export const GITHUB_URL = "https://github.com/YoannB/axons";
 // Never ends with "/" (lib/site-url.ts): consumers append paths to it.
 export const SITE_URL: string = normalizeSiteUrl(process.env.NEXT_PUBLIC_SITE_URL);
 export const AI_DAILY_LIMIT = Number(process.env.NEXT_PUBLIC_AI_DAILY_LIMIT ?? 0) || 0;
@@ -36,14 +42,33 @@ export const AI_ENABLED = isAiEnabled(process.env.NEXT_PUBLIC_AI_ENABLED, AI_DAI
 export const AI_QUOTA_TZ = resolveTimeZone(process.env.NEXT_PUBLIC_AI_QUOTA_TZ);
 export const ADS_ENABLED = process.env.NEXT_PUBLIC_ADS_ENABLED === "true";
 export const GTM_ID = process.env.NEXT_PUBLIC_GTM_ID ?? "";
-export const GITHUB_URL: string = SITE.githubUrl;
 
-// Site chrome switches (Axons defaults: true / true / 1). A one-page tool can drop the header
-// nav (the footer and the HTML sitemap still list every page) and the GitHub links.
-export const HEADER_NAV_ENABLED: boolean = SITE.headerNavEnabled;
-export const GITHUB_LINK_ENABLED: boolean = SITE.githubLinkEnabled;
-/** Brand word: SITE_NAME[0..BRAND_ACCENT_FROM) plain, the rest accented ("A" + "xons"). */
-export const BRAND_ACCENT_FROM: number = SITE.brandAccentFrom;
+// Site chrome switches. A one-page tool can drop the header nav (the footer and the HTML sitemap
+// still list every page) and the GitHub links.
+export const HEADER_NAV_ENABLED: boolean = true;
+export const GITHUB_LINK_ENABLED: boolean = true;
+/** Brand word: SITE_NAME[0..BRAND_ACCENT_FROM) plain, the rest accented. */
+export const BRAND_ACCENT_FROM: number = 1;
+
+/** MUI colours of one theme mode (hex): primary/secondary main and the text drawn ON the primary. */
+export interface PaletteMode {
+    readonly primary: string;
+    readonly secondary: string;
+    readonly contrastText: string;
+}
+// MUI palette per mode (buttons, chips, focus rings…), read by components/ui/material/theme.ts.
+// The CSS tokens (--accent-1, --bg-0, --btn-fg…) live in styles/tokens.css: keep both in step.
+export const PALETTE: { readonly dark: PaletteMode; readonly light: PaletteMode } = {
+    dark: { primary: "#7c5cff", secondary: "#22d3ee", contrastText: "#fff" },
+    light: { primary: "#7c5cff", secondary: "#22d3ee", contrastText: "#fff" },
+};
+
+/**
+ * What the pre-hydration splash (`#app-splash`, rendered by app/layout.tsx) shows: `logo` = the
+ * logo (class `.splash-logo`, animated by CSS) above the bar; `bar` = the animated progress bar
+ * (docs/seo-layout.md → Pre-hydration splash).
+ */
+export const SPLASH: { readonly logo: boolean; readonly bar: boolean } = { logo: false, bar: true };
 
 export type LocaleCode = "fr" | "en" | "es" | "de" | "it" | "pt";
 export interface LocaleMeta {
@@ -71,18 +96,12 @@ export const LOCALES: LocaleMeta[] = LOCALE_META.map((l) => ({
 // Markdown articles section (listing, article pages, home "latest articles" block, nav entry and
 // sitemap entries). false => every article surface disappears and /articles answers 404; the
 // files in content/articles/ stay in the repo but are not published. See docs/articles.md.
-export const ARTICLES_ENABLED: boolean = SITE.articlesEnabled;
+export const ARTICLES_ENABLED: boolean = true;
 
-const AXONS_NAV = [
-    { href: "/", key: "nav.home" },
-    { href: "/articles", key: "nav.articles" },
-    { href: "/sitemap", key: "nav.sitemap" },
-    { href: "/legal", key: "nav.legal" },
-    { href: "/privacy", key: "nav.privacy" },
-    { href: "/cookies", key: "nav.cookies" },
-] as const;
-// Markdown collections: Axons' articles (the default collection, switched by ARTICLES_ENABLED) +
-// the site's own (site/config.ts). See docs/articles.md → Collections.
+// Markdown collections: the articles (the default collection, switched by ARTICLES_ENABLED), then
+// any other one, e.g. { id: "reminders", enabled: true, href: "/reminders", itemHref:
+// "/reminders/[slug]", namespace: "pages.reminders", schemaType: "TechArticle" } + content/reminders/
+// + both routes in i18n/pathnames.ts + two page files (docs/articles.md → Collections).
 export const ARTICLES_COLLECTION = {
     id: "articles",
     enabled: ARTICLES_ENABLED,
@@ -91,46 +110,51 @@ export const ARTICLES_COLLECTION = {
     namespace: "pages.articles",
     schemaType: "BlogPosting",
 } as const satisfies CollectionConfig;
-export const COLLECTIONS = validateCollections([ARTICLES_COLLECTION, ...SITE.collections]);
+export const COLLECTIONS = validateCollections([ARTICLES_COLLECTION]);
 export type Collection = (typeof COLLECTIONS)[number];
 export const getCollection = (id: string): Collection => findCollection(COLLECTIONS, id);
-// "New" / "Archive" badge rules shared by every collection. OPTIONAL in site/config.ts (Axons' own
-// config omits it), so it is read through the contract type. Absent => no badge, Axons' default.
-const siteConfig: SiteConfig = SITE;
-export const COLLECTION_DEFAULTS: CollectionDefaults = validateRules(
-    siteConfig.collectionDefaults ?? {},
-    "site/config.ts collectionDefaults",
-);
-validateCommentsSwitch(COLLECTION_DEFAULTS, "site/config.ts collectionDefaults");
+// "New" / "Archive" badge rules and comments switch of EVERY collection; a collection's own value
+// wins. e.g. { newForDays: 90, archiveBefore: "2018-01-01" }. No rule => no badge
+// (docs/articles.md → New and archive badges). `comments: true` shows comments under the
+// non-archived entries, ACTIVE ONLY with a Disqus shortname (see COMMENTS below).
+export const COLLECTION_DEFAULTS: CollectionDefaults = { comments: true };
+validateRules(COLLECTION_DEFAULTS, "COLLECTION_DEFAULTS");
+validateCommentsSwitch(COLLECTION_DEFAULTS, "COLLECTION_DEFAULTS");
 /** Badge rules of a collection: its own newForDays / archiveBefore, else the site defaults. */
 export const collectionRules = (collection: CollectionConfig): ResolvedRules =>
     resolveRules(collection, COLLECTION_DEFAULTS);
-/** What the pre-hydration splash shows (OPTIONAL `SITE.splash`; Axons: the bar only). */
-export const SPLASH = resolveSplash(siteConfig.splash);
 /** Routes of the disabled collections (nav and sitemap.xml skip them). */
 export const HIDDEN_HREFS: readonly string[] = hiddenHrefs(COLLECTIONS);
-
-// Footer + HTML sitemap: every entry (site entries after Home). Header: HEADER_NAV.
-export const NAV = buildNav(AXONS_NAV, SITE.nav, HIDDEN_HREFS);
-export const HEADER_NAV = headerNav(NAV);
-
-// Pages with their OWN social image (logical href → messages namespace with title + description
-// or intro): Axons' pages, the enabled collection listings, then the site's (SITE.ogPages). Entries
-// of enabled collections are automatic; any other page shares the home image (lib/seo.ts).
-const AXONS_OG_PAGES = {
-    "/": "meta.home",
-    "/sitemap": "pages.sitemap",
-    "/legal": "pages.legal",
-    "/privacy": "pages.privacy",
-    "/cookies": "pages.cookies",
-} as const;
 export const ENABLED_COLLECTIONS = COLLECTIONS.filter((c) => c.enabled);
 
-// Comments under collection entries (OPTIONAL `SITE.comments`, docs/articles.md → Comments). The
-// shortname: NEXT_PUBLIC_DISQUS_SHORTNAME (inlined at build) wins over SITE.comments.shortname.
-// null => off. COMMENTS_ENABLED = at least one enabled collection shows them.
-export const COMMENTS = resolveComments(siteConfig.comments, process.env.NEXT_PUBLIC_DISQUS_SHORTNAME);
-export const COMMENTS_ENABLED: boolean = siteCommentsActive(siteConfig, process.env.NEXT_PUBLIC_DISQUS_SHORTNAME);
+// Footer + HTML sitemap: every entry, in this order (labels: messages `nav.<id>`). A disabled
+// collection drops its entry. Header: HEADER_NAV (an entry with `header: false` stays out of it,
+// keeping the header short).
+interface NavEntry {
+    readonly href: string;
+    readonly key: string;
+    readonly header?: boolean;
+}
+const ALL_NAV = [
+    { href: "/", key: "nav.home" },
+    { href: "/articles", key: "nav.articles" },
+    { href: "/sitemap", key: "nav.sitemap" },
+    { href: "/legal", key: "nav.legal" },
+    { href: "/privacy", key: "nav.privacy" },
+    { href: "/cookies", key: "nav.cookies" },
+] as const satisfies readonly NavEntry[];
+export const NAV: readonly (NavEntry & (typeof ALL_NAV)[number])[] = ALL_NAV.filter(
+    (n) => !HIDDEN_HREFS.includes(n.href),
+);
+export const HEADER_NAV = NAV.filter((n) => n.header !== false);
+
+// Comments under collection entries (docs/articles.md → Comments). The shortname:
+// NEXT_PUBLIC_DISQUS_SHORTNAME (inlined at build) wins over COMMENTS_PROVIDER.shortname; none =>
+// off (COMMENTS null). COMMENTS_ENABLED = at least one enabled collection shows them (next.config.ts
+// then widens the CSP to Disqus).
+const COMMENTS_PROVIDER: SiteComments = { provider: "disqus" };
+export const COMMENTS = resolveComments(COMMENTS_PROVIDER, process.env.NEXT_PUBLIC_DISQUS_SHORTNAME);
+export const COMMENTS_ENABLED: boolean = commentsActive(COMMENTS, COLLECTIONS, COLLECTION_DEFAULTS);
 /** Does this collection show comments under its non-archived entries? */
 export const collectionComments = (collection: CollectionConfig): boolean =>
     collectionHasComments(COMMENTS, collection, COLLECTION_DEFAULTS);
@@ -141,14 +165,69 @@ export const CONSENT_REQUIRED = isConsentRequired({
     adsEnabled: ADS_ENABLED,
     commentsEnabled: COMMENTS_ENABLED,
 });
+
+// Pages with their OWN social image (logical href → messages namespace with title + description
+// or intro), then the enabled collection listings. Entries of enabled collections are automatic;
+// any other page shares the home image (lib/seo.ts, docs/seo-layout.md → Social images).
 export const OG_PAGES: Readonly<Record<string, string>> = buildOgPages(
-    AXONS_OG_PAGES,
+    {
+        "/": "meta.home",
+        "/sitemap": "pages.sitemap",
+        "/legal": "pages.legal",
+        "/privacy": "pages.privacy",
+        "/cookies": "pages.cookies",
+    },
     Object.fromEntries(ENABLED_COLLECTIONS.map((c) => [c.href, c.namespace])),
-    (siteConfig.ogPages ?? {}) as Record<string, string>,
 );
 
-export const SEO_RESOURCES: readonly SeoResource[] = SITE.seoResources;
-export const HERO_VIDEO_ID: string = SITE.heroVideoId;
+export interface SeoResource {
+    id: string;
+    kind: "video" | "article";
+    url: string;
+    videoId?: string;
+    short?: boolean;
+    mark: string;
+    titleKey: string;
+    summaryKey: string;
+    sourceKey: string;
+    durationKey: string;
+}
+export const SEO_RESOURCES: readonly SeoResource[] = [
+    {
+        id: "yt",
+        kind: "video",
+        url: "https://www.youtube.com/watch?v=jzdTBDmCAKE",
+        videoId: "jzdTBDmCAKE",
+        short: false,
+        mark: "YT",
+        titleKey: "seo.a1.title",
+        summaryKey: "seo.a1.summary",
+        sourceKey: "seo.a1.source",
+        durationKey: "seo.a1.duration",
+    },
+    {
+        id: "oc",
+        kind: "article",
+        url: "https://openclassrooms.com/fr/courses/8710351-creez-une-application-react-avec-next-js/8856186-demarrez-un-projet-next-js",
+        mark: "OC",
+        titleKey: "seo.a2.title",
+        summaryKey: "seo.a2.summary",
+        sourceKey: "seo.a2.source",
+        durationKey: "seo.a2.duration",
+    },
+    {
+        id: "ti",
+        kind: "article",
+        url: "https://tech-insider.org/fr/nextjs-16-tutoriel-app-full-stack-13-etapes-2026/",
+        mark: "TI",
+        titleKey: "seo.a3.title",
+        summaryKey: "seo.a3.summary",
+        sourceKey: "seo.a3.source",
+        durationKey: "seo.a3.duration",
+    },
+];
+/** Hero video of the SEO block; "" (with no SEO_RESOURCES either) removes the whole block. */
+export const HERO_VIDEO_ID: string = "jzdTBDmCAKE";
 
 // SYMMETRIC, THIN vertical rails (160x600): symmetry kept (the 160/300
 // asymmetry looked bad) AND breathing room in the center (~912px on a 1280 container) => the

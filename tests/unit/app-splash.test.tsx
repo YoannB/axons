@@ -1,27 +1,16 @@
 import { AppSplash } from "@/components/ui/AppSplash";
 import { SPLASH } from "@/constants/site";
-import { resolveSplash } from "@/lib/site-extension";
-import { SITE } from "@/site/config";
-import type { SiteConfig } from "@/lib/site-extension";
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 
-// The pre-hydration splash (app/layout.tsx → AppSplash) and its site option SITE.splash
-// (docs/seo-layout.md → Pre-hydration splash).
+// The pre-hydration splash (app/layout.tsx → AppSplash) and its option SPLASH
+// (constants/site.ts; docs/seo-layout.md → Pre-hydration splash).
 
-describe("resolveSplash — SITE.splash with Axons' defaults", () => {
-    it("defaults to the bar only (Axons' historical splash)", () => {
-        expect(resolveSplash()).toEqual({ logo: false, bar: true });
-        expect(resolveSplash({})).toEqual({ logo: false, bar: true });
-    });
-
-    it("keeps what the site declares", () => {
-        expect(resolveSplash({ logo: true })).toEqual({ logo: true, bar: true });
-        expect(resolveSplash({ logo: true, bar: false })).toEqual({ logo: true, bar: false });
-    });
-
-    it("SPLASH is the site's choice resolved (site-agnostic)", () => {
-        expect(SPLASH).toEqual(resolveSplash((SITE as SiteConfig).splash));
+describe("SPLASH — what the splash shows", () => {
+    it("is two booleans, logo and bar", () => {
+        expect(Object.keys(SPLASH).sort()).toEqual(["bar", "logo"]);
+        expect(typeof SPLASH.logo).toBe("boolean");
+        expect(typeof SPLASH.bar).toBe("boolean");
     });
 });
 
@@ -38,7 +27,7 @@ describe("AppSplash — #app-splash content", () => {
         expect(render(true, true).getAttribute("aria-hidden")).toBe("true");
     });
 
-    it("bar only (Axons' default): no logo", () => {
+    it("bar only: no logo", () => {
         const splash = render(false, true);
         expect(splash.querySelector("svg")).toBeNull();
         expect(splash.querySelectorAll(".loader__bar")).toHaveLength(1);

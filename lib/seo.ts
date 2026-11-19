@@ -1,16 +1,17 @@
 import { OG_PAGES, SITE_NAME, SITE_URL } from "@/constants/site";
 import { getPathname, routing } from "@/i18n/routing";
+import type { CollectionSchemaType } from "@/lib/articles/collections";
 import type { ArticleEntry } from "@/lib/articles/parse";
+import type { StaticHref } from "@/i18n/pathnames";
 import { entryLogicalPath, ogImagePath, socialImageMetadata } from "@/lib/og/model";
-import type { CollectionSchemaType, StaticHref } from "@/lib/site-extension";
 import type { Metadata } from "next";
 
-// Logical key of a STATIC route (Axons + site pathnames, i18n/routing.ts); dynamic `[param]` routes excluded.
+// Logical key of a STATIC route (i18n/pathnames.ts); dynamic `[param]` routes excluded.
 export type LogicalHref = StaticHref<typeof routing.pathnames>;
 
 const absolute = (pathname: string) => new URL(pathname, SITE_URL).toString();
 
-// Logical key of a collection ENTRY route ("/articles/[slug]", a site's "/reminders/[slug]"…).
+// Logical key of a collection ENTRY route ("/articles/[slug]", "/reminders/[slug]"…).
 export type EntryHref = Extract<keyof typeof routing.pathnames, `${string}/[slug]`>;
 
 // Localized path of an entry translation of a collection (its slug differs per locale).
@@ -24,7 +25,7 @@ export function entryUrl(itemHref: EntryHref, locale: string, slug: string): str
     return absolute(entryPath(itemHref, locale, slug));
 }
 
-// Localized path of an article translation (Axons' default collection).
+// Localized path of an article translation (the default collection).
 export function articlePath(locale: string, slug: string): string {
     return entryPath("/articles/[slug]", locale, slug);
 }
@@ -68,7 +69,7 @@ function localizedMetadata(opts: {
 
 // Localized metadata + hreflang + social image, reused by every static page.
 // href = LOGICAL KEY of the pathnames mapping (never a concatenated localized slug). A page listed in
-// OG_PAGES (Axons' pages, collection listings, SITE.ogPages) gets its own image; any other page
+// OG_PAGES (constants/site.ts: the app's pages and the collection listings) gets its own image; any other page
 // shares the home image.
 export function pageMetadata(opts: {
     title: string;

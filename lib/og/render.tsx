@@ -1,12 +1,13 @@
 import "server-only";
 import { ENABLED_COLLECTIONS, OG_PAGES, SITE_NAME, SITE_URL } from "@/constants/site";
 import { routing } from "@/i18n/routing";
+import { OG_THEME, OgImage } from "@/components/og/OgImage";
 import { getCollectionCatalog, getEntry } from "@/lib/articles/source";
-import { SITE_OG_IMAGE } from "@/site/og-image";
 import { getTranslations } from "next-intl/server";
 import { ImageResponse } from "next/og";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
+import { loadIcon, loadOgFonts, OG_FONT_FAMILY } from "./assets";
 import {
     coverMime,
     dataUri,
@@ -96,10 +97,9 @@ export async function ogImageResponse(locale: string, segments: readonly string[
     const content = served && logicalPath ? await resolveContent(locale, logicalPath) : undefined;
     if (!content) return new Response(null, { status: 404 });
 
-    const { Image: Card, theme, fontFamily } = SITE_OG_IMAGE;
-    const [fonts, logo] = await Promise.all([SITE_OG_IMAGE.fonts(), SITE_OG_IMAGE.logo()]);
+    const [fonts, logo] = await Promise.all([loadOgFonts(), loadIcon()]);
     return new ImageResponse(
-        <Card
+        <OgImage
             title={truncate(content.title, TITLE_MAX)}
             description={truncate(content.description, DESCRIPTION_MAX)}
             section={content.section}
@@ -108,8 +108,8 @@ export async function ogImageResponse(locale: string, segments: readonly string[
             locale={locale}
             logo={logo}
             cover={content.cover}
-            theme={theme}
-            fontFamily={fontFamily}
+            theme={OG_THEME}
+            fontFamily={OG_FONT_FAMILY}
         />,
         { ...OG_SIZE, fonts: [...fonts] },
     );

@@ -48,7 +48,7 @@ describe("validateRules", () => {
 });
 
 describe("resolveRules", () => {
-    it("defaults to no badge at all (Axons' behaviour)", () => {
+    it("defaults to no badge at all (the default)", () => {
         expect(resolveRules({}, {})).toEqual({ newForDays: 0 });
     });
 
@@ -122,7 +122,7 @@ describe("pickLatest", () => {
         expect(pickLatest(items, OFF, 1).items).toEqual([items[0]]);
     });
 
-    it("is identical to a plain slice when nothing is archived (Axons' default)", () => {
+    it("is identical to a plain slice when nothing is archived (the default)", () => {
         const items = [listed("a", "2026-11-10"), listed("b", "2026-11-03"), listed("c", "2026-01-01")];
         expect(pickLatest(items, OFF, 2)).toEqual({ archive: false, items: items.slice(0, 2) });
     });

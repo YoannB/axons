@@ -14,10 +14,11 @@ fail-fast, so a missing tail delimiter throws at MODULE IMPORT (before any `it` 
 "0 test / Failed Suites" while other files still pass. Inline fixtures in
 `agent-parser.test.ts`/`skill-parser.test.ts` already close correctly; keep it that way.
 
-SITE-AGNOSTIC: Axons' tests check the extension MECHANISMS (a value of `site/` reaches its
-consumer: `SITE.palette` → `buildTheme`, `LogoMark` → `Logo`, …), never the VALUES of `site/`
-(colours, drawing, name, routes): a derived site replaces `site/`, and a test pinning Axons'
-values would fail there (see `tests/unit/site-identity.test.tsx`).
+IDENTITY-AGNOSTIC: tests check that an identity value reaches its consumer (`PALETTE` →
+`buildTheme`, `SITE_NAME` → `Logo`, …), never the identity VALUES themselves (colours, name,
+drawing): a site rewrites them, and a test pinning them would fail for no reason (see
+`tests/unit/site-identity.test.tsx`). Specs that check the DEMO content (article titles in
+`tests/e2e/articles.spec.ts`) are part of the demo and are rewritten with it.
 
 ## IO & network — covered by E2E, not unit
 
@@ -47,7 +48,7 @@ everywhere); a missing executable fails every test before rendering.
 
 URLs in specs: the default locale has no prefix (`localePrefix: "as-needed"`), so build expected
 hrefs/URLs with `lp(locale, path)` / `lpRe(locale, path)` (`tests/e2e/support/locale-path.ts`)
-instead of hard-coding "/fr/...": the same spec then passes for a derived site whose
+instead of hard-coding "/fr/...": the same spec then passes for a site whose
 `NEXT_PUBLIC_DEFAULT_LOCALE` differs. Navigate with the explicit prefix (`goto("/fr")`) to FORCE a
 locale (the middleware redirects to the canonical URL). `playwright.config.ts` loads `.env*` with
 `@next/env`, so specs see the same `NEXT_PUBLIC_*` as the server.

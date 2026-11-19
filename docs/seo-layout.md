@@ -21,19 +21,18 @@ animation, so the glyph is recognizable at a glance.
 `app/layout.tsx` renders `AppSplash` (`components/ui/AppSplash.tsx`) as `#app-splash`: plain
 server markup, painted before any script, full-screen `position: fixed` (no layout shift), hidden
 on hydration by `SplashLoader` through `.is-leaving` (never removed; see `docs/react-effects.md`).
-Its content is the site's choice, `SITE.splash` resolved into `SPLASH` (`constants/site.ts`):
+Its content is `SPLASH` (`constants/site.ts`):
 
-- `bar` (default `true`): the `.loader__bar` progress bar.
-- `logo` (default `false`, Axons shows the bar only): the REAL `Logo` (the site's `LogoMark`)
-  with the `.splash-logo` class (120px, Axons' `logoBreath` keyframes), above the bar. The grid
+- `bar` (`true` in the demo): the `.loader__bar` progress bar.
+- `logo` (`false` in the demo): the REAL `Logo` with the `.splash-logo` class (120px,
+  `logoBreath` keyframes), above the bar. The grid
   uses `place-content: center` so the two stay together in the middle.
 
-A site animates the splash logo with its own keyframes on `.splash-logo` in `site/theme.css`
-(imported last, so its `animation` wins), the same way it styles the header logo and the loader:
-never redraw the logo in CSS (a mask or `::before` duplicating the paths). The global
+The splash logo is animated by its keyframes on `.splash-logo` (`styles/ui/loader.css`), the same
+way the header logo and the loader are styled: never redraw the logo in CSS (a mask or `::before` duplicating the paths). The global
 `prefers-reduced-motion` rule (`styles/a11y.css`) freezes every CSS animation, the splash's
 included; an SMIL `<animate*>` in the drawing is NOT covered by it. The logo's SVG ids come from
-`useId` (`LogoMark({ id })`), so splash and header never share a gradient/mask id. The root 404
+`useId` (`components/ui/Logo.tsx`), so splash and header never share a gradient/mask id. The root 404
 hides the splash by CSS (`body:has(.root-not-found)`), whatever it shows. Unit:
 `tests/unit/app-splash.test.tsx`; e2e (JS disabled = the pre-hydration paint):
 `tests/e2e/splash.spec.ts`.
@@ -85,7 +84,7 @@ slots); both empty => the `#seo` section is not rendered. The detach-on-scroll h
 
 ## Site chrome switches
 
-`site/config.ts` (re-exported by `constants/site.ts`): `HEADER_NAV_ENABLED` (false = no header nav and no burger; the footer and the
+`constants/site.ts`: `HEADER_NAV_ENABLED` (false = no header nav and no burger; the footer and the
 HTML sitemap page still list every page), `GITHUB_LINK_ENABLED` (header and footer GitHub links),
 `BRAND_ACCENT_FROM` (the brand word is `SITE_NAME[0..n)` plain + the rest in `<b>`, header AND
 footer). Optional messages: `nav.tagline` (+ `nav.taglineSub`) render a two-line tagline after
@@ -145,19 +144,18 @@ section badge on collection entries) in the page's language. `lib/seo.ts` adds `
   other path answers 404. Nothing is drawn at request time; a new page or entry needs a rebuild,
   like the page itself. `next start` serves them from the build cache (`x-nextjs-cache: HIT`); on
   Netlify the adapter serves the prerendered responses from its cache and the CDN, purged on deploy.
-- Which page has its OWN image: `OG_PAGES` (`constants/site.ts`) = Axons' pages (home `meta.home`,
-  sitemap, legal, privacy, cookies), the listing of every enabled collection, then the site's
-  `SITE.ogPages` (`{ "/about": "pages.about" }`: logical href → messages namespace with `title` and
-  `description`, else `intro`). Entries are automatic (front matter title/description, collection
+- Which page has its OWN image: `OG_PAGES` (`constants/site.ts`) = the app's pages (home
+  `meta.home`, sitemap, legal, privacy, cookies; a new page adds `"/about": "pages.about"`: logical
+  href → messages namespace with `title` and `description`, else `intro`), then the listing of
+  every enabled collection. Entries are automatic (front matter title/description, collection
   title as the section badge). A page outside `OG_PAGES` shares the home image (alt = site name).
   The texts are read from the SAME messages as the page metadata, so the card never drifts;
   `lib/og/render.tsx` fits them (`truncate`: word boundary + ellipsis; `titleSize`).
 - Front-matter `image`: embedded as a thumbnail in the entry's card (PNG, JPEG or SVG from
   `public/`; other formats are skipped). The JSON-LD `image` still points to the cover itself.
-- Drawing = `site/og-image.tsx` (`SITE_OG_IMAGE`, contract `SiteOgImage`): `Image` (Axons:
-  `components/og/DefaultOgImage.tsx`), `theme` (6-digit hex; Axons' dark tokens + the site's
-  `SITE.palette.dark` accents), `fontFamily` + `fonts()` and `logo()` (default: `site/icon.svg`).
-  It is Satori JSX: flexbox only, inline styles, every element with several children
+- Drawing = `components/og/OgImage.tsx` (`OgImage`), colours `OG_THEME` next to it (6-digit hex:
+  the dark tokens + the `PALETTE.dark` accents), fonts and logo (`app/icon.svg`) loaded by
+  `lib/og/assets.ts`. It is Satori JSX: flexbox only, inline styles, every element with several children
   `display: flex`, no CSS variables, no MUI.
 - Fonts: Geist Regular/Bold in `assets/og/` (OFL, `assets/og/README.md`), with the `GPOS` table
   removed: Satori applied its kerning around spaces and drew irregular word gaps. Any replacement

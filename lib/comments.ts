@@ -1,10 +1,11 @@
 // PURE module (no process.env, no next-intl, no React): comments under collection entries.
-// The site declares a provider (`SITE.comments`), each collection opts in (`comments: true`, or
-// `collectionDefaults.comments`), and the shortname comes from NEXT_PUBLIC_DISQUS_SHORTNAME first,
-// then `SITE.comments.shortname`. No declaration or no shortname => comments are off everywhere.
+// The site declares a provider (constants/site.ts `COMMENTS_PROVIDER`), each collection opts in
+// (`comments: true`, or `COLLECTION_DEFAULTS.comments`), and the shortname comes from
+// NEXT_PUBLIC_DISQUS_SHORTNAME first, then the provider's `shortname`. No declaration or no
+// shortname => comments are off everywhere.
 // docs/articles.md → Comments.
 
-/** `SITE.comments`: the provider the site uses. Only Disqus today. */
+/** The comments provider the site uses (`COMMENTS_PROVIDER`). Only Disqus today. */
 export interface SiteComments {
     readonly provider: "disqus";
     /**
@@ -20,7 +21,7 @@ export interface ResolvedComments {
     readonly shortname: string;
 }
 
-/** Per-collection switch (a collection's own value wins over `collectionDefaults`). */
+/** Per-collection switch (a collection's own value wins over `COLLECTION_DEFAULTS`). */
 export interface CommentsSwitch {
     readonly comments?: boolean;
 }
@@ -31,7 +32,7 @@ const SHORTNAME = /^[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/;
 
 /**
  * Comments of the build, or null (off). Priority: the env shortname (trimmed, non-empty), then
- * `site.shortname`. The env alone never turns comments on: the site must declare `SITE.comments`.
+ * `site.shortname`. The env alone never turns comments on: the site must declare a provider.
  * A malformed shortname throws (build failure), whichever source it came from.
  */
 export function resolveComments(
@@ -82,7 +83,7 @@ export function threadIdentifier(collection: string, entryId: string, locale: st
     return `${collection}/${entryId}/${locale}`;
 }
 
-// Disqus interface languages (https://disqus.com/admin/settings/general/ lists them). Axons' `pt`
+// Disqus interface languages (https://disqus.com/admin/settings/general/ lists them). The app's `pt`
 // is European Portuguese (pt-PT), hence `pt_EU`, not `pt_BR`.
 const DISQUS_LANGUAGES: Readonly<Record<string, string>> = {
     fr: "fr",

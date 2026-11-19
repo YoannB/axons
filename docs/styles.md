@@ -15,9 +15,7 @@ import into a single CSS bundle, so there is no extra request.
   which is why it is not grouped by folder (`styles/ui/*` sits between `home/showcase` and
   `home/seo-resources`). Never reorder lines to tidy them: an equal-specificity rule moved
   earlier silently loses.
-- New file: add its `@import` at the position where its rules must win (usually the end, but
-  ALWAYS before the last line, `@import "../site/theme.css"`: the derived site's CSS wins over
-  every Axons file at equal specificity).
+- New file: add its `@import` at the position where its rules must win (usually the end).
   `@import` rules must stay first in `globals.css`, before any rule.
 - Do not import a `styles/` file from a component: CSS order would then follow the module
   graph instead of the manifest.
@@ -82,6 +80,6 @@ reaches at least 3:1 on `--bg-0` and the surfaces in both themes). CSS only, no 
   `auto` so the pseudo-elements apply.
 - Zero specificity everywhere (`*`, `:where`), and the file sits right after `base.css` in the
   manifest: a component rule (e.g. `.tabs__list`) always overrides it.
-- A derived site recolours scrollbars by overriding the tokens ONLY, in `site/theme.css`, e.g.
-  `:root { --scrollbar-thumb: color-mix(in oklab, var(--accent-1) 55%, transparent); }` (and the
-  light variant under `[data-theme="light"]`). Never restyle the pseudo-elements there.
+- Recolour scrollbars through the tokens ONLY, in `styles/tokens.css`, e.g.
+  `--scrollbar-thumb: color-mix(in oklab, var(--accent-1) 55%, transparent);` (and the light
+  variant under `[data-theme="light"]`). Never restyle the pseudo-elements per component.

@@ -34,8 +34,8 @@ same locale throws with the file path. Never "fix" a failing build by catching t
 
 ## Code map
 
-Axons' articles are the DEFAULT Markdown collection; everything below applies to every
-collection (a derived site's "reminders", …), with `content/<collection>/` in place of
+The articles are the DEFAULT Markdown collection; everything below applies to every
+collection ("reminders", …), with `content/<collection>/` in place of
 `content/articles/`. See _Collections_ for declaring one.
 
 - `lib/articles/parse.ts` — PURE (no fs, no next-intl), 100% branch-covered by
@@ -53,8 +53,10 @@ collection (a derived site's "reminders", …), with `content/<collection>/` in 
   `collectionEntry(id)` (metadata + page, `notFound()` when the collection is off or the slug is
   unknown). `app/[locale]/articles/page.tsx` and `app/[locale]/articles/[slug]/page.tsx` only
   delegate to them.
-- `constants/site.ts` — `ARTICLES_COLLECTION`, `COLLECTIONS` (articles + `SITE.collections`,
-  validated by `validateCollections` in `lib/site-extension.ts`), `getCollection`, `HIDDEN_HREFS`.
+- `lib/articles/collections.ts` — PURE, 100% branch-covered by `tests/unit/collections.test.ts`:
+  `CollectionConfig`, `validateCollections`, `findCollection`, `hiddenHrefs`.
+- `constants/site.ts` — `ARTICLES_COLLECTION`, `COLLECTIONS` (validated at build),
+  `COLLECTION_DEFAULTS`, `getCollection`, `HIDDEN_HREFS`.
 - `components/content/ArticleTeaser.tsx` (server-compatible card), `ArticleFeed.tsx` (server:
   date formatting + fallback badge + status badges, `collection` prop), `EntryBadges.tsx` (New /
   Archive badges through the neutral `Chip`), `ArticleBody.tsx` (Markdown renderer + server-side
@@ -82,8 +84,8 @@ small label above it. Server-rendered, no client JS. The whole thumb link stays 
 Colours come from the tokens only: `--text-1` on a light tint of `--accent-1` / `--accent-2`
 over `--surface-2` (tint strength `--cover-tint-1` / `--cover-tint-2`, lower in light mode),
 plus a full-strength accent bar on the leading edge. Text stays AA in both themes whatever the
-accent hue; a derived site recolours the cover by overriding its tokens in `site/theme.css`, and
-never needs to touch `components/content/`. Keep the text on the TINT (never on the raw accent
+accent hue; recolour the cover through its tokens in `styles/tokens.css`, never in
+`components/content/`. Keep the text on the TINT (never on the raw accent
 gradient: white on `--accent-2` is ~1.8:1).
 
 ## New and archive badges
@@ -92,13 +94,13 @@ Two optional, generic statuses, shown as TEXT badges (neutral `Chip`, label in `
 tinted chip: AA in both themes) on every card (`ArticleTeaser`) and next to the date on the entry
 page. Labels live in `messages/<locale>.json` → `entryStatus` (`new`, `archive`, `archiveNotice`).
 
-Rules, in `site/config.ts` (both OPTIONAL; absent = Axons' default = no badge at all):
+Rules, in `constants/site.ts` (both OPTIONAL; absent = no badge at all):
 
 ```ts
-// Every collection, Axons' articles included:
-collectionDefaults: { newForDays: 90, archiveBefore: "2018-01-01" },
+// Every collection, the articles included:
+export const COLLECTION_DEFAULTS: CollectionDefaults = { newForDays: 90, archiveBefore: "2018-01-01" };
 // One collection overrides it (each field separately; 0 switches New off for it):
-collections: [{ id: "reminders", /* … */ newForDays: 0, archiveBefore: "2016-01-01" }],
+{ id: "reminders", /* … */ newForDays: 0, archiveBefore: "2016-01-01" } // in COLLECTIONS
 ```
 
 - **New**: `0 <= days(today − date) < newForDays`, days counted in CALENDAR days (a future date
@@ -111,13 +113,13 @@ collections: [{ id: "reminders", /* … */ newForDays: 0, archiveBefore: "2016-0
 - Validation fails the build on a negative / non-integer `newForDays`, a malformed
   `archiveBefore` (site defaults and each collection) or a non-boolean `archived`.
 
-**Testing the badges.** Axons publishes NO archived (or new) demo entry: a fixture article would
+**Testing the badges.** The demo publishes NO archived (or new) entry: a fixture article would
 show on the public site. The rules are unit-tested (`tests/unit/articles-status.test.ts`, today
 injected), the status → badge mapping and the card in `tests/unit/entry-badges.test.tsx`, and the
 render of an archive in `tests/unit/collection-entry-archive.test.tsx`: an in-memory entry (the
 content source is mocked) goes through the real `collectionEntry` page and `ArticleFeed`, which
 must show the Archive badge and the notice, never New, and no comments. Storybook shows the card
-(`ArticleTeaser` → `ArchivedEntry`, `ArchivedFallback`). The e2e only checks that Axons' default
+(`ArticleTeaser` → `ArchivedEntry`, `ArchivedFallback`). The e2e only checks that the default
 rules show no badge. To SEE an archive locally, set `archived: true` on a demo translation (or an
 `archiveBefore` after its date) and do not commit it.
 
@@ -134,7 +136,7 @@ client (server and client days differ around midnight → hydration mismatch).
 **The "latest" block** (`LatestArticles`, `pickLatest`): the 3 most recent NON-archived entries
 under `latestTitle`. When every entry of the collection is an archive, it shows the 3 most recent
 archives under `archivesTitle` (each with its Archive badge) instead of disappearing: a site whose
-content is all old keeps a home block, but never presents it as news. With Axons' defaults
+content is all old keeps a home block, but never presents it as news. With the defaults
 nothing is archived, so the block is unchanged.
 
 ## Comments (Disqus, behind consent)
@@ -142,25 +144,25 @@ nothing is archived, so the block is unchanged.
 Optional comments under the NON-archived entries of chosen collections. Off by default: without
 configuration nothing renders, no Disqus code ships, the CSP and the cookie banner are unchanged.
 
-Configuration (`site/config.ts`; pure rules in `lib/comments.ts`, 100% branch-covered by
+Configuration (`constants/site.ts`; pure rules in `lib/comments.ts`, 100% branch-covered by
 `tests/unit/comments.test.ts`):
 
 ```ts
-comments: { provider: "disqus", shortname: "my-forum" }, // shortname optional, see below
-collectionDefaults: { comments: true },                    // every collection, Axons' articles included
-collections: [{ id: "reminders", /* … */ comments: false }], // a collection's own value wins
+const COMMENTS_PROVIDER: SiteComments = { provider: "disqus", shortname: "my-forum" }; // shortname optional
+export const COLLECTION_DEFAULTS: CollectionDefaults = { comments: true }; // every collection
+{ id: "reminders", /* … */ comments: false } // in COLLECTIONS: a collection's own value wins
 ```
 
 - **Shortname priority**: `NEXT_PUBLIC_DISQUS_SHORTNAME` (build-time, inlined) WINS over
-  `SITE.comments.shortname`, so one codebase can point a preview at another forum. The env alone
-  never turns comments on: `SITE.comments` must be declared. No shortname from either source =>
+  `COMMENTS_PROVIDER.shortname`, so one codebase can point a preview at another forum. The env
+  alone never turns comments on: a provider must be declared. No shortname from either source =>
   off. A malformed shortname (anything but letters, digits, inner hyphens) fails the build, and so
   does a non-boolean `comments`.
 - **Active** (`COMMENTS_ENABLED`) = resolved shortname AND at least one enabled collection with
   comments. It switches on the `comments` consent purpose (`CONSENT_REQUIRED` becomes true), the
   `when: ["comments"]` legal paragraphs (docs/i18n.md → Legal copy follows the site switches) and
   the Disqus CSP origins (docs/architecture.md → Security headers).
-- **Axons' demo**: `comments: { provider: "disqus" }` + `collectionDefaults: { comments: true }`
+- **The demo**: `COMMENTS_PROVIDER = { provider: "disqus" }` + `COLLECTION_DEFAULTS = { comments: true }`
   with NO shortname, so the preview shows comments only when Netlify has
   `NEXT_PUBLIC_DISQUS_SHORTNAME` (Site configuration → Environment variables, scope Builds, then
   redeploy: the value is inlined at build). CI sets a FAKE one for the e2e specs.
@@ -256,38 +258,38 @@ same as every other page under `[locale]`.
 
 ## Turning the section off
 
-`ARTICLES_ENABLED` (`site/config.ts` `articlesEnabled`, re-exported by `constants/site.ts`) is the single switch. `false` removes every article
+`ARTICLES_ENABLED` (`constants/site.ts`) is the single switch. `false` removes every article
 surface at once: the `/articles` nav entry (header, footer, HTML sitemap page), the home
 "latest articles" block, the `sitemap.xml` entries, and both routes (`notFound()`). `content/articles/` is left untouched (the files are simply not
 published) and `tests/e2e/articles.spec.ts` skips itself. Do not delete the routes or the
 `pathnames` entries to turn the section off: flipping the constant back must be enough.
 
-## Collections (a derived site's own Markdown sections)
+## Collections (more Markdown sections)
 
-A collection = one entry in `SITE.collections` (`site/config.ts`) + its folder + its routes:
+A collection = one entry in `COLLECTIONS` (`constants/site.ts`) + its folder + its routes:
 
 1. `content/<id>/<entry>/<locale>.md`, same front matter and rules as articles (`<id>` kebab-case).
-2. Both routes in `SITE.pathnames`: the listing (e.g. `"/reminders"`) and the entry, ending with
+2. Both routes in `i18n/pathnames.ts`: the listing (e.g. `"/reminders"`) and the entry, ending with
    `/[slug]` (e.g. `"/reminders/[slug]"`, translated per locale like any pathname).
-3. `{ id, enabled, href, itemHref, namespace, schemaType }` in `SITE.collections`: `enabled` is its
+3. `{ id, enabled, href, itemHref, namespace, schemaType }` in `COLLECTIONS`: `enabled` is its
    on/off switch, `namespace` its messages (`title`, `intro`, `empty`, `publishedOn`, `onlyIn`, in
-   every locale, in `site/messages/<locale>.json`; plus `latestTitle`, `archivesTitle`, `viewAll`
+   every locale, in `messages/<locale>.json`; plus `latestTitle`, `archivesTitle`, `viewAll`
    if a home renders its "latest" block), `schemaType` its JSON-LD type (`BlogPosting`,
    `TechArticle`, `Article`). Optional `newForDays` / `archiveBefore` override
-   `SITE.collectionDefaults` (see _New and archive badges_).
+   `COLLECTION_DEFAULTS` (see _New and archive badges_).
 4. Two page files that only delegate:
    `app/[locale]/<route>/page.tsx` → `const page = collectionListing("<id>")`, exporting
    `generateMetadata = page.generateMetadata` and `default page.Page`;
    `app/[locale]/<route>/[slug]/page.tsx` → same with `collectionEntry("<id>")`.
-5. Optionally a nav entry `{ href: "<listing href>", key: "nav.<id>" }` in `SITE.nav` (header,
-   footer, HTML sitemap page).
+5. Optionally a nav entry `{ href: "<listing href>", key: "nav.<id>" }` in `NAV`
+   (`constants/site.ts`: header, footer, HTML sitemap page).
 
 Validation fails the build on a non kebab-case or duplicate id, a dynamic listing `href`, an
 `itemHref` not ending with `/[slug]`, or a page file naming an unknown collection. A disabled
 collection behaves like `ARTICLES_ENABLED = false`: both routes answer 404, its nav entry and its
 `sitemap.xml` entries disappear (`HIDDEN_HREFS`). Fallback language, hreflang, canonical and
 the slug-aware language switch work as for articles (the switcher reads the page's alternates).
-A site home can render a collection's "latest" block with `<LatestArticles locale={locale}
+The home can render a collection's "latest" block with `<LatestArticles locale={locale}
 collection="<id>" />` (section id `latest-<id>`), or a plain list with
 `<ArticleFeed items={getEntries("<id>", locale, 3)} locale={locale} collection="<id>" />`: pass
 `collection` (not only `namespace` / `itemHref`) so the badges follow that collection's rules.
@@ -298,4 +300,4 @@ Create `content/articles/<id>/` with one `<locale>.md` per supported locale (tra
 `slug`, keep `date` identical), put any image in `public/articles/<id>/`, run the Definition of
 done, open a PR. The article is online after the Netlify redeploy of `main` (a few minutes),
 not on a simple refresh. The E2E `tests/e2e/articles.spec.ts` (and `comments.spec.ts`) rely on the two demo
-articles (`writing-articles`, `architecture-tour`): a derived site replacing them updates those specs.
+articles (`writing-articles`, `architecture-tour`): replacing the demo content means updating those specs.

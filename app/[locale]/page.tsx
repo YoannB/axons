@@ -1,5 +1,5 @@
+import { Home } from "@/components/home/Home";
 import { pageMetadata } from "@/lib/seo";
-import { SiteHome } from "@/site/home";
 import { getTranslations } from "next-intl/server";
 
 // Localized title/description + canonical/hreflang for the home (the root layout only holds
@@ -11,9 +11,9 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
     return { ...meta, title: { absolute: t("title") } };
 }
 
-// Static Server Component: the body is the site's `SiteHome` (site/home.tsx; Axons: AxonsHome).
+// Static Server Component: the body is `Home` (components/home/Home.tsx).
 // No request read here, so the route stays prerendered by the layout's generateStaticParams.
 export default async function HomePage({ params }: { params: Promise<{ locale: string }> }) {
     const { locale } = await params;
-    return <SiteHome locale={locale} />;
+    return <Home locale={locale} />;
 }

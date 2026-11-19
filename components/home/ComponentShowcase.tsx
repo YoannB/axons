@@ -14,7 +14,7 @@ import {
     Textarea,
     ThemeToggle,
 } from "@/components/ui";
-import { AI_ENABLED } from "@/constants/site";
+import { AI_ENABLED, SITE_URL } from "@/constants/site";
 import { useAiCall, type AiCallCtx } from "@/hooks/use-ai-call";
 import { useElapsedSeconds } from "@/hooks/use-elapsed";
 import { useAiPendingSince, useStore } from "@/hooks/use-store";
@@ -121,7 +121,7 @@ export function ComponentShowcase() {
                 <div className="sg sg-controls">
                     <LanguageSwitcher />
                     <ThemeToggle />
-                    <CopyButton text="https://axons.netlify.app" />
+                    <CopyButton text={SITE_URL} />
                 </div>
                 {/* AI demo buttons: absent when the AI layer is off (no key / limit 0). */}
                 {AI_ENABLED ? (

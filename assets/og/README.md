@@ -1,6 +1,6 @@
 # Social image fonts
 
-`Geist-Regular.ttf` and `Geist-Bold.ttf` draw Axons' default social images (`site/og-image.tsx`,
+`Geist-Regular.ttf` and `Geist-Bold.ttf` draw the social images (`components/og/OgImage.tsx`,
 loaded by `lib/og/assets.ts`). Geist is © 2023 Vercel in collaboration with basement.studio, under
 the SIL Open Font License 1.1 (`OFL.txt`, no Reserved Font Name).
 
