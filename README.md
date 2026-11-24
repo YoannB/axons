@@ -143,6 +143,8 @@ LEGAL_EDITOR_TRADE_NAME=
 LEGAL_EDITOR_SIREN=
 LEGAL_EDITOR_APE_CODE=
 LEGAL_EDITOR_ADDRESS=
+# Optional: `street` (default) or `city` when LEGAL_EDITOR_ADDRESS is only a city.
+LEGAL_EDITOR_ADDRESS_KIND=
 LEGAL_PUBLICATION_DIRECTOR=
 LEGAL_CONTACT_EMAIL=
 # Expected ISO 8601 date: YYYY-MM-DD. It will be formatted according to the current locale.
@@ -174,6 +176,7 @@ LEGAL_EDITOR_TRADE_NAME=...
 LEGAL_EDITOR_SIREN=...
 LEGAL_EDITOR_APE_CODE=...
 LEGAL_EDITOR_ADDRESS=...
+LEGAL_EDITOR_ADDRESS_KIND=street
 LEGAL_PUBLICATION_DIRECTOR=...
 LEGAL_CONTACT_EMAIL=...
 LEGAL_ACTIVITY_DECLARED_DATE=YYYY-MM-DD
@@ -213,16 +216,17 @@ These variables are read server-side and interpolated into localized messages. T
 
 However, because they can become part of localized copy, they should only contain information intended to be publicly displayed on legal pages. They are not secrets.
 
-| Variable                       | Required | Purpose                                                                                        |
-| ------------------------------ | -------- | ---------------------------------------------------------------------------------------------- |
-| `LEGAL_EDITOR_NAME`            | No       | Legal editor name. Used as fallback for `LEGAL_PUBLICATION_DIRECTOR` when the latter is empty. |
-| `LEGAL_EDITOR_TRADE_NAME`      | No       | Registered trade name, if applicable.                                                          |
-| `LEGAL_EDITOR_SIREN`           | No       | SIREN number, if applicable.                                                                   |
-| `LEGAL_EDITOR_APE_CODE`        | No       | APE / NAF code, if applicable.                                                                 |
-| `LEGAL_EDITOR_ADDRESS`         | No       | Legal address, if applicable.                                                                  |
-| `LEGAL_PUBLICATION_DIRECTOR`   | No       | Publication director. Falls back to `LEGAL_EDITOR_NAME` when empty.                            |
-| `LEGAL_CONTACT_EMAIL`          | No       | Contact email for legal notices.                                                               |
-| `LEGAL_ACTIVITY_DECLARED_DATE` | No       | Activity declaration date, expected in ISO 8601 format: `YYYY-MM-DD`.                          |
+| Variable                       | Required | Purpose                                                                                                             |
+| ------------------------------ | -------- | ------------------------------------------------------------------------------------------------------------------- |
+| `LEGAL_EDITOR_NAME`            | No       | Legal editor name. Used as fallback for `LEGAL_PUBLICATION_DIRECTOR` when the latter is empty.                      |
+| `LEGAL_EDITOR_TRADE_NAME`      | No       | Registered trade name, if applicable.                                                                               |
+| `LEGAL_EDITOR_SIREN`           | No       | SIREN number, if applicable.                                                                                        |
+| `LEGAL_EDITOR_APE_CODE`        | No       | APE / NAF code, if applicable.                                                                                      |
+| `LEGAL_EDITOR_ADDRESS`         | No       | Legal address, if applicable.                                                                                       |
+| `LEGAL_EDITOR_ADDRESS_KIND`    | No       | `street` (default: full street address) or `city` (only a city, e.g. `Nantes, France`). Any other value = `street`. |
+| `LEGAL_PUBLICATION_DIRECTOR`   | No       | Publication director. Falls back to `LEGAL_EDITOR_NAME` when empty.                                                 |
+| `LEGAL_CONTACT_EMAIL`          | No       | Contact email for legal notices.                                                                                    |
+| `LEGAL_ACTIVITY_DECLARED_DATE` | No       | Activity declaration date, expected in ISO 8601 format: `YYYY-MM-DD`.                                               |
 
 ### Public / client-visible
 
@@ -250,6 +254,7 @@ The cookie banner and the footer "Manage cookies" link exist only when `NEXT_PUB
 - Legal variables are processed in `i18n/request.ts`:
     - they are read from `process.env` on the server,
     - special ICU/MessageFormat characters are escaped,
+    - `LEGAL_EDITOR_ADDRESS_KIND` picks the preposition of the editor-address sentence (legal notice and privacy policy) through an ICU `{addressKind, select, city {…} other {…}}`; only the strings containing that select are formatted (with `intl-messageformat`, logic in `lib/legal-messages.ts`), every other string is plain substitution,
     - `LEGAL_ACTIVITY_DECLARED_DATE` is formatted with `Intl.DateTimeFormat` using the current locale,
     - invalid dates fall back to the raw value,
     - values are interpolated into `messages/<locale>.json`.
@@ -262,6 +267,7 @@ Expected placeholders in message files include:
 {siren}
 {apeCode}
 {address}
+{addressKind, select, city {…} other {…}}
 {publicationDirector}
 {contactEmail}
 {declaredDate}
@@ -878,6 +884,7 @@ LEGAL_EDITOR_TRADE_NAME
 LEGAL_EDITOR_SIREN
 LEGAL_EDITOR_APE_CODE
 LEGAL_EDITOR_ADDRESS
+LEGAL_EDITOR_ADDRESS_KIND
 LEGAL_PUBLICATION_DIRECTOR
 LEGAL_CONTACT_EMAIL
 LEGAL_ACTIVITY_DECLARED_DATE
