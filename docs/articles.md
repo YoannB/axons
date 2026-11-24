@@ -32,6 +32,28 @@ Validation is fail-fast at BUILD time (`lib/articles/parse.ts`): a missing/empty
 slug or date, a non-boolean `archived`, a relative image, an empty body, an unclosed header or a slug used twice in the
 same locale throws with the file path. Never "fix" a failing build by catching that error.
 
+Extra fields: any front-matter key other than `title`, `slug`, `date`, `description`, `image` and
+`archived` is copied, as YAML parsed it, into `article.extra` (`Readonly<Record<string, unknown>>`).
+Axons does NOT validate, sort on, render or serialize them; narrowing them is the derived site's
+job. When a file has no such key, `extra` is ABSENT (not `undefined`, not `{}`). Every Axons output
+(pages, JSON-LD, sitemap, social images) picks fields explicitly, so `extra` only surfaces where a
+site passes it on itself (e.g. a whole `Article` as props to a client component).
+
+```yaml
+---
+title: "Hello"
+slug: hello
+date: 2026-11-10
+description: "One sentence."
+status: draft # site-specific, unvalidated by Axons
+---
+```
+
+```ts
+const status = article.extra?.status;
+const isDraft = status === "draft"; // the site narrows `unknown` itself (or validates at build)
+```
+
 ## Code map
 
 The articles are the DEFAULT Markdown collection; everything below applies to every

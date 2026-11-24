@@ -16,6 +16,9 @@ export interface Article {
     // Front-matter `archived` (only when set): true/false overrides the collection's archiveBefore
     // rule for this translation (lib/articles/status.ts).
     archived?: boolean;
+    // Front-matter fields Axons does not know (anything but the RESERVED_FIELDS), copied as YAML
+    // parsed them, NOT validated: narrowing them is the derived site's job. Absent when there is none.
+    extra?: Readonly<Record<string, unknown>>;
     body: string;
 }
 
@@ -43,6 +46,8 @@ export interface ListedArticle {
 const SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
 const DELIMITER = "---";
+// Front-matter keys Axons reads itself; every other key lands in `Article.extra`.
+const RESERVED_FIELDS: readonly string[] = ["title", "slug", "date", "description", "image", "archived"];
 
 function fail(file: string, message: string): never {
     throw new Error(`Article ${file}: ${message}`);
@@ -97,6 +102,7 @@ export function parseArticleFile({ id, locale, raw, collection }: ArticleFile): 
     if (archived !== undefined && typeof archived !== "boolean")
         fail(file, `field "archived" must be true or false (got ${JSON.stringify(archived)}).`);
     if (!body) fail(file, "empty Markdown body.");
+    const extraEntries = Object.entries(fields).filter(([key]) => !RESERVED_FIELDS.includes(key));
 
     return {
         id,
@@ -107,6 +113,7 @@ export function parseArticleFile({ id, locale, raw, collection }: ArticleFile): 
         date,
         ...(image ? { image } : {}),
         ...(archived === undefined ? {} : { archived }),
+        ...(extraEntries.length ? { extra: Object.fromEntries(extraEntries) } : {}),
         body,
     };
 }

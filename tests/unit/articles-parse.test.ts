@@ -65,6 +65,26 @@ describe("parseArticleFile — success", () => {
         expect(parseArticleFile(file("demo", "en", { archived: "false" })).archived).toBe(false);
         expect(parseArticleFile(file("demo", "en"))).not.toHaveProperty("archived");
     });
+
+    it("keeps unknown front-matter fields, unvalidated, in `extra`", () => {
+        const article = parseArticleFile(
+            file("demo", "en", { status: "draft", link: "https://example.com", tags: "[a, b]", count: "3" }),
+        );
+        expect(article.extra).toEqual({ status: "draft", link: "https://example.com", tags: ["a", "b"], count: 3 });
+    });
+
+    it("excludes every reserved field from `extra`", () => {
+        const article = parseArticleFile(
+            file("demo", "en", { image: "/articles/demo/c.png", archived: "true", status: "draft" }),
+        );
+        expect(article.extra).toEqual({ status: "draft" });
+    });
+
+    it("omits the `extra` key entirely when there is no unknown field", () => {
+        const article = parseArticleFile(file("demo", "en", { image: "/articles/demo/c.png", archived: "false" }));
+        expect(article).not.toHaveProperty("extra");
+        expect(Object.keys(article)).not.toContain("extra");
+    });
 });
 
 describe("parseArticleFile — errors", () => {
