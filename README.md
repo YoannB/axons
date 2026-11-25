@@ -285,9 +285,14 @@ The repository already contains technical decisions that are expensive to redisc
 git clone https://github.com/YoannB/axons.git my-site
 cd my-site
 git remote rename origin upstream
+git config remote.upstream.tagOpt --no-tags
 git remote add origin https://github.com/<you>/my-site.git
 git push -u origin main
 ```
+
+`tagOpt --no-tags` stops every `git fetch upstream` from importing the Axons tags: the site keeps its own `vX.Y.Z` tags, and an Axons release is fetched one at a time, namespaced under `axons/` (step 4). Never push the `axons/*` tags to `origin`: do not run `git push --tags`, push the site's own tags by name (`git push origin v0.2.0`).
+
+A site that already imported the Axons tags un-namespaced can clean up locally: list them with `git tag -l`, then delete with `git tag -d <tag>` only the ones that came from Axons (compare with `git ls-remote --tags upstream` and check what each points to, e.g. `git log -1 <tag>`, because the site's own tags may share names). Delete one on `origin` (`git push origin :refs/tags/<tag>`) only if it was pushed and is certainly an Axons tag, never a site release.
 
 ### 2. Rewrite the identity files
 
@@ -315,13 +320,15 @@ When this is done, `git grep -i axons` should only find what the site chose to k
 
 ### 4. Merge an Axons update
 
-Axons releases are tagged (`vX.Y.Z`) and their notes list what changed and how to migrate. Take one deliberately, on a branch:
+Axons releases are tagged (`vX.Y.Z` in the Axons repository) and their notes list what changed and how to migrate. Take one deliberately, on a branch:
 
 ```bash
-git checkout -b chore/axons-vX.Y.Z
-git fetch upstream --tags
-git merge vX.Y.Z
+git checkout -b chore/upstream-vX.Y.Z
+git fetch --no-tags upstream "refs/tags/vX.Y.Z:refs/tags/axons/vX.Y.Z"
+git merge axons/vX.Y.Z
 ```
+
+The fetch imports only that one Axons tag, as `axons/vX.Y.Z`, so it never mixes with the site's own tags.
 
 Resolve every conflict on purpose:
 
